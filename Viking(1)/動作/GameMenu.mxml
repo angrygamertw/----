@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" height="140" width="125">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.events.*;
+        import mx.containers.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _game:Object;
+
+
+        public function closeMenu() : void
+        {
+            this.addEventListener(MouseEvent.MOUSE_DOWN, openMenu);
+            return;
+        }// end function
+
+        public function resetStage() : void
+        {
+            return;
+        }// end function
+
+        public function unitList() : void
+        {
+            return;
+        }// end function
+
+        public function openMenu(event:Event) : void
+        {
+            this.removeEventListener(MouseEvent.MOUSE_DOWN, openMenu);
+            return;
+        }// end function
+
+        public function turnEnd() : void
+        {
+            return;
+        }// end function
+    ]]></mx:Script>
+
+
+</mx:Canvas>

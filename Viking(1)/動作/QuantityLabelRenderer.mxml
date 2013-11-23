@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.styles.*;
+
+    ]]></mx:Script>
+
+	<mx:Label id="_QuantityLabelRenderer_Label1" styleName="ProductionText" text="quantityLabel" color="#00000000"/>
+
+</mx:Box>

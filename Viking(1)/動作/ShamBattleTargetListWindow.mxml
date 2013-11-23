@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="744" height="550" creationComplete="{comp();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _reports:Array;
+        public static const  CLOSED_SHAM_BATTLE_TARGET_LIST:String = "closedBattleReportList";
+        public static const  SELECT_SHAM_BATTLE_TARGET_COMPLETE:String = "selectShamBattleTargetComplete";
+        public static const  SELECT_RANDOM_SHAM_BATTLE:String = "selectRandomShamBattle";
+
+
+        public function remove() : void
+        {
+            while (ReportList.numChildren > 0)
+            {
+                
+                ReportList.removeChildAt(0);
+            }
+            while (windowLayer.numChildren > 0)
+            {
+                
+                windowLayer.removeChildAt(0);
+            }
+            TargetViewStack.removeAllChildren();
+            return;
+        }// end function
+
+        public function getPlayerName(param1:Object) : String
+        {
+            return param1 ? (param1.target) : ("");
+        }// end function
+
+        public function closeForAllMap() : void
+        {
+            this.onClose();
+            return;
+        }// end function
+
+        public function _ShamBattleTargetListWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ShamBattleTargetListWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "target";
+            _loc_1.width = 100;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ShamBattleTargetListWindow_DataGridColumn1", _ShamBattleTargetListWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function comp() : void
+        {
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_practice.getChildAt(0)).content).gotoAndPlay("button_practice");
+            MovieClip(Loader(_swf_bg.getChildAt(0)).content).gotoAndPlay("center_720x460");
+            return;
+        }// end function
+
+        public function _ShamBattleTargetListWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ShamBattleTargetListWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "rank";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ShamBattleTargetListWindow_DataGridColumn3", _ShamBattleTargetListWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function init(param1:Array, param2:PlayerVO) : void
+        {
+            setReportList(param1);
+            return;
+        }// end function
+
+        public function _ShamBattleTargetListWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            targetNameRenderer = _loc_1;
+            _loc_1.generator = ShamBattleTargetListWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function onDetail(param1:Object) : void
+        {
+            return;
+        }// end function
+
+        public function random_match() : void
+        {
+            sendPopupEvent(SELECT_RANDOM_SHAM_BATTLE, new Object());
+            return;
+        }// end function
+
+        public function _ShamBattleTargetListWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ShamBattleTargetListWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "max_total_point";
+            _loc_1.width = 100;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ShamBattleTargetListWindow_DataGridColumn2", _ShamBattleTargetListWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function onUnitSelect(param1:Object) : void
+        {
+            sendPopupEvent(SELECT_SHAM_BATTLE_TARGET_COMPLETE, param1);
+            return;
+        }// end function
+
+        public function setReportList(param1:Array) : void
+        {
+            var _loc_2:Object = null;
+            _reports = new Array();
+            _targetPlayerList = new Array();
+            for each (_loc_2 in param1)
+            {
+                
+                _targetPlayerList.push({target:_loc_2.player.player_name, max_total_point:_loc_2.player.max_total_point, rank:_loc_2.player.onmyou_rank, id:_loc_2.player.id});
+            }
+            return;
+        }// end function
+
+        public function close() : void
+        {
+            sendPopupEvent(CLOSED_SHAM_BATTLE_TARGET_LIST, {window:this});
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_ShamBattleTargetListWindow_Image1" source="{_swf_bg}"/>
+	<mx:Canvas id="windowLayer"/>
+	<mx:Canvas id="ReportList" x="44" y="114"/>
+	<mx:Text id="_ShamBattleTargetListWindow_Text1" styleName="PanelBaseTitle" x="350" y="83" text="{Utils.i18n("generalShamBattle")}"/>
+	<mx:Image id="_ShamBattleTargetListWindow_Image2" width="100" x="58" y="115" click="{random_match();}" source="{_swf_practice}"/>
+	<mx:Text id="_ShamBattleTargetListWindow_Text2" width="300" x="190" y="120" fontSize="14" text="{Utils.i18n("shamBattleExplanation")}"/>
+	<mx:Image source="_embed_mxml__images_home_line_640_png_1904048873" width="640" x="62" y="155"/>
+	<mx:VBox width="710" x="25" y="170" verticalGap="-2">
+		<mx:ViewStack id="TargetViewStack" width="706" height="334" borderStyle="none" paddingLeft="12">
+			<mx:VBox id="_ShamBattleTargetListWindow_VBox2" width="100%" height="100%" label="{Utils.i18n("generalInvasion")}">
+				<mx:DataGrid id="notorietyList" width="690" rowCount="10" rowHeight="27" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_ShamBattleTargetListWindow_DataGridColumn1_i(), _ShamBattleTargetListWindow_DataGridColumn2_i(), _ShamBattleTargetListWindow_DataGridColumn3_i()]}" dataProvider='{_targetPlayerList}'/>
+			</mx:VBox>
+		</mx:ViewStack>
+	</mx:VBox>
+	<mx:Image id="_ShamBattleTargetListWindow_Image4" x="315" y="485" click="{close();}" source="{_swf_close}"/>
+
+</mx:PopupWindow>

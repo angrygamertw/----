@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" verticalAlign="middle">
+	<mx:Script><![CDATA[
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.styles.*;
+
+        public var  _ChangeEquipmentWindow_inlineComponent1_Label1:Label;
+        public var  _ChangeEquipmentWindow_inlineComponent1_Image1:Image;
+
+    ]]></mx:Script>
+
+	<mx:Box width="50" horizontalAlign="right">
+		<mx:Image id="_ChangeEquipmentWindow_inlineComponent1_Image1" source="_embed_mxml__swf_home_buttons_button_list_wear_swf_1484374793" click="{outerDocument.onClickEquipment(data);}" toolTip="{outerDocument.componentTooltip(0)}"/>
+	</mx:Box>
+	<mx:Label id="_ChangeEquipmentWindow_inlineComponent1_Label1" buttonMode="true" mouseChildren="false" textDecoration="underline" click="{outerDocument.onDetail(data);}" text="{data.nameLabel}" toolTip="{outerDocument.componentTooltip(1)}"/>
+
+</mx:HBox>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="651" height="506" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public static const  CLOSE_WINDOW:String = "OpeningDialog/closeWindow";
+        public static var  EmbedSwfOpening:Class;
+
+
+        public function okClick(event:Event) : void
+        {
+            Loader(_swf_opening.getChildAt(0)).content.removeEventListener("BUTTON_CLOSE", okClick);
+            dispatchEvent(new Event(CLOSE_WINDOW));
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("right_400x460");
+            MovieClip(Loader(_swf_opening.getChildAt(0)).content).gotoAndPlay("guidance");
+            Loader(_swf_opening.getChildAt(0)).content.addEventListener("BUTTON_CLOSE", okClick);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_OpeningDialog_Image1" source="{_swf_window}"/>
+	<mx:Image id="_OpeningDialog_Image2" source="{_swf_opening}"/>
+
+</mx:Canvas>

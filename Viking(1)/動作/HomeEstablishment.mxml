@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:CanvasWithPopUp xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  confirmIncrementMaxTasksCountWindow:ConfirmIncrementMaxTasksCountWindow;
+        public static const  INCREMENT_MAX_TASKS:String = NAME + "incrementMaxTasks";
+        public static const  CLOSED_HOME_ESTABLISHMENT:String = NAME + "ClosedHomeEstablishment";
+        public static const  NAME:String = "HomeEstablishment";
+
+
+        public function init() : void
+        {
+            confirmIncrementMaxTasksCountWindow.addEventListener(ConfirmIncrementMaxTasksCountWindow.CONFIRMED, incrementMaxTasks);
+            return;
+        }// end function
+
+        public function incrementMaxTasks(event:Event) : void
+        {
+            sendEvent(INCREMENT_MAX_TASKS);
+            close();
+            return;
+        }// end function
+
+        public function close() : void
+        {
+            dispatchEvent(new PopupEvent(CLOSED_HOME_ESTABLISHMENT, {window:this}));
+            return;
+        }// end function
+
+        public function confirmIncrementMaxTasks() : void
+        {
+            popupWindow(confirmIncrementMaxTasksCountWindow, false);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:VBox x="50" y="150" width="500">
+		<mx:VBox>
+			<mx:ViewStack id="expLabelViewStack" selectedIndex="0" width="500">
+				<mx:Box>
+					<mx:Text id="_HomeEstablishment_Text1" width="100%" fontSize="14" text="{Utils.i18n("localize168")}"/>
+				</mx:Box>
+				<mx:Box>
+					<mx:Text id="_HomeEstablishment_Text2" width="100%" fontSize="14" text="{Utils.i18n("localize169") + "" + _player.doubleExpExpiredAtLabel + " まで。"}"/>
+				</mx:Box>
+			</mx:ViewStack>
+			<mx:Button x="350" y="100" buttonMode="true" mouseChildren="false" click="{confirmIncrementMaxTasks();}"/>
+		</mx:VBox>
+	</mx:VBox>
+
+</mx:CanvasWithPopUp>

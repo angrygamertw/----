@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.styles.*;
+
+        public var  _GuildChatWindow_inlineComponent3_Text1:Text;
+        public var  _GuildChatWindow_inlineComponent3_Text3:Text;
+        public var  _GuildChatWindow_inlineComponent3_Text2:Text;
+
+    ]]></mx:Script>
+
+	<mx:HBox horizontalGap="0">
+		<mx:Box width="260" height="20">
+			<mx:Text id="_GuildChatWindow_inlineComponent3_Text1" color="#002d44a7" text="{data.playerName}"/>
+		</mx:Box>
+		<mx:Box width="100" height="20" horizontalAlign="right">
+			<mx:Text id="_GuildChatWindow_inlineComponent3_Text2" color="#00bb6090" text="{data.createdAtLabel}"/>
+		</mx:Box>
+	</mx:HBox>
+	<mx:HBox>
+		<mx:Text id="_GuildChatWindow_inlineComponent3_Text3" width="355" text="{data.body}" color="#00000000"/>
+	</mx:HBox>
+
+</mx:VBox>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  iconUnit:UnitVO;
+        private var  setArmy:Boolean = false;
+        public static const  SELECT_ARMY_UNIT:String = NAME + "selectArmyUnit";
+        public static var  EmbedSwfCommandIcon:Class;
+        public static const  NAME:String = "dispatchDownIconRenderer";
+
+
+        public function init() : void
+        {
+            dispatchDownIcon.x = iconUnit.loader.x + 20;
+            dispatchDownIcon.y = iconUnit.loader.y + 50;
+            return;
+        }// end function
+
+        public function unitStatusIcon(param1:UnitVO, param2:String = "others") : Boolean
+        {
+            var unit:* = param1;
+            var state:* = param2;
+            iconUnit = unit;
+            setArmy = state == SELECT_ARMY_UNIT;
+            Loader(_swf_icon.getChildAt(0)).contentLoaderInfo.addEventListener(Event.COMPLETE, function () : void
+            {
+                Loader(_swf_icon.getChildAt(0)).contentLoaderInfo.removeEventListener(Event.COMPLETE, arguments.callee);
+                MovieClip(Loader(_swf_icon.getChildAt(0)).content).gotoAndPlay(0);
+                return;
+            }// end function
+            );
+            return unit.down;
+        }// end function
+
+        public function positionChange() : void
+        {
+            init();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="dispatchDownIcon" source="{_swf_icon}"/>
+
+</mx:Canvas>

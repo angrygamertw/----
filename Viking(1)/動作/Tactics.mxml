@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:CanvasWithPopUp xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{initApp();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.view.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  EmbedSwfButtonSpeedUp:Class;
+        private var  EmbedSwfButtonSound:Class;
+
+
+        public function initSound(param1:Boolean, param2:Boolean) : void
+        {
+            MovieClip(Loader(_swf_button_sound.getChildAt(0)).content).gotoAndStop(0);
+            MovieClip(Loader(_swf_button_sound.getChildAt(0)).content).gotoAndPlay(param1 ? ("button_sound_on") : ("button_sound_off"));
+            MovieClip(Loader(_swf_button_fast.getChildAt(0)).content).gotoAndPlay(param2 ? ("button_speed_up_on") : ("button_speed_up_off"));
+            return;
+        }// end function
+
+        public function initApp() : void
+        {
+            Loader(_swf_button_sound.getChildAt(0)).content.addEventListener("BUTTON_SOUND_OFF", function (event:Event) : void
+            {
+                sendEvent(Viking.TACTICS_SOUND_OFF);
+                return;
+            }// end function
+            );
+            Loader(_swf_button_sound.getChildAt(0)).content.addEventListener("BUTTON_SOUND_ON", function (event:Event) : void
+            {
+                sendEvent(Viking.TACTICS_SOUND_ON);
+                return;
+            }// end function
+            );
+            MovieClip(Loader(_swf_button_sound.getChildAt(0)).content).gotoAndPlay("button_sound_off");
+            Loader(_swf_button_fast.getChildAt(0)).content.addEventListener("BUTTON_SPEED_UP_OFF", function (event:Event) : void
+            {
+                sendEvent(Viking.TACTICS_FAST_OFF);
+                return;
+            }// end function
+            );
+            Loader(_swf_button_fast.getChildAt(0)).content.addEventListener("BUTTON_SPEED_UP_ON", function (event:Event) : void
+            {
+                sendEvent(Viking.TACTICS_FAST_ON);
+                return;
+            }// end function
+            );
+            MovieClip(Loader(_swf_button_fast.getChildAt(0)).content).gotoAndPlay("button_speed_up_off");
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="map">
+		<mx:Image id="mapImage" source="{mapImageSource}"/>
+		<mx:Canvas id="blockLayer"/>
+		<mx:Canvas id="areaLayer"/>
+		<mx:Canvas id="cursorLayer"/>
+		<mx:Canvas id="effectLayer"/>
+		<mx:Canvas id="objectLayer"/>
+	</mx:Canvas>
+	<mx:StatusWindow id="statusWindow"/>
+	<mx:TargetStatusWindow id="playerTargetWindow" visible="false"/>
+	<mx:TargetStatusWindow id="targetStatusWindow" visible="false"/>
+	<mx:TargetStatusWindow id="enemyStatusWindow" visible="false" x="-380"/>
+	<mx:HitRateWindow id="hitRateWindow" visible="false"/>
+	<mx:MissionWindow id="missionWindow"/>
+	<mx:MultiPlayerTimerWindow id="timerWindow" visible="false"/>
+	<mx:Canvas id="controlLayer" width="760" height="560"/>
+	<mx:RaidTimer id="raidTimer" width="117" height="49" top="10" right="80"/>
+	<mx:Image x="590" y="10" source="_embed_mxml__swf_battle_info_button_shikihime_50_swf_1296993453" click="{sendEvent(Viking.TACTICS_UNIT_LIST);}"/>
+	<mx:Image id="_Tactics_Image3" x="645" y="10" source="{_swf_button_fast}"/>
+	<mx:Image id="_Tactics_Image4" x="700" y="10" source="{_swf_button_sound}"/>
+	<mx:GameMenu id="gameMenu" visible="false"/>
+	<mx:CommandWindow id="commandWindow" visible="false"/>
+	<mx:ItemWindow id="itemWindow" visible="false"/>
+	<mx:StageClear id="stageClear" visible="false"/>
+	<mx:Canvas id="movieLayer" width="760" height="560"/>
+	<mx:Canvas id="itemEffectLayer"/>
+	<mx:Label id="raidPlayerName" x="64" y="528" text="" mouseChildren="false" visible="false" fontSize="30" color="#00ffffff"/>
+	<mx:Label id="raidEnemyName" x="419" y="65" text="" mouseChildren="false" visible="false" fontSize="30" color="#00ffffff"/>
+
+</mx:CanvasWithPopUp>

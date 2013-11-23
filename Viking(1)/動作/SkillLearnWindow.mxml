@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="750" height="506" creationComplete="{createComp();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _viewUnit:UnitVO;
+        private var  _tutMarkSkillFinishVisible:Boolean = false;
+        private var  _tutMarkSkillVisible:Boolean = false;
+        public static const  SKILL_SELECT_WINDOW:String = NAME + "skillSelectWindow";
+        public static const  NAME:String = "skillLearnWindow";
+        public static const  SKILL_LEARN_WINDOW_CLOSE:String = NAME + "skillLearnWindowClose";
+        public static const  SKILL_LEARN:String = NAME + "skillLearn";
+        public static const  SKILL_LEARN_WINDOW_TMARK:String = NAME + "skillLearnWindowTmark";
+
+
+        public function _SkillLearnWindow_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SkillLearnWindow_DataGridColumn6 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 140;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SkillLearnWindow_DataGridColumn6", _SkillLearnWindow_DataGridColumn6);
+            return _loc_1;
+        }// end function
+
+        public function init(param1:Array, param2:UnitVO) : void
+        {
+            var s:* = param1;
+            var unit:* = param2;
+            selectUnit = new UnitVO();
+            selectUnit = unit;
+            skills = new Array();
+            if (selectUnit.ownSkills.length <= 0)
+            {
+                skills = s.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                var _loc_4:* = undefined;
+                for each (_loc_4 in selectUnit.jobMasterVO.skills)
+                {
+                    
+                    if (_loc_4 == param1.code)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }// end function
+            );
+            }
+            else
+            {
+                skills = s.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                var _loc_4:* = undefined;
+                var _loc_5:* = undefined;
+                for each (_loc_4 in selectUnit.jobMasterVO.skills)
+                {
+                    
+                    if (int(_loc_4 * 0.1) == int(int(param1.code) * 0.1))
+                    {
+                        return true;
+                    }
+                }
+                for each (_loc_5 in selectUnit.ownSkills)
+                {
+                    
+                    if (int(int(_loc_5.code) * 0.1) == int(int(param1.code) * 0.1))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }// end function
+            );
+                skills = skills.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                var _loc_4:* = undefined;
+                var _loc_5:* = undefined;
+                for each (_loc_4 in selectUnit.ownSkills)
+                {
+                    
+                    if (int(param1.code) <= int(_loc_4.code) && int(int(_loc_4.code) * 0.1) == int(int(param1.code) * 0.1))
+                    {
+                        return false;
+                    }
+                    if ((int(_loc_4.code) + 1) == param1.code)
+                    {
+                        return true;
+                    }
+                }
+                for each (_loc_5 in selectUnit.jobMasterVO.skills)
+                {
+                    
+                    if (_loc_5 == param1.code)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }// end function
+            );
+            }
+            return;
+        }// end function
+
+        public function createComp() : void
+        {
+            Loader(_swf_close.getChildAt(0)).content.addEventListener("BUTTON_CLOSE", function (event:Event) : void
+            {
+                removeWindow();
+                return;
+            }// end function
+            );
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            return;
+        }// end function
+
+        public function _SkillLearnWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SkillLearnWindow_DataGridColumn1 = _loc_1;
+            _loc_1.width = 55;
+            BindingManager.executeBindings(this, "_SkillLearnWindow_DataGridColumn1", _SkillLearnWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _SkillLearnWindow_DataGridColumn5_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SkillLearnWindow_DataGridColumn5 = _loc_1;
+            _loc_1.width = 78;
+            BindingManager.executeBindings(this, "_SkillLearnWindow_DataGridColumn5", _SkillLearnWindow_DataGridColumn5);
+            return _loc_1;
+        }// end function
+
+        public function _SkillLearnWindow_ClassFactory2_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRendererTutorial = _loc_1;
+            _loc_1.generator = SkillLearnWindow_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function canLearnSkill(param1:Object) : Class
+        {
+            if (param1.point > selectUnit.skillPoint)
+            {
+                return decideOff;
+            }
+            return decide;
+        }// end function
+
+        public function learnSkill(param1:Object) : void
+        {
+            var _loc_2:Boolean = false;
+            var _loc_3:Object = null;
+            if (param1.point > selectUnit.skillPoint)
+            {
+                return;
+            }
+            if (selectUnit.ownSkills.length >= 2)
+            {
+                _loc_2 = false;
+                for each (_loc_3 in selectUnit.ownSkills)
+                {
+                    
+                    if (int((int(_loc_3.code) + 1)) == int(param1.code))
+                    {
+                        _loc_2 = true;
+                    }
+                }
+                if (!_loc_2)
+                {
+                    dispatchEvent(new PopupEvent(SKILL_SELECT_WINDOW, {skill:param1, unit:selectUnit}));
+                    return;
+                }
+            }
+            if (param1.code == 1801)
+            {
+                _tutMarkSkillFinishVisible = true;
+                sendEvent(SKILL_LEARN_WINDOW_TMARK);
+            }
+            else
+            {
+                _tutMarkSkillFinishVisible = false;
+            }
+            dispatchEvent(new PopupEvent(SKILL_LEARN, {skill:param1}));
+            removeWindow();
+            viewUnit = new UnitVO();
+            return;
+        }// end function
+
+        public function _SkillLearnWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SkillLearnWindow_DataGridColumn4 = _loc_1;
+            _loc_1.dataField = "description";
+            _loc_1.width = 405;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SkillLearnWindow_DataGridColumn4", _SkillLearnWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function _SkillLearnWindow_DataGridColumn8_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SkillLearnWindow_DataGridColumn8 = _loc_1;
+            _loc_1.dataField = "description";
+            _loc_1.width = 402;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SkillLearnWindow_DataGridColumn8", _SkillLearnWindow_DataGridColumn8);
+            return _loc_1;
+        }// end function
+
+        public function _SkillLearnWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRenderer = _loc_1;
+            _loc_1.generator = SkillLearnWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function removeWindow() : void
+        {
+            sendEvent(SKILL_LEARN_WINDOW_CLOSE);
+            close();
+            return;
+        }// end function
+
+        public function _SkillLearnWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SkillLearnWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "point";
+            _loc_1.width = 70;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SkillLearnWindow_DataGridColumn3", _SkillLearnWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _SkillLearnWindow_DataGridColumn7_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SkillLearnWindow_DataGridColumn7 = _loc_1;
+            _loc_1.dataField = "point";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SkillLearnWindow_DataGridColumn7", _SkillLearnWindow_DataGridColumn7);
+            return _loc_1;
+        }// end function
+
+        public function setTutMarkSkillVisible(param1:int, param2:int, param3:int, param4:Boolean) : void
+        {
+            if (param1 == 3 && param2 == 31 && param3 == 3 && !param4)
+            {
+                _tutMarkSkillVisible = true;
+                tutVisible = true;
+                nonTutVisible = false;
+            }
+            else
+            {
+                _tutMarkSkillVisible = false;
+                tutVisible = false;
+                nonTutVisible = true;
+            }
+            return;
+        }// end function
+
+        public function showTutMark(param1:Object) : Boolean
+        {
+            if (param1.code == 1801 && _tutMarkSkillVisible && param1.point <= selectUnit.skillPoint)
+            {
+                return visible;
+            }
+            return false;
+        }// end function
+
+        public function close() : void
+        {
+            onClose();
+            return;
+        }// end function
+
+        public function _SkillLearnWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SkillLearnWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 150;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SkillLearnWindow_DataGridColumn2", _SkillLearnWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Canvas id="skillCanvas" x="30">
+		<mx:Image id="_SkillLearnWindow_Image1" x="685" y="20" click="{removeWindow();}" source="{_swf_close_window}"/>
+		<mx:Text id="_SkillLearnWindow_Text1" x="315" y="22" styleName="PanelBaseTitle" color="#00eeeeee" text="{Utils.i18n("skillLearnTitle")}"/>
+		<mx:Text id="_SkillLearnWindow_Text2" x="10" y="50" fontSize="11" text="{Utils.i18n("skillLearnUnitName") + ":" + selectUnit.name}"/>
+		<mx:Text id="_SkillLearnWindow_Text3" x="160" y="50" fontSize="11" text="{Utils.i18n("skillLearnHaveSP") + ":" + selectUnit.skillPoint}"/>
+		<mx:VBox id="_SkillLearnWindow_VBox1" x="10" y="70" label="{Utils.i18n("generalSkill")}">
+			<mx:DataGrid id="skill_data_list" rowCount="5" styleName="DataGridBase" selectable="false" sortableColumns="false" includeInLayout="false" columns="{[_SkillLearnWindow_DataGridColumn1_i(), _SkillLearnWindow_DataGridColumn2_i(), _SkillLearnWindow_DataGridColumn3_i(), _SkillLearnWindow_DataGridColumn4_i()]}" dataProvider='{skills}' visible="nonTutVisible"/>
+			<mx:DataGrid id="skill_data_list_tutorial" rowCount="5" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_SkillLearnWindow_DataGridColumn5_i(), _SkillLearnWindow_DataGridColumn6_i(), _SkillLearnWindow_DataGridColumn7_i(), _SkillLearnWindow_DataGridColumn8_i()]}" dataProvider='{skills}' visible="tutVisible"/>
+		</mx:VBox>
+		<mx:Image id="_SkillLearnWindow_Image2" x="295" y="247" source="{_swf_close}"/>
+	</mx:Canvas>
+
+</mx:PopupWindow>

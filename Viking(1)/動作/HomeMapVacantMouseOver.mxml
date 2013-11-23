@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml" width="96" height="41">
+	<mx:Script><![CDATA[
+        import flash.filters.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.styles.*;
+
+    ]]></mx:Script>
+
+	<mx:Box width="96" height="41" styleName="HToolTip" horizontalAlign="center" verticalAlign="middle">
+		<mx:Label text="空き地" styleName="VacantlotName" textAlign="center" verticalCenter="0" horizontalCenter="0"/>
+	</mx:Box>
+
+</mx:Box>

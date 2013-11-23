@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" height="60" width="262">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.styles.*;
+
+        private var  numbers:Array;
+
+    ]]></mx:Script>
+
+	<mx:Canvas x="30" y="6">
+		<mx:Label id="_HitRateWindow_Label1" x="1" y="1" fontSize="22" color="#00000000" text="{Utils.i18n("generalAtack") + ":" + _attackDamage}"/>
+		<mx:Label id="_HitRateWindow_Label2" fontSize="22" color="#00ff4040" text="{Utils.i18n("generalAtack") + ":" + _attackDamage}"/>
+		<mx:Label id="_HitRateWindow_Label3" x="21" y="21" fontSize="22" color="#00000000" text="_attackHitRate + "%""/>
+		<mx:Label id="_HitRateWindow_Label4" x="20" y="20" fontSize="22" color="#00ffffff" text="_attackHitRate + "%""/>
+	</mx:Canvas>
+	<mx:Canvas id="counterNum" visible="true">
+		<mx:Canvas x="140" y="6">
+			<mx:Label id="_HitRateWindow_Label5" x="1" y="1" fontSize="22" color="#00000000" text="{Utils.i18n("generalCounterAttack") + ":" + _counterDamage}"/>
+			<mx:Label id="_HitRateWindow_Label6" fontSize="22" color="#004040ff" text="{Utils.i18n("generalCounterAttack") + ":" + _counterDamage}"/>
+			<mx:Label id="_HitRateWindow_Label7" x="21" y="21" fontSize="22" color="#00000000" text="_counterHitRate + "%""/>
+			<mx:Label id="_HitRateWindow_Label8" x="20" y="20" fontSize="22" color="#00ffffff" text="_counterHitRate + "%""/>
+		</mx:Canvas>
+	</mx:Canvas>
+	<mx:Canvas id="counterString" visible="false">
+		<mx:Canvas x="140" y="6">
+			<mx:Label id="_HitRateWindow_Label9" x="1" y="1" fontSize="22" color="#00000000" text="{Utils.i18n("generalCounterAttack") + ":---"}"/>
+			<mx:Label id="_HitRateWindow_Label10" fontSize="22" color="#004040ff" text="{Utils.i18n("generalCounterAttack") + ":---"}"/>
+			<mx:Label text="---" x="21" y="21" fontSize="22" color="#00000000"/>
+			<mx:Label text="---" x="20" y="20" fontSize="22" color="#00ffffff"/>
+		</mx:Canvas>
+	</mx:Canvas>
+
+</mx:Canvas>

@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:CanvasWithPopUp xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  haveLeyLine9:Boolean = false;
+        private var  _marketConfirmWindow:MarketConfirmWindow;
+        private var  _sellExhibitWindow:SellExhibitWindow;
+        private var  _sellTradeGoodsWindow:SellTradeGoodsWindow;
+        private var  _homeMaterialData:Object;
+        private var  sellResource:ResourceVO;
+        private var  _maxMaterialCount:int;
+        private var  _buyTradeGoodsWindow:BuyTradeGoodsWindow;
+        private var  haveLeyLine12:Boolean = false;
+        private var  _buyTradeGoodsSearchWindow:BuyTradeGoodsSearchWindow;
+        private var  _homeResource:Object;
+        public static const  EXHIBIT_CANCEL:String = NAME + "/exhibitCancel";
+        public static const  GOODS_BUY:String = "goodsBuy";
+        public static const  INSUFFICIENCY_MONEY:String = "insufficiencyMoney";
+        public static const  NAME:String = "Market";
+        public static const  GOODS_SELL:String = "goodsSell";
+        public static const  SEARCH_GOODS:String = "searchGoods";
+
+
+        public function init() : void
+        {
+            _sellExhibitWindow.addEventListener(SellExhibitWindow.GOODS_EXHIBIT, handleEvent);
+            _sellExhibitWindow.addEventListener(SellExhibitWindow.EXHIBIT_LIMIT, handleEvent);
+            _sellExhibitWindow.addEventListener(SellExhibitWindow.EXHIBIT_CANCEL, handleEvent);
+            _sellTradeGoodsWindow.addEventListener(SellTradeGoodsWindow.GOODS_SELL, handleEvent);
+            _marketConfirmWindow.addEventListener(MarketConfirmWindow.EXHIBIT_CANCEL, handleEvent);
+            _marketConfirmWindow.addEventListener(MarketConfirmWindow.BUY_TRADE_GOODS, handleEvent);
+            _buyTradeGoodsSearchWindow.addEventListener(BuyTradeGoodsSearchWindow.SEARCH_GOODS, handleEvent);
+            _buyTradeGoodsWindow.addEventListener(BuyTradeGoodsWindow.BUY_TRADE_GOODS, handleEvent);
+            _buyTradeGoodsWindow.addEventListener(BuyTradeGoodsWindow.INSUFFICIENCY_MONEY, handleEvent);
+            return;
+        }// end function
+
+        public function showBuyTradeGoodsWindow(param1:Array, param2:Object, param3:Boolean) : void
+        {
+            haveLeyLine9 = param3;
+            if (param1[0])
+            {
+                _buyTradeGoodsWindow.setView(_buyTradeGoodsSearchWindow.viewStackIndex);
+                _buyTradeGoodsWindow.haveMoney = _buyTradeGoodsSearchWindow.gold;
+                _buyTradeGoodsWindow.haveLeyLine = param3;
+                _buyTradeGoodsWindow.buyGoods = param1;
+                _buyTradeGoodsWindow.pages = param2;
+                countGoodsCount(param1[0].masterVO.masterType);
+                this.popupWindow(_buyTradeGoodsWindow);
+            }
+            else
+            {
+                _marketConfirmWindow.init("alreadyBuy");
+                _marketConfirmWindow.leyLine = param3;
+                this.popupWindow(_marketConfirmWindow);
+                _buyTradeGoodsSearchWindow.closeWindow();
+            }
+            return;
+        }// end function
+
+        public function handleEvent(event:Event) : void
+        {
+            switch(event.type)
+            {
+                case SellExhibitWindow.GOODS_EXHIBIT:
+                {
+                    _sellTradeGoodsWindow.sellableResource = sellResource;
+                    _sellTradeGoodsWindow.clearValue();
+                    _sellTradeGoodsWindow.gold = _sellExhibitWindow.gold;
+                    this.popupWindow(_sellTradeGoodsWindow);
+                    break;
+                }
+                case SellExhibitWindow.EXHIBIT_LIMIT:
+                {
+                    _marketConfirmWindow.init("errExhibit");
+                    _marketConfirmWindow.leyLine = haveLeyLine12;
+                    this.popupWindow(_marketConfirmWindow);
+                    break;
+                }
+                case SellExhibitWindow.EXHIBIT_CANCEL:
+                {
+                    materialQuantityJudge(_sellExhibitWindow.cancelData);
+                    _marketConfirmWindow.init("exhibitCancel");
+                    _marketConfirmWindow.commodityData = _sellExhibitWindow.cancelData;
+                    _marketConfirmWindow.leyLine = haveLeyLine12;
+                    this.popupWindow(_marketConfirmWindow);
+                    break;
+                }
+                case MarketConfirmWindow.EXHIBIT_CANCEL:
+                {
+                    materialQuantityJudge(_sellExhibitWindow.cancelData);
+                    dispatchEvent(new Event(EXHIBIT_CANCEL));
+                    break;
+                }
+                case MarketConfirmWindow.BUY_TRADE_GOODS:
+                {
+                    _buyTradeGoodsWindow.onCloseWindow();
+                    dispatchEvent(new Event(GOODS_BUY));
+                    break;
+                }
+                case SellTradeGoodsWindow.GOODS_SELL:
+                {
+                    dispatchEvent(new Event(GOODS_SELL));
+                    break;
+                }
+                case BuyTradeGoodsSearchWindow.SEARCH_GOODS:
+                {
+                    dispatchEvent(new Event(SEARCH_GOODS));
+                    break;
+                }
+                case BuyTradeGoodsWindow.BUY_TRADE_GOODS:
+                {
+                    materialQuantityJudge(buyTradeGoodsWindow.buyData);
+                    _marketConfirmWindow.init("buyTradeGoodsConfirm");
+                    _marketConfirmWindow.buyData = buyTradeGoodsWindow.buyData;
+                    _marketConfirmWindow.leyLine = haveLeyLine9;
+                    this.popupWindow(_marketConfirmWindow);
+                    break;
+                }
+                case BuyTradeGoodsWindow.INSUFFICIENCY_MONEY:
+                {
+                    dispatchEvent(new Event(INSUFFICIENCY_MONEY));
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function materialQuantityJudge(param1:Object) : void
+        {
+            if (param1.instanceType != "Material")
+            {
+                _marketConfirmWindow.materialMax = false;
+                return;
+            }
+            var _loc_2:* = _homeMaterialData[param1.masterId];
+            if (!_loc_2)
+            {
+                return;
+            }
+            var _loc_3:* = _loc_2.quantity;
+            if (param1.quantity + _loc_3 > _maxMaterialCount)
+            {
+                _marketConfirmWindow.materialDumpCount = param1.quantity + _loc_3 - _maxMaterialCount;
+                _marketConfirmWindow.materialMax = true;
+            }
+            else
+            {
+                _marketConfirmWindow.materialMax = false;
+            }
+            return;
+        }// end function
+
+        public function resetSellData(param1:ResourceVO, param2:Array, param3:Boolean) : void
+        {
+            _sellExhibitWindow.init(param2, param3);
+            sellResource = param1;
+            return;
+        }// end function
+
+        public function refreshBuyTradeGoodsWindow(param1:Array, param2:Object) : void
+        {
+            _buyTradeGoodsWindow.buyGoods = param1;
+            _buyTradeGoodsWindow.pages = param2;
+            return;
+        }// end function
+
+        public function countGoodsCount(param1:String) : void
+        {
+            var _loc_3:Object = null;
+            var _loc_4:Object = null;
+            var _loc_5:Object = null;
+            var _loc_6:Object = null;
+            var _loc_2:int = 0;
+            switch(param1)
+            {
+                case "WeaponMaster":
+                {
+                    for each (_loc_3 in _homeResource.weapons)
+                    {
+                        
+                        if (_loc_3.masterVO.masterId == _buyTradeGoodsWindow.buyGoods[0].masterVO.masterId)
+                        {
+                            _loc_2++;
+                        }
+                    }
+                    break;
+                }
+                case "ArmorMaster":
+                {
+                    for each (_loc_4 in _homeResource.armors)
+                    {
+                        
+                        if (_loc_4.masterVO.masterId == _buyTradeGoodsWindow.buyGoods[0].masterVO.masterId)
+                        {
+                            _loc_2++;
+                        }
+                    }
+                    break;
+                }
+                case "AccessoryMaster":
+                {
+                    for each (_loc_5 in _homeResource.accessories)
+                    {
+                        
+                        if (_loc_5.masterVO.masterId == _buyTradeGoodsWindow.buyGoods[0].masterVO.masterId)
+                        {
+                            _loc_2++;
+                        }
+                    }
+                    break;
+                }
+                case "ItemMaster":
+                {
+                    for each (_loc_6 in _homeResource.items)
+                    {
+                        
+                        if (_loc_6.masterVO.masterId == _buyTradeGoodsWindow.buyGoods[0].masterVO.masterId)
+                        {
+                            _loc_2++;
+                        }
+                    }
+                    break;
+                }
+                case "MaterialMaster":
+                {
+                    _loc_2 = _homeMaterialData[_buyTradeGoodsWindow.buyGoods[0].masterVO.masterId].quantity;
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            _buyTradeGoodsWindow.goodsHaveCount = _loc_2;
+            return;
+        }// end function
+
+        public function showBuyTradeGoodsSearchWindow(param1:int) : void
+        {
+            _buyTradeGoodsSearchWindow.gold = param1;
+            _buyTradeGoodsSearchWindow.init();
+            this.popupWindow(_buyTradeGoodsSearchWindow);
+            return;
+        }// end function
+
+        public function showSellTradeGoodsWindow(param1:ResourceVO, param2:int, param3:Array, param4:Boolean) : void
+        {
+            haveLeyLine12 = param4;
+            sellResource = param1;
+            _sellExhibitWindow.init(param3, param4);
+            _sellExhibitWindow.gold = param2;
+            this.popupWindow(_sellExhibitWindow);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Box>
+		<mx:Canvas label="Base" width="760" height="560">
+			<mx:Image id="base" source="_embed_mxml__images_city_onmyo_market_jpg_1365704105"/>
+			<mx:Image id="menuBar4" x="599" y="66" source="{_menu4}"/>
+			<mx:Image id="menuBar2" x="599" y="211" source="{_menu3}"/>
+			<mx:Image id="menuBar1" x="599" y="321" source="{_menu1}"/>
+			<mx:VBox y="84" right="30">
+				<mx:Button label="" styleName="SilverButton" buttonMode="true" click="{sendEvent(Viking.CITY_ACTION_SILVER_DEAL);}"/>
+				<mx:Button label="" styleName="FoodButton" buttonMode="true" click="{sendEvent(Viking.CITY_ACTION_FOOD_DEAL);}"/>
+				<mx:Button label="" styleName="TradeGoodsBuyButton" buttonMode="true" click="{sendEvent(Viking.CITY_ACTION_SHOW_BUY_GOODS);}"/>
+				<mx:Button label="" styleName="TradeGoodsSellButton" buttonMode="true" click="{sendEvent(Viking.CITY_ACTION_SHOW_SELL_GOODS);}"/>
+			</mx:VBox>
+			<mx:VBox y="227" right="30">
+				<mx:Button label="" styleName="BarButton" buttonMode="true" click="{sendEvent(Viking.CITY_ACTION_SHOW_BAR);}"/>
+				<mx:Button label="" styleName="TempleButton" buttonMode="true" click="{sendEvent(Viking.CITY_ACTION_SHOW_TEMPLE);}"/>
+				<mx:Button label="" styleName="ColosseumButton" buttonMode="true" click="{sendEvent(Viking.ENTER_LOBBY);}"/>
+			</mx:VBox>
+			<mx:Button label="" styleName="Home" y="310" buttonMode="true" right="30" click="{sendEvent(Viking.CITY_ACTION_BACK_HOME);}"/>
+			<mx:Button id="_Market_Button9" y="350" buttonMode="true" mouseChildren="false" right="60" click="{sendEvent(Viking.CITY_ACTION_GOLD_DEAL);}" label="{Utils.i18n("marketGoldDeal")}"/>
+		</mx:Canvas>
+	</mx:Box>
+
+</mx:CanvasWithPopUp>

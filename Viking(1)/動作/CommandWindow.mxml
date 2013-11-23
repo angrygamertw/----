@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.events.*;
+        import mx.containers.*;
+        import mx.core.*;
+        import mx.events.*;
+
+
+        public function sendEvent(param1:String) : void
+        {
+            this.dispatchEvent(new Event(param1));
+            return;
+        }// end function
+
+        public function handleEvent(event:Event) : void
+        {
+            trace(event.type);
+            switch(event.type)
+            {
+                case "ICON_EQUIPMENT":
+                {
+                    sendEvent(Viking.CHANGE_ARMS);
+                    break;
+                }
+                case "ICON_ITEM":
+                {
+                    sendEvent(Viking.ACTION_ITEM);
+                    break;
+                }
+                case "ICON_ATTACK":
+                {
+                    sendEvent(Viking.ACTION_ATTACK);
+                    break;
+                }
+                case "ICON_BACK":
+                {
+                    sendEvent(Viking.ACTION_BACK);
+                    break;
+                }
+                case "ICON_WAIT":
+                {
+                    sendEvent(Viking.ACTION_WAIT);
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function armEquipped() : void
+        {
+            buttonSet();
+            return;
+        }// end function
+
+        public function buttonSet() : void
+        {
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="commandBattleLayer"/>
+
+</mx:Canvas>

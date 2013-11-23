@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        public static const  BLOOD_REUNION_CONFIRMED:String = "ConfirmReunionWindow/BloodReunionConfirmed";
+        public static const  CONFIRMED:String = "ConfirmReunionWindow/Confirmed";
+
+
+        public function init() : void
+        {
+            MovieClip(Loader(_swf_bg.getChildAt(0)).content).gotoAndPlay("center_300x200");
+            MovieClip(Loader(_swf_ok_button.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_cancel_button.getChildAt(0)).content).gotoAndPlay("button_no");
+            return;
+        }// end function
+
+        public function onConfirm() : void
+        {
+            var _loc_1:* = _bloodReunion ? (BLOOD_REUNION_CONFIRMED) : (CONFIRMED);
+            sendEvent(_loc_1);
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_ConfirmReunionWindow_Image1" source="{_swf_bg}"/>
+	<mx:VBox x="240" y="225">
+		<mx:Spacer height="100%"/>
+		<mx:VBox horizontalCenter="20" top="100">
+			<mx:HBox horizontalGap="2">
+				<mx:Image source="_embed_mxml__images_icon_power_png_227571469"/>
+				<mx:Label id="_ConfirmReunionWindow_Label1" fontSize="12" text=""/>
+			</mx:HBox>
+			<mx:VBox x="300" y="245">
+				<mx:Label id="_ConfirmReunionWindow_Label2" fontSize="11" color="#00ff0000" text="{Utils.i18n("localize125")}"/>
+				<mx:Text id="_ConfirmReunionWindow_Text1" fontSize="11" color="#00ff0000" text="{Utils.i18n("localize126") + "" + "\n" + "" + Utils.i18n("localize127")}"/>
+			</mx:VBox>
+		</mx:VBox>
+		<mx:Spacer height="100%"/>
+	</mx:VBox>
+	<mx:Image id="_ConfirmReunionWindow_Image3" x="265" y="337" click="{onConfirm();}" source="{_swf_ok_button}"/>
+	<mx:Image id="_ConfirmReunionWindow_Image4" x="395" y="337" click="{onClose();}" source="{_swf_cancel_button}"/>
+
+</mx:PopupWindow>

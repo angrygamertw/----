@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" height="560" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.home.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public static const  SLEEP_UNIT_WINDOW_BACK:String = NAME + "/sleepUnitWindowBack";
+        public static const  UNIT_ICING_SLEEP:String = NAME + "/unitIcingSleep";
+        public static const  NAME:String = "HomeAllSleepUnit";
+        public static const  CHECK_ICE:String = NAME + "/checkIce";
+        public static const  AWAKE_UNIT:String = NAME + "/defrostUnit";
+
+
+        public function closeWindow() : void
+        {
+            sendEvent(SLEEP_UNIT_WINDOW_BACK);
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            unitStatus.unit = new UnitVO();
+            return;
+        }// end function
+
+        public function resetUnitStatus() : void
+        {
+            unitStatus.unit = new UnitVO();
+            return;
+        }// end function
+
+        public function setCoffins(param1:Array) : void
+        {
+            _coffins = new ArrayCollection(param1);
+            return;
+        }// end function
+
+        public function mouseEventHandler(event:MouseEvent, param2:CoffinVO) : void
+        {
+            switch(event.type)
+            {
+                case MouseEvent.CLICK:
+                {
+                    lotClick(param2);
+                    break;
+                }
+                case MouseEvent.MOUSE_OVER:
+                {
+                    if (param2 && param2.unit)
+                    {
+                        setUnitStatus(param2.unit);
+                    }
+                    break;
+                }
+                case MouseEvent.MOUSE_OUT:
+                {
+                    resetUnitStatus();
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function setUnitStatus(param1:UnitVO) : void
+        {
+            unitStatus.unit = param1;
+            return;
+        }// end function
+
+        public function lotClick(param1:CoffinVO) : void
+        {
+            switch(param1.state)
+            {
+                case CoffinVO.STATE_INACTIVE:
+                {
+                    sendPopupEvent(CHECK_ICE, {coffin:param1});
+                    break;
+                }
+                case CoffinVO.STATE_ACTIVE:
+                {
+                    sendPopupEvent(UNIT_ICING_SLEEP, {coffinId:param1.coffinId});
+                    break;
+                }
+                case CoffinVO.STATE_UNIT_IN:
+                {
+                    sendPopupEvent(AWAKE_UNIT, {coffin:param1});
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="mapImage" source="_embed_mxml__images_home_bg_rest_jpg_932484247"/>
+	<mx:UnitStatus id="unitStatus" x="1" y="290"/>
+	<mx:Coffin id="coffin0" x="380" y="35" unitDirection="3" coffin="{CoffinVO(_coffins.getItemAt(0))}" mouseEventHandler="mouseEventHandler"/>
+	<mx:Coffin id="coffin1" x="290" y="40" unitDirection="2" coffin="{CoffinVO(_coffins.getItemAt(1))}" mouseEventHandler="mouseEventHandler"/>
+	<mx:Coffin id="coffin2" x="435" y="55" unitDirection="3" coffin="{CoffinVO(_coffins.getItemAt(2))}" mouseEventHandler="mouseEventHandler"/>
+	<mx:Coffin id="coffin3" x="235" y="75" unitDirection="2" coffin="{CoffinVO(_coffins.getItemAt(3))}" mouseEventHandler="mouseEventHandler"/>
+	<mx:Coffin id="coffin4" x="490" y="80" unitDirection="3" coffin="{CoffinVO(_coffins.getItemAt(4))}" mouseEventHandler="mouseEventHandler"/>
+	<mx:Coffin id="coffin5" x="200" y="135" unitDirection="3" coffin="{CoffinVO(_coffins.getItemAt(5))}" mouseEventHandler="mouseEventHandler"/>
+	<mx:Coffin id="coffin6" x="360" y="135" unitDirection="2" coffin="{CoffinVO(_coffins.getItemAt(6))}" mouseEventHandler="mouseEventHandler"/>
+	<mx:Coffin id="coffin7" x="415" y="135" unitDirection="3" coffin="{CoffinVO(_coffins.getItemAt(7))}" mouseEventHandler="mouseEventHandler"/>
+	<mx:Coffin id="coffin8" x="250" y="160" unitDirection="3" coffin="{CoffinVO(_coffins.getItemAt(8))}" mouseEventHandler="mouseEventHandler"/>
+	<mx:Coffin id="coffin9" x="515" y="160" unitDirection="2" coffin="{CoffinVO(_coffins.getItemAt(9))}" mouseEventHandler="mouseEventHandler"/>
+	<mx:Coffin id="coffin10" x="600" y="160" unitDirection="3" coffin="{CoffinVO(_coffins.getItemAt(10))}" mouseEventHandler="mouseEventHandler"/>
+	<mx:Coffin id="coffin11" x="360" y="210" unitDirection="3" coffin="{CoffinVO(_coffins.getItemAt(11))}" mouseEventHandler="mouseEventHandler"/>
+	<mx:Coffin id="coffin12" x="470" y="210" unitDirection="2" coffin="{CoffinVO(_coffins.getItemAt(12))}" mouseEventHandler="mouseEventHandler"/>
+	<mx:Coffin id="coffin13" x="555" y="210" unitDirection="3" coffin="{CoffinVO(_coffins.getItemAt(13))}" mouseEventHandler="mouseEventHandler"/>
+	<mx:Coffin id="coffin14" x="415" y="235" unitDirection="3" coffin="{CoffinVO(_coffins.getItemAt(14))}" mouseEventHandler="mouseEventHandler"/>
+	<mx:Image id="back" x="685" y="7" source="_embed_mxml__swf_all_map_button_back_swf_2104410221" click="{closeWindow();}"/>
+
+</mx:PopupWindow>

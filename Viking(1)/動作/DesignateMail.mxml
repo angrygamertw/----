@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:MailTransmitWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.home.*;
+        import flash.display.*;
+        import mx.core.*;
+        import mx.events.*;
+
+
+        public function init() : void
+        {
+            subject.text = "";
+            mailText.text = "";
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("right_400x460");
+            MovieClip(Loader(_swf_send.getChildAt(0)).content).gotoAndPlay("button_send");
+            MovieClip(Loader(_swf_cancel.getChildAt(0)).content).gotoAndPlay("button_cancel");
+            return;
+        }// end function
+
+        public function setPlayerName(param1:String) : void
+        {
+            trace(param1);
+            playerName.text = param1;
+            return;
+        }// end function
+    ]]></mx:Script>
+
+
+</mx:MailTransmitWindow>

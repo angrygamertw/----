@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="694" height="550" creationComplete="{comp();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _myReport:Boolean = true;
+        private var  _reports:Array;
+        public static const  GUILD_MEMBER_RAID_DITAIL_REPORT:String = "guildMemberRaidDitailReport";
+        public static const  RAID_DITAIL_REPORT:String = "raidDitailReport";
+        public static const  TAB_LABEL:Object = {0:"tab_report_map", 1:"tab_report_colony", 2:"tab_report_guild_member"};
+        public static const  CLOSED_BATTLE_REPORT_LIST:String = "closedBattleReportList";
+        public static const  COLONY_DITAIL_REPORT:String = "colonyDitailReport";
+
+
+        public function closeForAllMap() : void
+        {
+            this.onClose();
+            return;
+        }// end function
+
+        public function comp() : void
+        {
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            return;
+        }// end function
+
+        public function init(param1:Array, param2:PlayerVO, param3:Boolean) : void
+        {
+            this.player = param2;
+            myReport = param3;
+            setReportList(param1);
+            return;
+        }// end function
+
+        public function onDetail(param1:Object) : void
+        {
+            if (param1.type == "colony_report")
+            {
+                sendPopupEvent(COLONY_DITAIL_REPORT, param1.id);
+            }
+            else
+            {
+                sendPopupEvent(RAID_DITAIL_REPORT, param1.id);
+            }
+            return;
+        }// end function
+
+        public function _RaidReportWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RaidReportWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "day";
+            _loc_1.width = 100;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RaidReportWindow_DataGridColumn1", _RaidReportWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _RaidReportWindow_DataGridColumn5_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RaidReportWindow_DataGridColumn5 = _loc_1;
+            _loc_1.dataField = "";
+            _loc_1.width = 200;
+            BindingManager.executeBindings(this, "_RaidReportWindow_DataGridColumn5", _RaidReportWindow_DataGridColumn5);
+            return _loc_1;
+        }// end function
+
+        public function _RaidReportWindow_DataGridColumn9_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RaidReportWindow_DataGridColumn9 = _loc_1;
+            _loc_1.dataField = "result";
+            _loc_1.width = 60;
+            BindingManager.executeBindings(this, "_RaidReportWindow_DataGridColumn9", _RaidReportWindow_DataGridColumn9);
+            return _loc_1;
+        }// end function
+
+        public function _RaidReportWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRenderer = _loc_1;
+            _loc_1.generator = RaidReportWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function makeTitleText(param1:Object) : String
+        {
+            var _loc_2:Array = null;
+            var _loc_3:String = null;
+            if (param1.type == "colony_report")
+            {
+                return param1.player.name + Utils.i18n("report_detail1") + param1.target.name + Utils.i18n("report_detail2");
+            }
+            if (param1.type == "raid_guild_report")
+            {
+                _loc_2 = ["", Utils.i18n("generalFactionNameBlueDragon"), Utils.i18n("generalFactionNameSuzaku"), Utils.i18n("generalFactionNameWhiteTiger"), Utils.i18n("generalFactionNameTortoise")];
+                _loc_3 = "";
+                if (_player.guild.id == param1.player.guild_id)
+                {
+                    _loc_3 = _loc_3 + (Utils.i18n("reportGuildMember") + param1.player.name + "," + param1.target.name + Utils.i18n("localize219"));
+                }
+                else
+                {
+                    _loc_3 = _loc_3 + (Utils.i18n("reportGuildMember") + param1.target.name + "," + param1.player.name + Utils.i18n("localize220"));
+                }
+                return _loc_3;
+            }
+            if (isInvader(param1))
+            {
+                return param1.target.name + Utils.i18n("localize219");
+            }
+            return param1.player.name + Utils.i18n("localize220");
+        }// end function
+
+        public function _RaidReportWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RaidReportWindow_DataGridColumn4 = _loc_1;
+            _loc_1.dataField = "day";
+            _loc_1.width = 100;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RaidReportWindow_DataGridColumn4", _RaidReportWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function _RaidReportWindow_DataGridColumn8_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RaidReportWindow_DataGridColumn8 = _loc_1;
+            _loc_1.dataField = "";
+            _loc_1.width = 200;
+            BindingManager.executeBindings(this, "_RaidReportWindow_DataGridColumn8", _RaidReportWindow_DataGridColumn8);
+            return _loc_1;
+        }// end function
+
+        public function remove() : void
+        {
+            while (ReportList.numChildren > 0)
+            {
+                
+                ReportList.removeChildAt(0);
+            }
+            while (windowLayer.numChildren > 0)
+            {
+                
+                windowLayer.removeChildAt(0);
+            }
+            ReportViewStack.removeAllChildren();
+            return;
+        }// end function
+
+        public function getTitle(param1:Object) : String
+        {
+            return param1 ? (param1.title) : ("");
+        }// end function
+
+        public function _RaidReportWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RaidReportWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "result";
+            _loc_1.width = 60;
+            BindingManager.executeBindings(this, "_RaidReportWindow_DataGridColumn3", _RaidReportWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _RaidReportWindow_DataGridColumn7_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RaidReportWindow_DataGridColumn7 = _loc_1;
+            _loc_1.dataField = "day";
+            _loc_1.width = 100;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RaidReportWindow_DataGridColumn7", _RaidReportWindow_DataGridColumn7);
+            return _loc_1;
+        }// end function
+
+        public function _RaidReportWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RaidReportWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "";
+            _loc_1.width = 200;
+            BindingManager.executeBindings(this, "_RaidReportWindow_DataGridColumn2", _RaidReportWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _RaidReportWindow_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RaidReportWindow_DataGridColumn6 = _loc_1;
+            _loc_1.dataField = "result";
+            _loc_1.width = 60;
+            BindingManager.executeBindings(this, "_RaidReportWindow_DataGridColumn6", _RaidReportWindow_DataGridColumn6);
+            return _loc_1;
+        }// end function
+
+        public function setReportList(param1:Array) : void
+        {
+            var report:Object;
+            var win:Boolean;
+            var title:String;
+            var day:String;
+            var value:* = param1;
+            _reports = new Array();
+            _colonyReportList = new Array();
+            _raidReportList = new Array();
+            _guildMemberRaidReportList = new Array();
+            _attackLose = 0;
+            _attackWin = 0;
+            _defenseLose = 0;
+            _defenseWin = 0;
+            var _loc_3:int = 0;
+            var _loc_4:* = value;
+            while (_loc_4 in _loc_3)
+            {
+                
+                report = _loc_4[_loc_3];
+                win = isInvader(report) ? (report.win) : (!report.win);
+                title = makeTitleText(report);
+                day = report.finished_at;
+                _reports.push({title:title, result:win ? (Utils.i18n("localize107")) : (Utils.i18n("localize213")), day:day, id:report.id, type:report.type});
+                _colonyReportList = _reports.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                return param1.type == "colony_report";
+            }// end function
+            );
+                _raidReportList = _reports.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                return param1.type == "raid_report";
+            }// end function
+            );
+                _guildMemberRaidReportList = _reports.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                return param1.type == "raid_guild_report";
+            }// end function
+            );
+                if (report.type == "raid_report")
+                {
+                    if (isInvader(report))
+                    {
+                        if (win)
+                        {
+                            (_attackWin + 1);
+                        }
+                        else
+                        {
+                            (_attackLose + 1);
+                        }
+                        continue;
+                    }
+                    if (win)
+                    {
+                        (_defenseWin + 1);
+                        continue;
+                    }
+                    (_defenseLose + 1);
+                }
+            }
+            return;
+        }// end function
+
+        public function isInvader(param1:Object) : Boolean
+        {
+            if (param1.target.type == "colony")
+            {
+                return false;
+            }
+            if (param1.type == "raid_report")
+            {
+                return param1.target.id != _player.playerId;
+            }
+            return param1.player.guild_id == _player.guild.id;
+        }// end function
+
+        public function close() : void
+        {
+            sendPopupEvent(CLOSED_BATTLE_REPORT_LIST, {window:this});
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Canvas id="ReportList" x="47" y="114"/>
+	<mx:Text id="_RaidReportWindow_Text1" styleName="PanelBaseTitle" x="325" y="83" text="{Utils.i18n("localize221")}"/>
+	<mx:Label id="attackValue" x="380" y="117" mouseChildren="false" fontSize="14" text="{Utils.i18n("localize222") + "" + (_attackWin + _attackLose) + "戰" + _attackWin + "勝" + _attackLose + "敗"}"/>
+	<mx:Label id="defenseValue" x="540" y="117" mouseChildren="false" fontSize="14" text="{Utils.i18n("localize223") + "" + (_defenseWin + _defenseLose) + "戰" + _defenseWin + "勝" + _defenseLose + "敗"}"/>
+	<mx:VBox width="660" x="23" y="140" verticalGap="-2">
+		<mx:ViewStack id="ReportViewStack" width="656" height="334" borderStyle="none" paddingLeft="12">
+			<mx:VBox id="_RaidReportWindow_VBox2" width="100%" height="100%" label="{Utils.i18n("generalInvasion")}">
+				<mx:DataGrid id="notorietyList" width="640" rowCount="11" rowHeight="27" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_RaidReportWindow_DataGridColumn1_i(), _RaidReportWindow_DataGridColumn2_i(), _RaidReportWindow_DataGridColumn3_i()]}" dataProvider='{_raidReportList}'/>
+			</mx:VBox>
+			<mx:VBox id="_RaidReportWindow_VBox3" width="100%" height="100%" label="{Utils.i18n("colony_battle")}">
+				<mx:DataGrid id="colonyBattleList" width="640" rowCount="11" rowHeight="27" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_RaidReportWindow_DataGridColumn4_i(), _RaidReportWindow_DataGridColumn5_i(), _RaidReportWindow_DataGridColumn6_i()]}" dataProvider='{_colonyReportList}'/>
+			</mx:VBox>
+			<mx:VBox id="_RaidReportWindow_VBox4" width="100%" height="100%" label="{Utils.i18n("guildMemberInvasion")}">
+				<mx:DataGrid id="guildMemberBattleList" width="640" rowCount="11" rowHeight="27" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_RaidReportWindow_DataGridColumn7_i(), _RaidReportWindow_DataGridColumn8_i(), _RaidReportWindow_DataGridColumn9_i()]}" dataProvider='{_guildMemberRaidReportList}'/>
+			</mx:VBox>
+		</mx:ViewStack>
+	</mx:VBox>
+	<mx:Image id="_RaidReportWindow_Image1" x="315" y="485" click="{close();}" source="{_swf_close}"/>
+
+</mx:PopupWindow>

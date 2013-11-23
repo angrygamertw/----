@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.home.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _coffin:CoffinVO;
+        public static const  AWAKE_UNIT_CONFIRMED:String = "AWAKE_UNIT_CONFIRMED";
+
+
+        public function confirm() : void
+        {
+            sendPopupEvent(AWAKE_UNIT_CONFIRMED, {coffinId:_coffin.coffinId});
+            init();
+            onClose();
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_300x200");
+            MovieClip(Loader(_swf_ok.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_back.getChildAt(0)).content).gotoAndPlay("button_no");
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_PullUnitCheckWindow_Image1" source="{_swf_window}"/>
+	<mx:Canvas x="220" y="220">
+		<mx:VBox horizontalCenter="20" top="20" verticalGap="5">
+			<mx:Text id="_PullUnitCheckWindow_Text1" width="230" fontSize="14" text="{Utils.i18n("localize192", _unit.name)}"/>
+			<mx:Spacer height="20"/>
+			<mx:HBox horizontalGap="5">
+				<mx:Image id="_PullUnitCheckWindow_Image2" click="{confirm();}" source="{_swf_ok}"/>
+				<mx:Spacer width="120"/>
+				<mx:Image id="_PullUnitCheckWindow_Image3" click="{onClose();}" source="{_swf_back}"/>
+			</mx:HBox>
+		</mx:VBox>
+	</mx:Canvas>
+
+</mx:PopupWindow>

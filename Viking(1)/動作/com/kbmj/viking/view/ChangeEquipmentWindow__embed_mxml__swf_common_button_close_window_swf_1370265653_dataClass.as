@@ -1,0 +1,14 @@
+﻿package com.kbmj.viking.view
+{
+    import mx.core.*;
+
+    public class ChangeEquipmentWindow__embed_mxml__swf_common_button_close_window_swf_1370265653_dataClass extends ByteArrayAsset
+    {
+
+        public function ChangeEquipmentWindow__embed_mxml__swf_common_button_close_window_swf_1370265653_dataClass()
+        {
+            return;
+        }// end function
+
+    }
+}

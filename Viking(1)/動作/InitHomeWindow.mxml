@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.geom.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public var  overpopulatedImage:Class;
+        public var  forcedFactionImage:Class;
+        public var  underpopulatedImage:Class;
+        public var  fourByFourAreaFlag:Boolean = false;
+        public var  populatedImage:Class;
+        public var  seiryuImage:Class;
+        public var  notSelectableThreeByThreeImage:Class;
+        public var  suzakuImage:Class;
+        public var  nonActiveAreaFlag:Boolean = false;
+        public var  frame:UIComponent;
+        public var  activeAreaImage:Class;
+        public var  byakkoImage:Class;
+        public var  genbuImage:Class;
+        public var  areaFlags:Array;
+        public var  notSelectableFourByFourImage:Class;
+        public static const  NAME:String = "InitHomeWindow";
+        public static var  EmbedSwfFourByFourWindowInitHome:Class;
+        public static const  INIT_HOME_OK:String = NAME + "/oK";
+        public static var  EmbedSwfThreeByThreeWindowInitHome:Class;
+        public static const  MINI_MAP_HEIGHT:int = 303;
+        public static const  MINI_MAP_WIDTH:int = 303;
+
+
+        public function onOK(param1:int) : void
+        {
+            var area:* = param1;
+            var point:* = convertPosition(area);
+            var msg:* = point.y.toString() + "." + point.x.toString() + Utils.i18n("initHomeNotice") + Utils.i18n("initHomeRuleNotice", areaRuleLabel(area));
+            AlertWindow.show(msg, "", AlertWindow.YES | AlertWindow.NO, this, function (event:CloseEvent) : void
+            {
+                if (event.detail == AlertWindow.YES)
+                {
+                    dispatchEvent(new PopupEvent(INIT_HOME_OK, {area:area}));
+                }
+                return;
+            }// end function
+            );
+            return;
+        }// end function
+
+        public function addDistributionImage(param1:Object, param2:DisplayObject) : void
+        {
+            var _loc_7:DisplayObject = null;
+            var _loc_8:DisplayObject = null;
+            var _loc_3:* = param1.area_id;
+            var _loc_4:* = convertPosition(_loc_3);
+            var _loc_5:* = new UIComponent();
+            var _loc_6:Array = [0, 101, 201];
+            if (fourByFourAreaFlag)
+            {
+                _loc_6 = [0, 76, 151, 227];
+            }
+            param2.x = _loc_6[(_loc_4.x - 1)];
+            param2.y = _loc_6[(_loc_4.y - 1)];
+            if (param1.forced_faction)
+            {
+                _loc_7 = new forcedFactionImage();
+                _loc_7.x = _loc_6[(_loc_4.x - 1)] + 25;
+                _loc_7.y = _loc_6[(_loc_4.y - 1)] + 4;
+                _loc_5.addChild(_loc_7);
+            }
+            else if (param1.active && nonActiveAreaFlag)
+            {
+                _loc_8 = new activeAreaImage();
+                _loc_8.x = _loc_6[(_loc_4.x - 1)] + 25;
+                _loc_8.y = _loc_6[(_loc_4.y - 1)] + 4;
+                _loc_5.addChild(_loc_8);
+            }
+            iconImage.addChild(_loc_5);
+            _loc_5.addChild(param2);
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            if (fourByFourAreaFlag)
+            {
+                Loader(swfFourByFour.getChildAt(0)).content.addEventListener("BUTTON_1", function () : void
+            {
+                onOK(1);
+                return;
+            }// end function
+            );
+                Loader(swfFourByFour.getChildAt(0)).content.addEventListener("BUTTON_2", function () : void
+            {
+                onOK(2);
+                return;
+            }// end function
+            );
+                Loader(swfFourByFour.getChildAt(0)).content.addEventListener("BUTTON_3", function () : void
+            {
+                onOK(3);
+                return;
+            }// end function
+            );
+                Loader(swfFourByFour.getChildAt(0)).content.addEventListener("BUTTON_4", function () : void
+            {
+                onOK(4);
+                return;
+            }// end function
+            );
+                Loader(swfFourByFour.getChildAt(0)).content.addEventListener("BUTTON_5", function () : void
+            {
+                onOK(5);
+                return;
+            }// end function
+            );
+                Loader(swfFourByFour.getChildAt(0)).content.addEventListener("BUTTON_6", function () : void
+            {
+                onOK(6);
+                return;
+            }// end function
+            );
+                Loader(swfFourByFour.getChildAt(0)).content.addEventListener("BUTTON_7", function () : void
+            {
+                onOK(7);
+                return;
+            }// end function
+            );
+                Loader(swfFourByFour.getChildAt(0)).content.addEventListener("BUTTON_8", function () : void
+            {
+                onOK(8);
+                return;
+            }// end function
+            );
+                Loader(swfFourByFour.getChildAt(0)).content.addEventListener("BUTTON_9", function () : void
+            {
+                onOK(9);
+                return;
+            }// end function
+            );
+                Loader(swfFourByFour.getChildAt(0)).content.addEventListener("BUTTON_10", function () : void
+            {
+                onOK(10);
+                return;
+            }// end function
+            );
+                Loader(swfFourByFour.getChildAt(0)).content.addEventListener("BUTTON_11", function () : void
+            {
+                onOK(11);
+                return;
+            }// end function
+            );
+                Loader(swfFourByFour.getChildAt(0)).content.addEventListener("BUTTON_12", function () : void
+            {
+                onOK(12);
+                return;
+            }// end function
+            );
+                Loader(swfFourByFour.getChildAt(0)).content.addEventListener("BUTTON_13", function () : void
+            {
+                onOK(13);
+                return;
+            }// end function
+            );
+                Loader(swfFourByFour.getChildAt(0)).content.addEventListener("BUTTON_14", function () : void
+            {
+                onOK(14);
+                return;
+            }// end function
+            );
+                Loader(swfFourByFour.getChildAt(0)).content.addEventListener("BUTTON_15", function () : void
+            {
+                onOK(15);
+                return;
+            }// end function
+            );
+                Loader(swfFourByFour.getChildAt(0)).content.addEventListener("BUTTON_16", function () : void
+            {
+                onOK(16);
+                return;
+            }// end function
+            );
+            }
+            else
+            {
+                Loader(swfThreeByThree.getChildAt(0)).content.addEventListener("BUTTON_1", function () : void
+            {
+                onOK(1);
+                return;
+            }// end function
+            );
+                Loader(swfThreeByThree.getChildAt(0)).content.addEventListener("BUTTON_2", function () : void
+            {
+                onOK(2);
+                return;
+            }// end function
+            );
+                Loader(swfThreeByThree.getChildAt(0)).content.addEventListener("BUTTON_3", function () : void
+            {
+                onOK(3);
+                return;
+            }// end function
+            );
+                Loader(swfThreeByThree.getChildAt(0)).content.addEventListener("BUTTON_4", function () : void
+            {
+                onOK(4);
+                return;
+            }// end function
+            );
+                Loader(swfThreeByThree.getChildAt(0)).content.addEventListener("BUTTON_5", function () : void
+            {
+                onOK(5);
+                return;
+            }// end function
+            );
+                Loader(swfThreeByThree.getChildAt(0)).content.addEventListener("BUTTON_6", function () : void
+            {
+                onOK(6);
+                return;
+            }// end function
+            );
+                Loader(swfThreeByThree.getChildAt(0)).content.addEventListener("BUTTON_7", function () : void
+            {
+                onOK(7);
+                return;
+            }// end function
+            );
+                Loader(swfThreeByThree.getChildAt(0)).content.addEventListener("BUTTON_8", function () : void
+            {
+                onOK(8);
+                return;
+            }// end function
+            );
+                Loader(swfThreeByThree.getChildAt(0)).content.addEventListener("BUTTON_9", function () : void
+            {
+                onOK(9);
+                return;
+            }// end function
+            );
+            }
+            return;
+        }// end function
+
+        public function getFactionImage(param1:int) : DisplayObject
+        {
+            switch(param1)
+            {
+                case 0:
+                {
+                    return new seiryuImage();
+                }
+                case 1:
+                {
+                    return new suzakuImage();
+                }
+                case 2:
+                {
+                    return new byakkoImage();
+                }
+                case 3:
+                {
+                    return new genbuImage();
+                }
+                default:
+                {
+                    return null;
+                    break;
+                }
+            }
+        }// end function
+
+        public function areaRuleLabel(param1:int) : String
+        {
+            var _loc_2:* = areaFlags[(param1 - 1)];
+            if (_loc_2.forced_faction)
+            {
+                return Utils.i18n("initHomeRuleAuto");
+            }
+            if (_loc_2.active)
+            {
+                return Utils.i18n("initHomeRuleSelect");
+            }
+            return Utils.i18n("initHomeNonActive");
+        }// end function
+
+        public function getSwf() : MovieClipLoaderAsset
+        {
+            if (fourByFourAreaFlag)
+            {
+                return swfFourByFour;
+            }
+            return swfThreeByThree;
+        }// end function
+
+        public function convertPosition(param1:int) : Point
+        {
+            var _loc_2:int = 8;
+            if (fourByFourAreaFlag)
+            {
+                _loc_2 = 15;
+            }
+            var _loc_3:int = 3;
+            if (fourByFourAreaFlag)
+            {
+                _loc_3 = 4;
+            }
+            param1 = param1 - 1;
+            if (param1 < 0)
+            {
+                param1 = 0;
+            }
+            else if (param1 > _loc_2)
+            {
+                param1 = _loc_2;
+            }
+            return new Point((this.int(param1 % _loc_3) + 1), (this.int(param1 / _loc_3) + 1));
+        }// end function
+
+        public function setPlayersCount(param1:Array) : void
+        {
+            var _loc_3:Object = null;
+            var _loc_4:DisplayObject = null;
+            var _loc_5:int = 0;
+            var _loc_6:int = 0;
+            areaFlags = param1;
+            iconImage.removeAllChildren();
+            var _loc_2:* = new Array();
+            for each (_loc_3 in param1)
+            {
+                
+                if (_loc_3.selectable)
+                {
+                    _loc_2.push(_loc_3);
+                    continue;
+                }
+                if (fourByFourAreaFlag)
+                {
+                    _loc_4 = new notSelectableFourByFourImage();
+                }
+                else
+                {
+                    _loc_4 = new notSelectableThreeByThreeImage();
+                }
+                addDistributionImage(_loc_3, _loc_4);
+            }
+            if (_loc_2.length)
+            {
+                _loc_5 = _loc_2.length >= 6 ? (3) : (_loc_2.length / 2);
+                MovieClip(Loader(swfFourByFour.getChildAt(0)).content).gotoAndPlay("w_" + _loc_2[0].area_id.toString());
+                MovieClip(Loader(swfThreeByThree.getChildAt(0)).content).gotoAndPlay("w_" + _loc_2[0].area_id.toString());
+                _loc_2.sortOn(["players_count", "area_id"], Array.NUMERIC);
+                _loc_6 = 0;
+                while (_loc_6 < _loc_2.length)
+                {
+                    
+                    if (_loc_6 < _loc_5)
+                    {
+                        addDistributionImage(_loc_2[_loc_6], new underpopulatedImage());
+                    }
+                    else if (_loc_6 >= _loc_2.length - _loc_5)
+                    {
+                        addDistributionImage(_loc_2[_loc_6], new overpopulatedImage());
+                    }
+                    else
+                    {
+                        addDistributionImage(_loc_2[_loc_6], new populatedImage());
+                    }
+                    _loc_6++;
+                }
+            }
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_InitHomeWindow_Image1" x="160" y="0" source="{getSwf()}"/>
+	<mx:Canvas id="iconImage" x="391" y="174" textAlign="right"/>
+	<mx:Text id="_InitHomeWindow_Text1" x="365" y="114" width="360" fontSize="12" textAlign="left" text="{Utils.i18n("localize27")}"/>
+	<mx:Text id="_InitHomeWindow_Text2" x="365" y="135" width="360" fontSize="12" textAlign="left" text="{Utils.i18n("localize28")}"/>
+
+</mx:Canvas>

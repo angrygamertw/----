@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public var  _SearchGuildWindow_inlineComponent1_Image1:Image;
+
+    ]]></mx:Script>
+
+	<mx:Image id="_SearchGuildWindow_inlineComponent1_Image1" click="{outerDocument.onAdmisstion(data);}" source="{outerDocument.getSelectButtonType(data)}"/>
+
+</mx:Box>

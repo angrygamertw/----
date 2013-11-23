@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.vo.home.*;
+        import flash.filters.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _waitUnits:Object;
+        private var  postUnit:Array;
+        private var  _building:BuildingVO;
+
+
+        public function init() : void
+        {
+            var _loc_1:Object = null;
+            for (_loc_1 in _waitUnits)
+            {
+                
+                if (_waitUnits[_loc_1])
+                {
+                    postUnit.push(_waitUnits[_loc_1].name);
+                }
+            }
+            if (!_building.buildingMasterVO.repeatable || _building.level >= _building.buildingMasterVO.maxLevel)
+            {
+                if (_building.buildingMasterId == 1 || _building.buildingMasterId == 15)
+                {
+                    buidingLevel = "";
+                }
+                else
+                {
+                    buidingLevel = "Lv." + _building.level;
+                }
+            }
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas>
+		<mx:Canvas styleName="HToolTip" width="120" height="43">
+			<mx:Label id="_HomeMapBuildingMouseOver_Label1" styleName="OvStarName" text="{building.buildingMasterVO.nameLabel + "     " + buidingLevel}"/>
+		</mx:Canvas>
+	</mx:Canvas>
+
+</mx:Box>

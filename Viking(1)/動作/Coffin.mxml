@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.vo.home.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _mouseEventHandler:Function;
+        private var  _unitDirection:int;
+        private static var  _inactiveCoffinImage:Class;
+        private static var  _coffinImage:Class;
+        private static var  _vacantImage:Class;
+
+
+        public function chengeUnitMotion(param1:UnitVO) : void
+        {
+            var _loc_3:int = 0;
+            var _loc_2:* = param1.direction;
+            if (param1.direction == 1)
+            {
+                _loc_2 = 0;
+                _loc_3 = -1;
+            }
+            else if (param1.direction == 2)
+            {
+                _loc_2 = 3;
+                _loc_3 = -1;
+            }
+            else
+            {
+                _loc_3 = 1;
+            }
+            if (_loc_3 < 0 && param1.loader.content.scaleX != _loc_3)
+            {
+                param1.loader.content.x = param1.loader.content.x + param1.loader.content.width;
+            }
+            else if (_loc_3 > 0 && param1.loader.content.scaleX != _loc_3)
+            {
+                param1.loader.content.x = param1.loader.content.x - param1.loader.content.width;
+            }
+            param1.loader.content.scaleX = _loc_3;
+            var _loc_4:Array = ["_b_l", "_b_r", "_f_r", "_f_l"];
+            MovieClip(param1.loader.content).gotoAndStop("down" + _loc_4[_loc_2]);
+            var _loc_5:* = MovieClip(param1.loader.content).currentFrame;
+            MovieClip(param1.loader.content).gotoAndStop(_loc_5 + 30);
+            if (_loc_3 > 0)
+            {
+                param1.loader.content.x = param1.loader.content.x + 10;
+            }
+            else
+            {
+                param1.loader.content.x = param1.loader.content.x - 10;
+            }
+            return;
+        }// end function
+
+        public function ___Coffin_Button1_mouseOver(event:MouseEvent) : void
+        {
+            mouseEvent(event);
+            return;
+        }// end function
+
+        public function mouseEvent(event:MouseEvent) : void
+        {
+            _mouseEventHandler(event, coffin);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_Coffin_Image1" mouseEnabled="false" mouseChildren="false" source="{_image}"/>
+	<mx:Canvas id="unitCanvas" mouseEnabled="false" mouseChildren="false"/>
+	<mx:Button id="_Coffin_Button1" y="40" x="10" width="55" height="40" styleName="BaseVacantLot" alpha="0" buttonMode="true" mouseChildren="false" ="{mouseEvent(event);}" ="" mouseOut="{mouseEvent(event);}" toolTip="_toolTip"/>
+
+</mx:Canvas>

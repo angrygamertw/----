@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _factionId:int = 2;
+        private static var  EmbedSwfFaction:Class;
+        public static const  CLOSE_WINDOW:String = "CloseAdmissionFactionWindow";
+        public static const  NAME:String = "AdmissionFactionWindow";
+
+
+        public function init() : void
+        {
+            MovieClip(Loader(_swf_faction_window.getChildAt(0)).content).gotoAndPlay("center_400x460_2");
+            MovieClip(Loader(_swf_faction.getChildAt(0)).content).gotoAndPlay(getFactionLabel());
+            Loader(_swf_faction.getChildAt(0)).content.addEventListener("BUTTON_CLOSE", onOkClick);
+            return;
+        }// end function
+
+        public function onOkClick(event:Event) : void
+        {
+            Loader(_swf_faction.getChildAt(0)).content.removeEventListener("BUTTON_CLOSE", onOkClick);
+            sendEvent(CLOSE_WINDOW);
+            onClose();
+            return;
+        }// end function
+
+        public function getFactionLabel() : String
+        {
+            return "w_faction_0" + _factionId.toString();
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="factionCanvas" width="760" height="560">
+		<mx:Image source="_embed_mxml__images_black_jpg_491440297" alpha="0.2" width="100%" height="100%"/>
+		<mx:Image id="_AdmissionFactionWindow_Image2" source="{_swf_faction_window}"/>
+		<mx:Image id="_AdmissionFactionWindow_Image3" source="{_swf_faction}"/>
+	</mx:Canvas>
+
+</mx:PopupWindow>

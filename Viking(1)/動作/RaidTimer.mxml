@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _time:int;
+
+
+        public function init() : void
+        {
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Label id="_RaidTimer_Label1" x="25" y="12" fontSize="20" text="_timeString" color="#00ffffff"/>
+
+</mx:Canvas>

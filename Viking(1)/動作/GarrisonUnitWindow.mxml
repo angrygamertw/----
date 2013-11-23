@@ -1,0 +1,567 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.*;
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.view.home.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _waitingUnits:Array;
+        private var  _noUnit:UnitVO;
+        private var  fadeInTimer:Timer;
+        private var  levelUpIconRenderer:LevelUpIconRenderer;
+        private var  _indexUnits:Array;
+        private var  _units:Array;
+        private var  _page:int;
+        private var  _selectedUnits:Array;
+        private var  _index:int;
+        private var  levelUpIconArray:Array;
+        private static const  ROW_NUM:int = 3;
+        public static const  UNIT_SELECT_CANCEL:String = "garrisonUnitWinodw/unitSelectCancel";
+        private static const  COL_NUM:int = 5;
+        private static const  UNIT_PER_PAGE:int = 15;
+        public static const  ALL_UNIT_RECOVERY:String = "garrisonUnitWinodw/allUnitRecovery";
+        public static const  UNIT_SELECT_OK:String = "garrisonUnitWinodw/unitSelectOK";
+        private static const  UNIT_SEL_MAX:int = 5;
+
+
+        public function onReverse() : void
+        {
+            setPage((_page - 1));
+            return;
+        }// end function
+
+        public function getPage(param1:int) : int
+        {
+            return Math.floor(param1 / UNIT_PER_PAGE);
+        }// end function
+
+        public function setPage(param1:int) : void
+        {
+            var _loc_2:Boolean = false;
+            var _loc_4:LevelUpIconRenderer = null;
+            var _loc_3:int = 0;
+            while (_loc_3 < _units.length)
+            {
+                
+                if (!units[_loc_3].name)
+                {
+                }
+                else
+                {
+                    _loc_2 = param1 == getPage(_loc_3) || isSelected(_units[_loc_3]);
+                    _units[_loc_3].uic.visible = _loc_2;
+                    for each (_loc_4 in levelUpIconArray)
+                    {
+                        
+                        if (_loc_4.iconUnit.unitId == _units[_loc_3].unitId)
+                        {
+                            _loc_4.visible = _loc_2;
+                        }
+                    }
+                }
+                _loc_3++;
+            }
+            pageLbl.text = new String((param1 + 1)) + "/" + new String(getMaxPage());
+            reverseBtn.visible = param1 != 0;
+            forwardBtn.visible = _units.length > UNIT_PER_PAGE * (param1 + 1);
+            _page = param1;
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            var index:int;
+            reset();
+            MovieClip(Loader(_swf_next.getChildAt(0)).content).gotoAndPlay("button_next");
+            MovieClip(Loader(_swf_prev.getChildAt(0)).content).gotoAndPlay("button_prev");
+            iconCanvas.removeAllChildren();
+            levelUpIconArray = new Array();
+            _sortieNumber = _selectedUnits.length;
+            _index = -1;
+            _units = _waitingUnits.concat(_selectedUnits);
+            _units.sortOn(["sortId", "unitId"], Array.NUMERIC);
+            _indexUnits.length = 0;
+            var i:int;
+            while (i < _units.length)
+            {
+                
+                index = _selectedUnits.indexOf(_units[i]);
+                if (index != -1)
+                {
+                    _units[i].loader.x = getSelectedPosX(index);
+                    _units[i].loader.y = getSelectedPosY(index);
+                }
+                else
+                {
+                    _units[i].loader.x = getWaitingPosX(i);
+                    _units[i].loader.y = getWaitingPosY(i);
+                }
+                bg.addChildAt(_units[i].uic, i);
+                levelUpIconRenderer = new LevelUpIconRenderer();
+                _units[i].canLevelUp = false;
+                if (levelUpIconRenderer.unitStatusIcon(_units[i]) && _units[i].level < _units[i].jobMasterVO.levelCap && _units[i].exp >= _units[i].nextExp)
+                {
+                    iconCanvas.addChild(levelUpIconRenderer);
+                    levelUpIconArray.push(levelUpIconRenderer);
+                    _units[i].canLevelUp = true;
+                }
+                _units[i].loader.addEventListener(MouseEvent.CLICK, handleMouseEvent);
+                _units[i].loader.addEventListener(MouseEvent.MOUSE_OVER, handleMouseEvent);
+                _units[i].loader.addEventListener(MouseEvent.MOUSE_OUT, handleMouseEvent);
+                _indexUnits.push(_units[i].loader);
+                i = (i + 1);
+            }
+            while (_selectedUnits.length < UNIT_SEL_MAX)
+            {
+                
+                _selectedUnits.push(_noUnit);
+            }
+            setPage(0);
+            unitStatus.unit = _noUnit;
+            sakura.unitStatus = unitStatus;
+            MovieClip(Loader(_bg.getChildAt(0)).content).gotoAndPlay(1);
+            Loader(_bg.getChildAt(0)).content.addEventListener("ENLARGE_END", function () : void
+            {
+                arguments = new activation;
+                var loaderInfo:LoaderInfo;
+                var arguments:* = arguments;
+                Loader(_bg.getChildAt(0)).content.removeEventListener("ENLARGE_END", callee);
+                if (Loader(sakura._swf_sakura.getChildAt(0)).content.hasEventListener("CLOSE"))
+                {
+                    Loader(sakura._swf_sakura.getChildAt(0)).content.addEventListener("CLOSE", function () : void
+                {
+                    return;
+                }// end function
+                );
+                }
+                fadeInTimer.start();
+                var i:int;
+                while ( < _units.length)
+                {
+                    
+                    if (_selectedUnits.indexOf(_units[]) == -1)
+                    {
+                        loaderInfo = LoaderInfo(_units[].loader.contentLoaderInfo);
+                        MovieClip(content).gotoAndStop("item_f_l");
+                    }
+                    i = ( + 1);
+                }
+                fadeInTimer.addEventListener(TimerEvent.TIMER, function () : void
+                {
+                    bg.alpha = bg.alpha + 0.1;
+                    if (bg.alpha >= 1)
+                    {
+                        fadeInTimer.removeEventListener(TimerEvent.TIMER, arguments.callee);
+                        bg.alpha = 1;
+                        iconCanvas.visible = true;
+                        fadeInTimer.reset();
+                        fadeInTimer.stop();
+                    }
+                    return;
+                }// end function
+                );
+                return;
+            }// end function
+            );
+            return;
+        }// end function
+
+        public function setUnits() : void
+        {
+            var index:int;
+            _index = -1;
+            _indexUnits.length = 0;
+            var i:int;
+            while (i < _units.length)
+            {
+                
+                if (!units[i].name)
+                {
+                }
+                else
+                {
+                    _units[i].uic.addChild(units[i].loader);
+                    index = _selectedUnits.indexOf(_units[i]);
+                    if (index != -1)
+                    {
+                        _units[i].loader.x = getSelectedPosX(index);
+                        _units[i].loader.y = getSelectedPosY(index);
+                        _units[i].loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function (event:Event) : void
+            {
+                var _loc_2:* = LoaderInfo(event.target);
+                MovieClip(_loc_2.content).gotoAndPlay("walk_f_l");
+                return;
+            }// end function
+            );
+                    }
+                    else
+                    {
+                        _units[i].loader.x = getWaitingPosX(i);
+                        _units[i].loader.y = getWaitingPosY(i);
+                        _units[i].loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function (event:Event) : void
+            {
+                var _loc_2:* = LoaderInfo(event.target);
+                MovieClip(_loc_2.content).gotoAndStop("item_f_l");
+                return;
+            }// end function
+            );
+                    }
+                    bg.addChildAt(_units[i].uic, i);
+                    levelUpIconRenderer = new LevelUpIconRenderer();
+                    _units[i].canLevelUp = false;
+                    if (levelUpIconRenderer.unitStatusIcon(_units[i]) && _units[i].level < _units[i].jobMasterVO.levelCap)
+                    {
+                        iconCanvas.addChild(levelUpIconRenderer);
+                        levelUpIconArray.push(levelUpIconRenderer);
+                        _units[i].canLevelUp = true;
+                    }
+                    _units[i].loader.addEventListener(MouseEvent.CLICK, handleMouseEvent);
+                    _units[i].loader.addEventListener(MouseEvent.MOUSE_OVER, handleMouseEvent);
+                    _units[i].loader.addEventListener(MouseEvent.MOUSE_OUT, handleMouseEvent);
+                    _indexUnits.push(_units[i].loader);
+                }
+                i = (i + 1);
+            }
+            while (_selectedUnits.length < UNIT_SEL_MAX)
+            {
+                
+                _selectedUnits.push(_noUnit);
+            }
+            setPage(0);
+            unitStatus.unit = _noUnit;
+            sakura.unitStatus = unitStatus;
+            return;
+        }// end function
+
+        public function getSelectedPosX(param1:int) : int
+        {
+            return 273 - 62 * param1;
+        }// end function
+
+        public function getSelectedPosY(param1:int) : int
+        {
+            return 215 - 35 * param1;
+        }// end function
+
+        public function onCancel() : void
+        {
+            reset();
+            dispatchEvent(new Event(UNIT_SELECT_CANCEL));
+            return;
+        }// end function
+
+        public function sortOnUnitId(param1:UnitVO, param2:UnitVO) : Number
+        {
+            return param1.unitId - param2.unitId;
+        }// end function
+
+        public function getWaitingPosX(param1:int) : int
+        {
+            return 524 + 62 * Math.floor(param1 % UNIT_PER_PAGE / COL_NUM) - param1 % COL_NUM * 62;
+        }// end function
+
+        public function getWaitingPosY(param1:int) : int
+        {
+            return 215 - 35 * Math.floor(param1 % UNIT_PER_PAGE / COL_NUM) - param1 % COL_NUM * 35;
+        }// end function
+
+        public function handleMouseEvent(event:MouseEvent) : void
+        {
+            var _loc_2:* = _indexUnits.indexOf(event.target);
+            switch(event.type)
+            {
+                case MouseEvent.CLICK:
+                {
+                    break;
+                }
+                case MouseEvent.MOUSE_OVER:
+                {
+                    unitStatus.unit = _units[_loc_2];
+                    sakura.mode = isSelected(_units[_loc_2]) ? ("select") : ("wait");
+                    sakura.open(_units[_loc_2]);
+                    _index = _loc_2;
+                    break;
+                }
+                case MouseEvent.MOUSE_OUT:
+                {
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function reset() : void
+        {
+            var _loc_1:int = 0;
+            while (_loc_1 < _units.length)
+            {
+                
+                _units[_loc_1].loader.removeEventListener(MouseEvent.CLICK, handleMouseEvent);
+                _units[_loc_1].loader.removeEventListener(MouseEvent.MOUSE_OVER, handleMouseEvent);
+                _units[_loc_1].loader.removeEventListener(MouseEvent.MOUSE_OUT, handleMouseEvent);
+                _units[_loc_1].uic.removeChild(_units[_loc_1].loader);
+                bg.removeChild(_units[_loc_1].uic);
+                bg.alpha = 0;
+                unitStatus.alpha = 0;
+                unitStatus.unit = _noUnit;
+                iconCanvas.visible = false;
+                _units[_loc_1].uic.visible = true;
+                _loc_1++;
+            }
+            _units.length = 0;
+            return;
+        }// end function
+
+        public function resetUnits(param1:Array) : void
+        {
+            var u:UnitVO;
+            var saveIcon:Array;
+            var arr:Array;
+            var index:int;
+            var w:UnitVO;
+            var units:* = param1;
+            var i:int;
+            while (i < _units.length)
+            {
+                
+                _units[i].loader.removeEventListener(MouseEvent.CLICK, handleMouseEvent);
+                _units[i].loader.removeEventListener(MouseEvent.MOUSE_OVER, handleMouseEvent);
+                _units[i].loader.removeEventListener(MouseEvent.MOUSE_OUT, handleMouseEvent);
+                _units[i].uic.removeChild(_units[i].loader);
+                bg.removeChild(_units[i].uic);
+                i = (i + 1);
+            }
+            var select:* = new Array();
+            var wait:* = new Array();
+            var findUnit:Boolean;
+            while (select.length < UNIT_SEL_MAX)
+            {
+                
+                select.push(_noUnit);
+            }
+            var _loc_3:int = 0;
+            var _loc_4:* = units;
+            while (_loc_4 in _loc_3)
+            {
+                
+                u = _loc_4[_loc_3];
+                findUnit;
+                index;
+                while (index < _selectedUnits.length)
+                {
+                    
+                    if (_selectedUnits[index].unitId == u.unitId)
+                    {
+                        select[index] = u;
+                        findUnit;
+                        break;
+                    }
+                    index = (index + 1);
+                }
+                if (!findUnit)
+                {
+                    var _loc_5:int = 0;
+                    var _loc_6:* = _waitingUnits;
+                    while (_loc_6 in _loc_5)
+                    {
+                        
+                        w = _loc_6[_loc_5];
+                        if (w.unitId == u.unitId)
+                        {
+                            wait.push(u);
+                            break;
+                        }
+                    }
+                }
+            }
+            saveIcon = new Array();
+            iconCanvas.removeAllChildren();
+            levelUpIconArray = new Array();
+            levelUpIconArray = saveIcon;
+            _selectedUnits = select;
+            _waitingUnits = wait;
+            arr = select.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                return param1.name != "";
+            }// end function
+            );
+            _units = new Array();
+            _units = _waitingUnits.concat(arr);
+            _units.sortOn(["sortId", "unitId"], Array.NUMERIC);
+            setUnits();
+            return;
+        }// end function
+
+        public function setLevelUpUnit(param1:int) : void
+        {
+            var _loc_3:LevelUpIconRenderer = null;
+            var _loc_2:int = 0;
+            while (_indexUnits.length > _loc_2)
+            {
+                
+                if (_indexUnits[_loc_2].x == units[param1].loader.x && _indexUnits[_loc_2].y == units[param1].loader.y)
+                {
+                    _units[param1].loader.addEventListener(MouseEvent.CLICK, handleMouseEvent);
+                    _units[param1].loader.addEventListener(MouseEvent.MOUSE_OVER, handleMouseEvent);
+                    _units[param1].loader.addEventListener(MouseEvent.MOUSE_OUT, handleMouseEvent);
+                    _indexUnits[_loc_2] = units[param1].loader;
+                    for each (_loc_3 in levelUpIconArray)
+                    {
+                        
+                        if (_loc_3.iconUnit.unitId == _units[param1].unitId)
+                        {
+                            iconCanvas.removeChild(_loc_3);
+                            if (levelUpIconRenderer.unitStatusIcon(_units[param1]) && _units[param1].level < _units[param1].jobMasterVO.levelCap && _units[param1].exp >= _units[param1].nextExp)
+                            {
+                                iconCanvas.addChild(levelUpIconRenderer);
+                                _loc_3 = levelUpIconRenderer;
+                                _units[param1].canLevelUp = true;
+                            }
+                            else
+                            {
+                                _loc_3 = null;
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                }
+                _loc_2++;
+            }
+            return;
+        }// end function
+
+        public function unitInOut() : void
+        {
+            var _loc_2:LoaderInfo = null;
+            var _loc_3:LevelUpIconRenderer = null;
+            var _loc_4:LevelUpIconRenderer = null;
+            var _loc_5:LevelUpIconRenderer = null;
+            if (_index == -1)
+            {
+                return;
+            }
+            var _loc_1:* = _selectedUnits.indexOf(_units[_index]);
+            if (_loc_1 == -1)
+            {
+                _loc_1 = _selectedUnits.indexOf(_noUnit);
+                if (_loc_1 != -1)
+                {
+                    _units[_index].loader.x = getSelectedPosX(_loc_1);
+                    _units[_index].loader.y = getSelectedPosY(_loc_1);
+                    _selectedUnits[_loc_1] = _units[_index];
+                    _waitingUnits.splice(_index, 1);
+                    var _loc_7:* = _sortieNumber + 1;
+                    _sortieNumber = _loc_7;
+                    _loc_2 = LoaderInfo(_units[_index].loader.contentLoaderInfo);
+                    MovieClip(_loc_2.content).gotoAndPlay("walk_f_l");
+                }
+            }
+            else
+            {
+                _units[_index].loader.x = getWaitingPosX(_index);
+                _units[_index].loader.y = getWaitingPosY(_index);
+                _selectedUnits[_loc_1] = _noUnit;
+                _waitingUnits.splice(_index, 0, _units[_index]);
+                _units[_index].uic.visible = _page == getPage(_index);
+                for each (_loc_5 in levelUpIconArray)
+                {
+                    
+                    if (_loc_5.iconUnit.unitId == _units[_index].unitId)
+                    {
+                        _loc_5.visible = _page == getPage(_index);
+                    }
+                }
+                var _loc_7:* = _sortieNumber - 1;
+                _sortieNumber = _loc_7;
+                _loc_2 = LoaderInfo(_units[_index].loader.contentLoaderInfo);
+                MovieClip(_loc_2.content).gotoAndStop("item_f_l");
+            }
+            for each (_loc_3 in levelUpIconArray)
+            {
+                
+                if (_loc_3.iconUnit.unitId == _units[_index].unitId)
+                {
+                    _loc_3.iconUnit = _units[_index];
+                    _loc_3.positionChange();
+                }
+            }
+            _units[_index].canLevelUp = false;
+            for each (_loc_4 in levelUpIconArray)
+            {
+                
+                if (_loc_4.iconUnit.unitId == _units[_index].unitId)
+                {
+                    iconCanvas.removeChild(_loc_4);
+                    if (_loc_4.unitStatusIcon(_units[_index]) && _units[_index].level < _units[_index].jobMasterVO.levelCap && _units[_index].exp >= _units[_index].nextExp)
+                    {
+                        iconCanvas.addChild(_loc_4);
+                        _units[_index].canLevelUp = true;
+                    }
+                }
+            }
+            sakura.close();
+            _index = -1;
+            return;
+        }// end function
+
+        public function getMaxPage() : int
+        {
+            return Math.ceil(_units.length / UNIT_PER_PAGE);
+        }// end function
+
+        public function isSelected(param1:UnitVO) : Boolean
+        {
+            return _selectedUnits.indexOf(param1) != -1;
+        }// end function
+
+        public function onForward() : void
+        {
+            setPage((_page + 1));
+            return;
+        }// end function
+
+        public function onAllRecovery() : void
+        {
+            dispatchEvent(new Event(ALL_UNIT_RECOVERY));
+            return;
+        }// end function
+
+        public function onOK() : void
+        {
+            reset();
+            dispatchEvent(new PopupEvent(UNIT_SELECT_OK, {units:_selectedUnits}));
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_GarrisonUnitWindow_Image1" source="{_bg}"/>
+	<mx:Panel id="bg" x="-8" y="-30" alpha="0" layout="absolute" styleName="UnitListPanel">
+		<mx:UnitStatus id="unitStatus" x="0" y="278" alpha="{bg.alpha}"/>
+	</mx:Panel>
+	<mx:Canvas id="iconCanvas" visible="false"/>
+	<mx:Sakura id="sakura" y="15"/>
+	<mx:Label id="_GarrisonUnitWindow_Label1" x="151" y="268" width="30" fontSize="26" fontWeight="bold" textAlign="right" color="#00666666" text="_sortieNumber"/>
+	<mx:Label id="_GarrisonUnitWindow_Label2" x="150" y="267" width="30" fontSize="26" fontWeight="bold" textAlign="right" color="#00ff7066" text="_sortieNumber"/>
+	<mx:Image x="7" y="242" source="_embed_mxml__swf_all_map_button_button_post_units_swf_166887349" click="{onOK();}"/>
+	<mx:Image x="685" y="7" source="_embed_mxml__swf_all_map_button_back_swf_2104410221" click="{onCancel();}"/>
+	<mx:Image x="15" y="15" source="_embed_mxml__swf_common_button_shikihime_heal_50_swf_1327100791" click="{onAllRecovery();}"/>
+	<mx:Label id="pageLbl" visible="false" x="330" y="50" fontSize="32" color="#00000000"/>
+	<mx:Image id="reverseBtn" buttonMode="true" x="385" y="275" click="{onReverse();}" source="{_swf_prev}"/>
+	<mx:Image id="forwardBtn" buttonMode="true" x="460" y="275" click="{onForward();}" source="{_swf_next}"/>
+
+</mx:Canvas>

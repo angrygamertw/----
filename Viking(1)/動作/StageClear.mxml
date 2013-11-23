@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _treasures:Array;
+        private var  _reloadAfterFinish:Boolean = false;
+        private var  _wipeout:Boolean;
+        private var  _units:Array;
+        private var  _isRaid:Boolean;
+        private var  _cleared:Boolean;
+
+
+        public function setResult(param1:FinishVO, param2:Boolean = false) : void
+        {
+            treasures = param1.reward.items;
+            units = param1.reward.unitExps;
+            wipeout = param1.wipeout;
+            _cleared = param1.won;
+            _isRaid = param1.isRaid;
+            _reloadAfterFinish = param2 || param1.needRestart;
+            return;
+        }// end function
+
+        public function _StageClear_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _StageClear_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "name";
+            BindingManager.executeBindings(this, "_StageClear_DataGridColumn1", _StageClear_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function initResult() : void
+        {
+            treasures = new Array();
+            units = new Array();
+            visible = false;
+            return;
+        }// end function
+
+        public function backToStage() : void
+        {
+            if (_reloadAfterFinish)
+            {
+                sendEvent(Viking.ACTION_RESTART_GAME);
+            }
+            else if (wipeout)
+            {
+                AlertWindow.show(Utils.i18n("localize273"), "", AlertWindow.OK, this, function (event:CloseEvent) : void
+            {
+                sendEvent(Viking.ACTION_RESTART_GAME);
+                return;
+            }// end function
+            );
+            }
+            else
+            {
+                sendEvent(Viking.ACTION_RETURN);
+            }
+            return;
+        }// end function
+
+        public function _StageClear_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _StageClear_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "quantity";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "right");
+            BindingManager.executeBindings(this, "_StageClear_DataGridColumn2", _StageClear_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _StageClear_ClassFactory1_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = ResultItemRenderer;
+            return _loc_1;
+        }// end function
+
+        public function showResult() : void
+        {
+            if (_cleared)
+            {
+                if (_isRaid)
+                {
+                    bgViewStack.selectedIndex = 2;
+                }
+                else
+                {
+                    bgViewStack.selectedIndex = 0;
+                }
+            }
+            else if (_isRaid)
+            {
+                bgViewStack.selectedIndex = 3;
+            }
+            else
+            {
+                bgViewStack.selectedIndex = 1;
+            }
+            visible = true;
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:ViewStack id="bgViewStack">
+		<mx:Canvas verticalScrollPolicy="off" horizontalScrollPolicy="off">
+			<mx:Image source="_embed_mxml__swf_battle_report_windou_buttlereport_victory_swf_1746862583"/>
+		</mx:Canvas>
+		<mx:Canvas verticalScrollPolicy="off" horizontalScrollPolicy="off">
+			<mx:Image source="_embed_mxml__swf_battle_report_windou_buttlereport_lost_swf_1742544055"/>
+		</mx:Canvas>
+		<mx:Canvas verticalScrollPolicy="off" horizontalScrollPolicy="off">
+			<mx:Image source="_embed_mxml__swf_battle_report_windou_buttlereport_victory_swf_1746862583"/>
+		</mx:Canvas>
+		<mx:Canvas verticalScrollPolicy="off" horizontalScrollPolicy="off">
+			<mx:Image source="_embed_mxml__swf_battle_report_windou_buttlereport_lost_swf_1742544055"/>
+		</mx:Canvas>
+	</mx:ViewStack>
+	<mx:Box x="8" y="154">
+		<mx:TileList id="unitList" columnWidth="263" maxColumns="2" rowHeight="128" height="100%" itemRenderer="_StageClear_ClassFactory1_c()" selectable="false" backgroundAlpha="0" borderStyle="none" dataProvider='{units}'/>
+	</mx:Box>
+	<mx:DataGrid id="get_item_list" width="150" height="190" styleName="GetItemList" selectable="false" showHeaders="false" x="584" y="256" sortableColumns="false" columns="{[_StageClear_DataGridColumn1_i(), _StageClear_DataGridColumn2_i()]}" dataProvider='{treasures}'/>
+	<mx:Image x="300" y="444" source="_embed_mxml__swf_battle_report_button_last_swf_1304263173" click="{backToStage();}"/>
+
+</mx:PopupWindow>

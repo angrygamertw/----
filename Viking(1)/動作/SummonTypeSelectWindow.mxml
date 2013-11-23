@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{addSwf();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public static const  SUMMON_TYPE_ITEM:String = NAME + "summonTypeItem";
+        public static const  CEREMONY_WINDOW_CHANGE:String = NAME + "ceremonyWindowChange";
+        public static const  NAME:String = "summonTypeSelectWindow";
+        public static const  SUMMON_TYPE_SPECIAL:String = NAME + "summonTypeSpecial";
+        public static const  SUMMON_TYPE:String = NAME + "summonType";
+        public static const  SUMMON_END:String = NAME + "summonEnd";
+
+
+        public function summonPopupEvent(param1:String, param2:String) : void
+        {
+            sendPopupEvent(param1, param2);
+            initSwf();
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            viewSummonType();
+            return;
+        }// end function
+
+        public function addSwf() : void
+        {
+            viewSummonType();
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_back");
+            MovieClip(Loader(_swf_close2.getChildAt(0)).content).gotoAndPlay("button_back");
+            MovieClip(Loader(_swf_close3.getChildAt(0)).content).gotoAndPlay("button_back");
+            MovieClip(Loader(_swf_close4.getChildAt(0)).content).gotoAndPlay("button_back");
+            return;
+        }// end function
+
+        public function summonEnd() : void
+        {
+            sendEvent(SUMMON_END);
+            initSwf();
+            return;
+        }// end function
+
+        public function changeLargeWindow() : void
+        {
+            sendPopupEvent(CEREMONY_WINDOW_CHANGE, "bottom_600x400");
+            title.y = 102;
+            return;
+        }// end function
+
+        public function viewSpecialSummonType() : void
+        {
+            viewStack.selectedIndex = 1;
+            changeWindowSize();
+            return;
+        }// end function
+
+        public function initSwf() : void
+        {
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_back");
+            MovieClip(Loader(_swf_close2.getChildAt(0)).content).gotoAndPlay("button_back");
+            MovieClip(Loader(_swf_close3.getChildAt(0)).content).gotoAndPlay("button_back");
+            MovieClip(Loader(_swf_close4.getChildAt(0)).content).gotoAndPlay("button_back");
+            return;
+        }// end function
+
+        public function viewItemSummonType() : void
+        {
+            viewStack.selectedIndex = 2;
+            changeWindowSize();
+            return;
+        }// end function
+
+        public function viewSummonType() : void
+        {
+            viewStack.selectedIndex = 0;
+            changeWindowSize();
+            return;
+        }// end function
+
+        public function viewLimitSummonType() : void
+        {
+            viewStack.selectedIndex = 3;
+            changeWindowSize();
+            return;
+        }// end function
+
+        public function summonCeremony(param1:String) : void
+        {
+            sendEvent(param1);
+            initSwf();
+            changeDefaultWindow();
+            return;
+        }// end function
+
+        public function showTutMarkNormal() : void
+        {
+            tutMarkNormalVisible = visible;
+            return;
+        }// end function
+
+        public function removeTutMarks() : void
+        {
+            tutMarkNormalVisible = false;
+            return;
+        }// end function
+
+        public function changeDefaultWindow() : void
+        {
+            sendPopupEvent(CEREMONY_WINDOW_CHANGE, "bottom_600x200");
+            title.y = 302;
+            return;
+        }// end function
+
+        public function changeWindowSize() : void
+        {
+            if (viewStack.selectedIndex == 1)
+            {
+                changeLargeWindow();
+            }
+            else
+            {
+                changeDefaultWindow();
+            }
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas>
+		<mx:Text id="title" x="335" y="302" styleName="PanelBaseTitle" text="{Utils.i18n("summonTypeSelectTitle")}"/>
+		<mx:ViewStack id="viewStack" height="550">
+			<mx:Canvas>
+				<mx:HBox x="80" y="302" width="620">
+					<mx:Spacer width="100%"/>
+					<mx:Canvas>
+						<mx:Image source="_embed_mxml__swf_home_ceremony_button_ceremony_summon_nomal_50_swf_1080482551" x="25" y="60" click="{summonCeremony(SUMMON_TYPE);}"/>
+						<mx:Text id="_SummonTypeSelectWindow_Text2" x="20" y="110" styleName="BuildingName" text="{Utils.i18n("generalNormalSummon")}"/>
+						<mx:TextArea id="_SummonTypeSelectWindow_TextArea1" x="0" y="135" width="120" height="60" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text="{Utils.i18n("summonTypeSelectNormalSummonConf")}"/>
+						<mx:Image id="tutMarkNormalSummon" source="_embed_mxml__swf_common_arrow_bottom_swf_1091498217" y="10" x="28" height="75" width="75" visible="tutMarkNormalVisible"/>
+					</mx:Canvas>
+					<mx:Spacer width="100%"/>
+					<mx:Canvas>
+						<mx:Image id="_SummonTypeSelectWindow_Image3" source="_embed_mxml__swf_home_ceremony_button_ceremony_summon_special_50_swf_915386509" x="35" y="60" click="{viewSpecialSummonType();}" enabled="summonHeroEnabled"/>
+						<mx:Text id="_SummonTypeSelectWindow_Text3" x="30" y="110" styleName="BuildingName" text="{Utils.i18n("generalSpecialSummon")}"/>
+						<mx:Image source="_embed_mxml__images_icon_power_png_227571469" x="0" y="136"/>
+						<mx:TextArea id="_SummonTypeSelectWindow_TextArea2" x="15" y="135" width="130" height="60" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text=""/>
+					</mx:Canvas>
+					<mx:Spacer width="100%"/>
+					<mx:Canvas>
+						<mx:Image id="_SummonTypeSelectWindow_Image5" source="_embed_mxml__swf_home_ceremony_button_ceremony_summon_item_50_swf_382269079" x="25" y="60" click="{viewItemSummonType();}" enabled="summonHeroEnabled"/>
+						<mx:Text id="_SummonTypeSelectWindow_Text4" x="10" y="110" styleName="BuildingName" text="{Utils.i18n("summonTypeSelectItem")}"/>
+						<mx:TextArea id="_SummonTypeSelectWindow_TextArea3" x="0" y="135" width="120" height="60" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text=""/>
+					</mx:Canvas>
+					<mx:Spacer width="100%"/>
+				</mx:HBox>
+				<mx:HBox x="325" y="495">
+					<mx:Image id="_SummonTypeSelectWindow_Image6" click="{summonEnd();}" source="{_swf_close}"/>
+				</mx:HBox>
+			</mx:Canvas>
+			<mx:Canvas>
+				<mx:VBox x="80" y="162" width="600">
+					<mx:HBox width="600" height="180">
+						<mx:Spacer width="100%"/>
+						<mx:Canvas>
+							<mx:Image id="_SummonTypeSelectWindow_Image7" source="_embed_mxml__swf_home_ceremony_button_ceremony_summon_race01_50_swf_1335634135" x="35" y="0" click="{summonPopupEvent(SUMMON_TYPE_SPECIAL, 'racial1');}" enabled="summonHeroEnabled"/>
+							<mx:Text text="刀斧種族召喚" x="30" y="50" styleName="BuildingName"/>
+							<mx:Image source="_embed_mxml__images_icon_power_png_227571469" x="0" y="76"/>
+							<mx:TextArea id="_SummonTypeSelectWindow_TextArea4" x="15" y="75" width="115" height="60" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text=""/>
+						</mx:Canvas>
+						<mx:Spacer width="100%"/>
+						<mx:Canvas>
+							<mx:Image id="_SummonTypeSelectWindow_Image9" source="_embed_mxml__swf_home_ceremony_button_ceremony_summon_race02_50_swf_1084292457" x="35" y="0" click="{summonPopupEvent(SUMMON_TYPE_SPECIAL, 'racial2');}" enabled="summonHeroEnabled"/>
+							<mx:Text text="槍弓種族召喚" x="30" y="50" styleName="BuildingName"/>
+							<mx:Image source="_embed_mxml__images_icon_power_png_227571469" x="0" y="76"/>
+							<mx:TextArea id="_SummonTypeSelectWindow_TextArea5" x="15" y="75" width="115" height="60" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text=""/>
+						</mx:Canvas>
+						<mx:Spacer width="100%"/>
+						<mx:Canvas>
+							<mx:Image id="_SummonTypeSelectWindow_Image11" source="_embed_mxml__swf_home_ceremony_button_ceremony_summon_race03_50_swf_1356897069" x="35" y="0" click="{summonPopupEvent(SUMMON_TYPE_SPECIAL, 'racial3');}" enabled="summonHeroEnabled"/>
+							<mx:Text text="術種族召喚" x="30" y="50" styleName="BuildingName"/>
+							<mx:Image source="_embed_mxml__images_icon_power_png_227571469" x="0" y="76"/>
+							<mx:TextArea id="_SummonTypeSelectWindow_TextArea6" x="15" y="75" width="115" height="60" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text=""/>
+						</mx:Canvas>
+						<mx:Spacer width="100%"/>
+					</mx:HBox>
+					<mx:HBox width="600" height="180">
+						<mx:Spacer width="100%"/>
+						<mx:Canvas>
+							<mx:Image id="_SummonTypeSelectWindow_Image13" source="_embed_mxml__swf_home_ceremony_button_ceremony_summon_brave_50_swf_1067012877" x="35" y="0" click="{summonPopupEvent(SUMMON_TYPE_SPECIAL, 'brave');}" enabled="summonHeroEnabled"/>
+							<mx:Text id="_SummonTypeSelectWindow_Text8" x="30" y="50" styleName="BuildingName" text="{Utils.i18n("specialSummonSilver")}"/>
+							<mx:Image source="_embed_mxml__images_icon_power_png_227571469" x="0" y="76"/>
+							<mx:TextArea id="_SummonTypeSelectWindow_TextArea7" x="15" y="75" width="115" height="60" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text=""/>
+						</mx:Canvas>
+						<mx:Spacer width="100%"/>
+						<mx:Canvas>
+							<mx:Image id="_SummonTypeSelectWindow_Image15" source="_embed_mxml__swf_home_ceremony_button_ceremony_summon_hero_50_swf_314880055" x="35" y="0" click="{summonPopupEvent(SUMMON_TYPE_SPECIAL, 'hero');}" enabled="summonHeroEnabled"/>
+							<mx:Text id="_SummonTypeSelectWindow_Text9" x="30" y="50" styleName="BuildingName" text="{Utils.i18n("specialSummonGold")}"/>
+							<mx:Image source="_embed_mxml__images_icon_power_png_227571469" x="0" y="76"/>
+							<mx:TextArea id="_SummonTypeSelectWindow_TextArea8" x="15" y="75" width="115" height="60" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text=""/>
+						</mx:Canvas>
+						<mx:Spacer width="100%"/>
+						<mx:Canvas>
+							<mx:Image id="_SummonTypeSelectWindow_Image17" source="_embed_mxml__swf_home_ceremony_button_ceremony_summon_rainbow_50_swf_379564169" x="35" y="0" click="{summonPopupEvent(SUMMON_TYPE_SPECIAL, 'rainbow');}" enabled="summonHeroEnabled"/>
+							<mx:Text id="_SummonTypeSelectWindow_Text10" x="30" y="50" styleName="BuildingName" text="{Utils.i18n("specialSummonRainbow")}"/>
+							<mx:Image source="_embed_mxml__images_icon_power_png_227571469" x="0" y="76"/>
+							<mx:TextArea id="_SummonTypeSelectWindow_TextArea9" x="15" y="75" width="115" height="60" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text=""/>
+						</mx:Canvas>
+						<mx:Spacer width="100%"/>
+						<mx:Canvas>
+							<mx:Image id="_SummonTypeSelectWindow_Image19" source="_embed_mxml__swf_home_ceremony_button_ceremony_summon_ex_50_swf_311190487" x="35" y="0" click="{summonPopupEvent(SUMMON_TYPE_SPECIAL, 'sky');}" enabled="summonHeroEnabled"/>
+							<mx:Text id="_SummonTypeSelectWindow_Text11" x="30" y="50" styleName="BuildingName" text="{Utils.i18n("specialSummonSky")}"/>
+							<mx:Image source="_embed_mxml__images_icon_power_png_227571469" x="0" y="76"/>
+							<mx:TextArea id="_SummonTypeSelectWindow_TextArea10" x="15" y="75" width="120" height="60" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text=""/>
+						</mx:Canvas>
+						<mx:Spacer width="100%"/>
+					</mx:HBox>
+				</mx:VBox>
+				<mx:HBox x="325" y="495">
+					<mx:Image id="_SummonTypeSelectWindow_Image21" click="{viewSummonType();}" source="{_swf_close2}"/>
+				</mx:HBox>
+			</mx:Canvas>
+			<mx:Canvas>
+				<mx:HBox x="80" y="302" width="600">
+					<mx:Spacer width="100%"/>
+					<mx:Canvas>
+						<mx:Image id="_SummonTypeSelectWindow_Image22" source="_embed_mxml__swf_home_ceremony_button_ceremony_summon_item_50_swf_382269079" x="40" y="55" click="{summonPopupEvent(SUMMON_TYPE_ITEM, 'gold');}" enabled="summonHeroEnabled"/>
+						<mx:Text id="_SummonTypeSelectWindow_Text12" x="35" y="110" styleName="BuildingName" text="{Utils.i18n("summonTypeSelectBronzeItem")}"/>
+						<mx:TextArea id="_SummonTypeSelectWindow_TextArea11" x="15" y="135" width="135" height="60" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text=""/>
+					</mx:Canvas>
+					<mx:Spacer width="100%"/>
+				</mx:HBox>
+				<mx:HBox x="325" y="495">
+					<mx:Image id="_SummonTypeSelectWindow_Image23" click="{viewSummonType();}" source="{_swf_close3}"/>
+				</mx:HBox>
+			</mx:Canvas>
+			<mx:Canvas>
+				<mx:HBox x="80" y="302" width="600">
+					<mx:Spacer width="100%"/>
+					<mx:Canvas>
+						<mx:Image id="_SummonTypeSelectWindow_Image24" source="_embed_mxml__swf_home_ceremony_button_ceremony_summon_pump01_50_swf_1552415541" x="40" y="55" click="{summonPopupEvent(SUMMON_TYPE_SPECIAL, 'campaign2');}" enabled="summonHeroEnabled"/>
+						<mx:Text id="_SummonTypeSelectWindow_Text13" x="25" y="110" styleName="BuildingName" text="{Utils.i18n("summonTypeSelectPumpkinSummon")}"/>
+						<mx:Image source="_embed_mxml__images_icon_power_png_227571469" x="0" y="136"/>
+						<mx:TextArea id="_SummonTypeSelectWindow_TextArea12" x="15" y="135" width="135" height="60" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text=""/>
+					</mx:Canvas>
+					<mx:Spacer width="100%"/>
+					<mx:Canvas>
+						<mx:Image id="_SummonTypeSelectWindow_Image26" source="_embed_mxml__swf_home_ceremony_button_ceremony_summon_pump02_50_swf_1551998441" x="40" y="55" click="{summonPopupEvent(SUMMON_TYPE_SPECIAL, 'campaign3');}" enabled="summonHeroEnabled"/>
+						<mx:Text id="_SummonTypeSelectWindow_Text14" x="25" y="110" styleName="BuildingName" text="{Utils.i18n("summonTypeSelectBarahimeSummon")}"/>
+						<mx:Image source="_embed_mxml__images_icon_power_png_227571469" x="0" y="136"/>
+						<mx:TextArea id="_SummonTypeSelectWindow_TextArea13" x="15" y="135" width="135" height="60" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text=""/>
+					</mx:Canvas>
+					<mx:Spacer width="100%"/>
+					<mx:Canvas>
+						<mx:Image id="_SummonTypeSelectWindow_Image28" source="_embed_mxml__swf_home_ceremony_button_ceremony_summon_pump03_50_swf_2089023273" x="40" y="55" click="{summonPopupEvent(SUMMON_TYPE_SPECIAL, 'campaign1');}" enabled="summonHeroEnabled"/>
+						<mx:Text id="_SummonTypeSelectWindow_Text15" x="25" y="110" styleName="BuildingName" text="{Utils.i18n("summonTypeSelectYamihimeSummon")}"/>
+						<mx:Image source="_embed_mxml__images_icon_power_png_227571469" x="0" y="136"/>
+						<mx:TextArea id="_SummonTypeSelectWindow_TextArea14" x="15" y="135" width="135" height="60" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text=""/>
+					</mx:Canvas>
+					<mx:Spacer width="100%"/>
+				</mx:HBox>
+				<mx:HBox x="325" y="495">
+					<mx:Image id="_SummonTypeSelectWindow_Image30" click="{viewSummonType();}" source="{_swf_close4}"/>
+				</mx:HBox>
+			</mx:Canvas>
+		</mx:ViewStack>
+	</mx:Canvas>
+
+</mx:PopupWindow>

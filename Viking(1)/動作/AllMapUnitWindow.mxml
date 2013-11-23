@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        public var  selectedIndex:int;
+        public static const  UNIT_SELECTED:String = "AllMapUnitWinodw/UnitSelected";
+
+
+        public function _AllMapUnitWindow_DataGridColumn4_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "unit.level";
+            _loc_1.headerText = "Lv";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _AllMapUnitWindow_DataGridColumn6_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "unit.hp";
+            _loc_1.headerText = "HP";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _AllMapUnitWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _AllMapUnitWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "unit.name";
+            _loc_1.itemRenderer = _AllMapUnitWindow_ClassFactory3_c();
+            BindingManager.executeBindings(this, "_AllMapUnitWindow_DataGridColumn2", _AllMapUnitWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function init(param1:String, param2:String, param3:Array) : void
+        {
+            var unit:UnitVO;
+            var title:* = param1;
+            var commandName:* = param2;
+            var units:* = param3;
+            MovieClip(Loader(_windowBg.getChildAt(0)).content).gotoAndPlay("center_720x460");
+            Loader(_buttonCancel.getChildAt(0)).content.addEventListener("click", function (event:Event) : void
+            {
+                onCancel();
+                return;
+            }// end function
+            );
+            MovieClip(Loader(_buttonCancel.getChildAt(0)).content).gotoAndStop(0);
+            MovieClip(Loader(_buttonCancel.getChildAt(0)).content).gotoAndPlay("button_cancel");
+            Loader(_buttonX.getChildAt(0)).content.addEventListener("click", function (event:Event) : void
+            {
+                onCancel();
+                return;
+            }// end function
+            );
+            MovieClip(Loader(_buttonX.getChildAt(0)).content).gotoAndStop(0);
+            MovieClip(Loader(_buttonX.getChildAt(0)).content).gotoAndPlay("button_close");
+            _title = title;
+            _commandName = commandName;
+            _units = units;
+            _unitArray = new ArrayCollection();
+            var _loc_5:int = 0;
+            var _loc_6:* = _units;
+            while (_loc_6 in _loc_5)
+            {
+                
+                unit = _loc_6[_loc_5];
+                _unitArray.addItem({unit:unit});
+            }
+            return;
+        }// end function
+
+        public function okButtonClicked(param1:Object) : void
+        {
+            dispatchEvent(new PopupEvent(UNIT_SELECTED, {unit:param1}));
+            return;
+        }// end function
+
+        public function _AllMapUnitWindow_ClassFactory3_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = AllMapUnitNameRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _AllMapUnitWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            expLabel = _loc_1;
+            _loc_1.generator = AllMapUnitWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function onCancel() : void
+        {
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function gridToolTip(param1:Object) : String
+        {
+            return Utils.i18n("allMapUnitShowDetail");
+        }// end function
+
+        public function _AllMapUnitWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _AllMapUnitWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "button";
+            _loc_1.width = 50;
+            _loc_1.itemRenderer = _AllMapUnitWindow_ClassFactory2_c();
+            BindingManager.executeBindings(this, "_AllMapUnitWindow_DataGridColumn1", _AllMapUnitWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _AllMapUnitWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _AllMapUnitWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "unit.jobMasterVO.nameLabel";
+            _loc_1.width = 120;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_AllMapUnitWindow_DataGridColumn3", _AllMapUnitWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _AllMapUnitWindow_DataGridColumn5_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _AllMapUnitWindow_DataGridColumn5 = _loc_1;
+            _loc_1.dataField = "exp";
+            _loc_1.width = 90;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_AllMapUnitWindow_DataGridColumn5", _AllMapUnitWindow_DataGridColumn5);
+            return _loc_1;
+        }// end function
+
+        public function _AllMapUnitWindow_ClassFactory2_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = AllMapOkButtonRenderer;
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_AllMapUnitWindow_Image1" source="{_windowBg}"/>
+	<mx:Panel id="_AllMapUnitWindow_Panel1" layout="absolute" styleName="PanelBase" x="10" y="72" width="720" height="460" title="_title">
+		<mx:Text id="_AllMapUnitWindow_Text1" styleName="UnitSelectText" top="0" left="20" text="{Utils.i18n("allMapUnitSomeone", _commandName)}"/>
+		<mx:DataGrid id="unitList" styleName="UnitListGrid" selectable="false" x="20" y="28" width="680" rowCount="11" sortableColumns="false" columns="{[_AllMapUnitWindow_DataGridColumn1_i(), _AllMapUnitWindow_DataGridColumn2_i(), _AllMapUnitWindow_DataGridColumn3_i(), _AllMapUnitWindow_DataGridColumn4_c(), _AllMapUnitWindow_DataGridColumn5_i(), _AllMapUnitWindow_DataGridColumn6_c()]}" dataProvider='{_unitArray}'/>
+	</mx:Panel>
+	<mx:Image id="_AllMapUnitWindow_Image2" width="110" horizontalCenter="0" bottom="79" source="{_buttonCancel}"/>
+	<mx:Image id="_AllMapUnitWindow_Image3" top="80" right="45" source="{_buttonX}"/>
+
+</mx:Canvas>

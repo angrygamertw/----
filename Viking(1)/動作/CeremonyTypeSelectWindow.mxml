@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{addSwf();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public static const  SUMMON_CEREMONY:String = NAME + "summonCeremony";
+        public static const  CLOSE_CEREMONY:String = NAME + "closeCeremony";
+        public static const  NAME:String = "CeremonyTypeSelectWindow";
+        public static const  SACRIFICE_CEREMONY:String = NAME + "sacrificeCeremony";
+        public static const  UNION_CEREMONY:String = NAME + "unionCeremony";
+
+
+        public function summonCeremony() : void
+        {
+            sendEvent(SUMMON_CEREMONY);
+            return;
+        }// end function
+
+        public function showTutMarkSummon() : void
+        {
+            tutMarkSummonVisible = visible;
+            return;
+        }// end function
+
+        public function addSwf() : void
+        {
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            return;
+        }// end function
+
+        public function removeTutMarks() : void
+        {
+            tutMarkSummonVisible = false;
+            tutMarkUnionVisible = false;
+            return;
+        }// end function
+
+        public function finishTutorial() : void
+        {
+            sendEvent(Viking.HOME_FINISH_TUTORIAL);
+            onClose();
+            return;
+        }// end function
+
+        public function closeCeremony() : void
+        {
+            sendEvent(CLOSE_CEREMONY);
+            return;
+        }// end function
+
+        public function sacrificeCeremony() : void
+        {
+            sendEvent(SACRIFICE_CEREMONY);
+            return;
+        }// end function
+
+        public function showTutMarkUnion() : void
+        {
+            tutMarkUnionVisible = visible;
+            return;
+        }// end function
+
+        public function unionCeremony() : void
+        {
+            sendEvent(UNION_CEREMONY);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas>
+		<mx:Text id="_CeremonyTypeSelectWindow_Text1" x="350" y="302" styleName="PanelBaseTitle" text="{Utils.i18n("ceremonyTypeSelectTitle")}"/>
+		<mx:Image source="_embed_mxml__swf_home_ceremony_button_ceremony_summon_nomal_50_swf_1080482551" x="180" y="360" click="{summonCeremony();}"/>
+		<mx:Text id="_CeremonyTypeSelectWindow_Text2" x="175" y="410" styleName="BuildingName" text="{Utils.i18n("ceremonyTypeSelectSummon")}"/>
+		<mx:TextArea id="_CeremonyTypeSelectWindow_TextArea1" x="155" y="435" width="120" height="60" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text="{Utils.i18n("ceremonyTypeSelectSummonDescription")}"/>
+		<mx:Image source="_embed_mxml__swf_home_ceremony_button_ceremony_be_united_50_swf_369708091" x="355" y="360" click="{unionCeremony();}"/>
+		<mx:Text id="_CeremonyTypeSelectWindow_Text3" x="350" y="410" styleName="BuildingName" text="{Utils.i18n("ceremonyTypeSelectUnion")}"/>
+		<mx:TextArea id="_CeremonyTypeSelectWindow_TextArea2" x="325" y="435" width="120" height="60" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text="{Utils.i18n("ceremonyTypeSelectUnionDescription")}"/>
+		<mx:Image source="_embed_mxml__swf_home_ceremony_button_ceremony_ascension_50_swf_269534171" x="530" y="360" click="{sacrificeCeremony();}"/>
+		<mx:Text id="_CeremonyTypeSelectWindow_Text4" x="525" y="410" styleName="BuildingName" text="{Utils.i18n("ceremonyTypeSelectAscension")}"/>
+		<mx:Text id="_CeremonyTypeSelectWindow_Text5" x="495" y="430" fontSize="12" text="{Utils.i18n("ceremonyTypeSelectAscensionDescription")}"/>
+		<mx:HBox x="325" y="495">
+			<mx:Image id="_CeremonyTypeSelectWindow_Image4" click="{closeCeremony();}" source="{_swf_close}"/>
+		</mx:HBox>
+		<mx:Image id="tutMarkSummonShikihime" source="_embed_mxml__swf_common_arrow_top_swf_788233961" width="75" height="75" y="460" x="185" visible="tutMarkSummonVisible"/>
+		<mx:Image id="tutMarkUnionShikihime" source="_embed_mxml__swf_common_arrow_top_swf_788233961" width="75" height="75" y="460" x="360" visible="tutMarkUnionVisible"/>
+	</mx:Canvas>
+
+</mx:PopupWindow>

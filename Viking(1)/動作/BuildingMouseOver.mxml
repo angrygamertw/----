@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+    ]]></mx:Script>
+
+	<mx:Text id="_BuildingMouseOver_Text1" styleName="BuildingMouseOverText" width="270" height="100%" text="description"/>
+
+</mx:Box>

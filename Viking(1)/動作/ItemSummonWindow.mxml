@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{initSwf();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  RouletteBronze:Class;
+        private var  Roulette:Class;
+        public static const  ITEM_SUMMON_START:String = "itemSummonStart";
+        public static const  ITEM_SUMMON_END:String = "itemSummonEnd";
+
+
+        public function closeWindow(event:Event = null) : void
+        {
+            Loader(_swf.getChildAt(0)).content.removeEventListener("BUTTON_AGAIN", drawItem);
+            Loader(_swf.getChildAt(0)).content.removeEventListener("BUTTON_CLOSE", closeWindow);
+            Loader(_swfBronze.getChildAt(0)).content.removeEventListener("BUTTON_AGAIN", drawItem);
+            Loader(_swfBronze.getChildAt(0)).content.removeEventListener("BUTTON_CLOSE", closeWindow);
+            dispatchEvent(new Event(ITEM_SUMMON_END));
+            onClose();
+            return;
+        }// end function
+
+        public function finishDrawAnimation(event:Event) : void
+        {
+            Loader(roulette.source.getChildAt(0)).content.removeEventListener("ANIMATION_END", finishDrawAnimation);
+            itemNameText.visible = true;
+            MovieClip(Loader(roulette.source.getChildAt(0)).content).gotoAndPlay("window_item_present");
+            return;
+        }// end function
+
+        public function initSwf() : void
+        {
+            itemNameText.visible = false;
+            Loader(_swf.getChildAt(0)).content.addEventListener("BUTTON_AGAIN", drawItem);
+            Loader(_swf.getChildAt(0)).content.addEventListener("BUTTON_CLOSE", closeWindow);
+            Loader(_swfBronze.getChildAt(0)).content.addEventListener("BUTTON_AGAIN", drawItem);
+            Loader(_swfBronze.getChildAt(0)).content.addEventListener("BUTTON_CLOSE", closeWindow);
+            return;
+        }// end function
+
+        public function startDrawAnimation() : void
+        {
+            if (_summonType == "gold")
+            {
+                roulette.source = _swfBronze;
+            }
+            else
+            {
+                roulette.source = _swf;
+            }
+            initSwf();
+            MovieClip(Loader(roulette.source.getChildAt(0)).content).gotoAndPlay("window_start");
+            Loader(roulette.source.getChildAt(0)).content.addEventListener("ANIMATION_END", finishDrawAnimation);
+            return;
+        }// end function
+
+        public function drawItem(event:Event = null) : void
+        {
+            sendPopupEvent(ITEM_SUMMON_START, _summonType);
+            return;
+        }// end function
+
+        public function setDrawItem(param1:Object) : void
+        {
+            _itemName = param1 ? (param1.item_name) : ("");
+            _summonType = param1 ? (param1.summon_type) : ("ticket");
+            startDrawAnimation();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="roulette" source="{_swf}"/>
+	<mx:Text id="itemNameText" x="60" y="257" visible="false" width="300" height="30" textAlign="right" fontSize="18" color="#00ff0000" text="_itemName"/>
+
+</mx:PopupWindow>

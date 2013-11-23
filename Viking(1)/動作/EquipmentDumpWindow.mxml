@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+
+        public function init() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_300x200");
+            MovieClip(Loader(_swf_ok.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_no");
+            return;
+        }// end function
+
+        public function onClose() : void
+        {
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function onDump() : void
+        {
+            PopUpManager.removePopUp(this);
+            dispatchEvent(new PopupEvent(Viking.HOME_EQUIPMENT_DUMP, _dumpEqipment));
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_EquipmentDumpWindow_Image1" source="{_swf_window}"/>
+	<mx:Box width="330" height="180" styleName="DialogBg" x="220" y="180">
+		<mx:Canvas>
+			<mx:Text id="_EquipmentDumpWindow_Text1" width="260" x="35" y="35" styleName="CenterText" text="{Utils.i18n("equipmentDumpConfirm", _dumpEqipment.nameLabel)}"/>
+			<mx:Image id="_EquipmentDumpWindow_Image2" x="42" y="140" click="{onDump();}" source="{_swf_ok}"/>
+			<mx:Image id="_EquipmentDumpWindow_Image3" x="172" y="140" click="{onClose();}" source="{_swf_close}"/>
+		</mx:Canvas>
+	</mx:Box>
+
+</mx:Canvas>

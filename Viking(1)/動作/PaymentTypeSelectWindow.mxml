@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{addSwf();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  EmbedSwfPoint:Class;
+        private var  EmbedSwfGold:Class;
+        private const  TYPE_POWER:int = 1;
+        private const  TYPE_POINT:int = 3;
+        private const  TYPE_GOLD:int = 2;
+        private var  EmbedSwfPower:Class;
+        public static const  NAME:String = "paymentTypeSelectWindow";
+        public static const  SELECT_PAYMENT_TYPE:String = NAME + "selectPaymentType";
+
+
+        public function selectType(param1:int) : void
+        {
+            sendPopupEvent(SELECT_PAYMENT_TYPE, param1);
+            close();
+            return;
+        }// end function
+
+        public function close() : void
+        {
+            onClose();
+            return;
+        }// end function
+
+        public function addSwf() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_400x270");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_back");
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas>
+		<mx:Image id="_PaymentTypeSelectWindow_Image1" source="{_swf_window}"/>
+		<mx:Text id="_PaymentTypeSelectWindow_Text1" x="335" y="147" styleName="PanelBaseTitle" text="{Utils.i18n("paymentTypeSelect")}"/>
+		<mx:VBox x="190" y="182" height="300">
+			<mx:Canvas height="55" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+				<mx:Image id="_PaymentTypeSelectWindow_Image2" x="25" y="5" click="{selectType(TYPE_POWER);}" source="{_swf_power}"/>
+				<mx:Text id="_PaymentTypeSelectWindow_Text2" x="160" y="0" styleName="BuildingName" text="{Utils.i18n("generalPower")}"/>
+				<mx:TextArea id="_PaymentTypeSelectWindow_TextArea1" x="160" y="20" width="220" height="35" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text="{Utils.i18n("buyPaymentCommodityPower")}"/>
+			</mx:Canvas>
+			<mx:Canvas height="55" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+				<mx:Image id="_PaymentTypeSelectWindow_Image3" x="25" y="5" click="{selectType(TYPE_GOLD);}" source="{_swf_gold}"/>
+				<mx:Text id="_PaymentTypeSelectWindow_Text3" x="160" y="0" styleName="BuildingName" text="{Utils.i18n("generalMoneyUnit")}"/>
+				<mx:TextArea id="_PaymentTypeSelectWindow_TextArea2" x="160" y="20" width="220" height="35" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text="{Utils.i18n("buyPaymentCommodityCash")}"/>
+			</mx:Canvas>
+			<mx:Canvas height="60" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+				<mx:Image id="_PaymentTypeSelectWindow_Image4" x="25" y="10" click="{selectType(TYPE_POINT);}" source="{_swf_point}"/>
+				<mx:Text id="_PaymentTypeSelectWindow_Text4" x="160" y="0" styleName="BuildingName" text="{Utils.i18n("rewardPoint")}"/>
+				<mx:TextArea id="_PaymentTypeSelectWindow_TextArea3" x="160" y="20" width="220" height="40" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text="{Utils.i18n("buyPaymentCommodityRewardPoint")}"/>
+			</mx:Canvas>
+		</mx:VBox>
+		<mx:Image id="_PaymentTypeSelectWindow_Image5" x="325" y="370" click="{close();}" source="{_swf_close}"/>
+	</mx:Canvas>
+
+</mx:PopupWindow>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public var  _UnitUtilityWindow_inlineComponent1_Label1:Label;
+
+    ]]></mx:Script>
+
+	<mx:Image source="_embed_mxml__images_icon_power_png_227571469" left="30"/>
+	<mx:Label id="_UnitUtilityWindow_inlineComponent1_Label1" text="{data.price}" toolTip="{Utils.i18n("noneed112")}"/>
+
+</mx:HBox>

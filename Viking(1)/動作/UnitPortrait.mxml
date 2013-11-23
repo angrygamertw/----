@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="120" height="158" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+
+        public function init() : void
+        {
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_UnitPortrait_Image1" source="{_unit.faceUic}" width="_portraitWidth" height="_portraitHeight"/>
+
+</mx:Canvas>

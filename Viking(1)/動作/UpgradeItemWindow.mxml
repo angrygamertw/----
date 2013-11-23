@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  confirmUpgradeItemWindow:ConfirmUpgradeItemWindow;
+        private var  weaponDetail:WeaponDetail;
+        private var  _materialItem:Object;
+        public static const  UPGRADE_ITEM:String = "UpgradeItemWindow/UpgradeItem";
+
+
+        public function init() : void
+        {
+            materialItem = null;
+            MovieClip(Loader(_swf_ok_button.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_cancel_button.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_ok_button.getChildAt(0)).content).gotoAndPlay("button_decide");
+            MovieClip(Loader(_swf_cancel_button.getChildAt(0)).content).gotoAndPlay("button_cancel");
+            return;
+        }// end function
+
+        public function onDetail(param1:Object) : void
+        {
+            weaponDetail.viewData = param1;
+            if (weaponDetail.viewData)
+            {
+                popupWindow(weaponDetail);
+            }
+            return;
+        }// end function
+
+        public function upgrade() : void
+        {
+            if (!_materialItem)
+            {
+                return;
+            }
+            confirmUpgradeItemWindow.upgradeItemName = _upgradeItem.nameLabel;
+            confirmUpgradeItemWindow.upgradedMasterName = _upgradedMaster.nameLabel;
+            confirmUpgradeItemWindow.upgradeMaterialName = _materialItem.masterVO.nameLabel;
+            confirmUpgradeItemWindow.addEventListener(ConfirmUpgradeItemWindow.CONFIRMED, upgradeItemHandler);
+            popupWindow(confirmUpgradeItemWindow, false);
+            return;
+        }// end function
+
+        public function _UpgradeItemWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UpgradeItemWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "description";
+            _loc_1.width = 200;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_UpgradeItemWindow_DataGridColumn2", _UpgradeItemWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _UpgradeItemWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UpgradeItemWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "masterVO.nameLabel";
+            _loc_1.width = 100;
+            BindingManager.executeBindings(this, "_UpgradeItemWindow_DataGridColumn1", _UpgradeItemWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _UpgradeItemWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UpgradeItemWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "quantity";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_UpgradeItemWindow_DataGridColumn3", _UpgradeItemWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function upgradeItemHandler(event:Event) : void
+        {
+            confirmUpgradeItemWindow.removeEventListener(ConfirmUpgradeItemWindow.CONFIRMED, upgradeItemHandler);
+            sendPopupEvent(UPGRADE_ITEM, {materialCode:_materialItem.code, upgradeItemId:_upgradeItem.belongingId, type:_upgradeItem.belongingType});
+            onClose();
+            return;
+        }// end function
+
+        public function selectMaterialItem() : void
+        {
+            materialItem = dataList.selectedItem;
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Box id="bigbox" width="400" height="360" x="180" y="110">
+		<mx:Canvas id="smallerCanvas">
+			<mx:Label id="_UpgradeItemWindow_Label1" x="20" y="10" fontSize="14" text="{Utils.i18n("confirmUpgradeSelectItem")}"/>
+			<mx:DataGrid id="dataList" styleName="ProductionGrid" x="20" y="45" height="85" rowHeight="28" rowCount="3" sortableColumns="false" columns="{[_UpgradeItemWindow_DataGridColumn1_i(), _UpgradeItemWindow_DataGridColumn2_i(), _UpgradeItemWindow_DataGridColumn3_i()]}" verticalAlign="middle" itemClick="{selectMaterialItem();}" dataProvider='{_materialItems}'/>
+			<mx:Label id="_UpgradeItemWindow_Label2" x="30" y="150" fontSize="14" text="{Utils.i18n("confirmItemBeforeUpgrade") + "："}"/>
+			<mx:Label id="_UpgradeItemWindow_Label3" x="85" y="150" fontSize="14" color="#00bc403a" textDecoration="underline" click="{onDetail(_upgradeItem.masterVO);}" text="{_upgradeItem.nameLabel}"/>
+			<mx:Label id="_UpgradeItemWindow_Label4" x="30" y="190" fontSize="14" text="{Utils.i18n("confirmItemAfterUpgrade") + "："}"/>
+			<mx:Label id="_UpgradeItemWindow_Label5" x="85" y="190" fontSize="14" color="#00bc403a" textDecoration="underline" click="{onDetail(_upgradedMaster);}" text="{_upgradedMaster.nameLabel}"/>
+			<mx:Label id="_UpgradeItemWindow_Label6" x="30" y="230" fontSize="14" text="{Utils.i18n("confirmUpgradeItem") + "：" + _materialItemNameLabel}"/>
+			<mx:Canvas id="buttonLayer"/>
+			<mx:Image id="_UpgradeItemWindow_Image1" x="80" y="280" click="{upgrade();}" source="{_swf_ok_button}"/>
+			<mx:Image id="_UpgradeItemWindow_Image2" x="200" y="280" click="{onClose();}" source="{_swf_cancel_button}"/>
+		</mx:Canvas>
+	</mx:Box>
+
+</mx:PopupWindow>

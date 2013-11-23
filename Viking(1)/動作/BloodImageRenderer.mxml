@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.styles.*;
+
+    ]]></mx:Script>
+
+
+</mx:HBox>

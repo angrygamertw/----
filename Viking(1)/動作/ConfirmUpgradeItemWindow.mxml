@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public static const  CONFIRMED:String = "ConfirmUpgradeItemWindow/Confirmed";
+
+
+        public function init() : void
+        {
+            MovieClip(Loader(_swf_bg.getChildAt(0)).content).gotoAndPlay("center_300x200");
+            MovieClip(Loader(_swf_ok_button.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_cancel_button.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_ok_button.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_cancel_button.getChildAt(0)).content).gotoAndPlay("button_no");
+            return;
+        }// end function
+
+        public function onConfirm() : void
+        {
+            sendEvent(CONFIRMED);
+            onClose();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_ConfirmUpgradeItemWindow_Image1" source="{_swf_bg}"/>
+	<mx:VBox x="240" y="225">
+		<mx:Spacer height="100%"/>
+		<mx:VBox horizontalCenter="20" top="100">
+			<mx:Label id="_ConfirmUpgradeItemWindow_Label1" styleName="UnitSelectText" fontSize="14" text="{Utils.i18n("itemUpgradeConfirm1", _upgradeMaterialName)}"/>
+			<mx:Label id="_ConfirmUpgradeItemWindow_Label2" styleName="UnitSelectText" fontSize="14" text="{Utils.i18n("itemUpgradeConfirm2", _upgradeItemName, _upgradedMasterName)}"/>
+		</mx:VBox>
+		<mx:Spacer height="100%"/>
+	</mx:VBox>
+	<mx:Image id="_ConfirmUpgradeItemWindow_Image2" x="265" y="307" click="{onConfirm();}" source="{_swf_ok_button}"/>
+	<mx:Image id="_ConfirmUpgradeItemWindow_Image3" x="395" y="307" click="{onClose();}" source="{_swf_cancel_button}"/>
+
+</mx:PopupWindow>

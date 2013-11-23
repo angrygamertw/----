@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.styles.*;
+
+        public var  _SubjugationSelectLevelWindow_inlineComponent2_Image2:Image;
+
+    ]]></mx:Script>
+
+	<mx:Image source="_embed_mxml__swf_home_buttons_button_list_decide_swf_1291455405" click="{outerDocument.clicked(data);}"/>
+	<mx:Image id="_SubjugationSelectLevelWindow_inlineComponent2_Image2" source="_embed_mxml__swf_common_arrow_top_swf_788233961" width="20" height="22" visible="{outerDocument.showTutMark(data)}"/>
+
+</mx:VBox>

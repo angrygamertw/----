@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="756" height="283" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private const  WHITE:String = "0x000000";
+        private const  BLUE:String = "0x0000FF";
+        private const  RED:String = "0xFF0000";
+        private const  YELLOW:String = "0xFFCC00";
+        private var  _sword:Class;
+        private var  _magicWand:Class;
+
+
+        public function setColor() : void
+        {
+            if (_unit.weapon)
+            {
+                if (_unit.weapon.endurance <= 3)
+                {
+                    weaponEndurance.setStyle("color", RED);
+                }
+            }
+            if (_unit.subWeapon)
+            {
+                if (_unit.subWeapon.endurance <= 3)
+                {
+                    subWeaponEndurance.setStyle("color", RED);
+                }
+            }
+            if (_unit.armor)
+            {
+                if (_unit.armor.endurance <= 3)
+                {
+                    armorEndurance.setStyle("color", RED);
+                }
+                else
+                {
+                    armorEndurance.setStyle("color", WHITE);
+                }
+            }
+            if (_unit.realStrength < _unit.strength)
+            {
+                unitStrength.setStyle("color", RED);
+            }
+            else if (_unit.realStrength > _unit.strength)
+            {
+                unitStrength.setStyle("color", BLUE);
+            }
+            if (_unit.realTech < _unit.tech)
+            {
+                unitTech.setStyle("color", RED);
+            }
+            else if (_unit.realTech > _unit.tech)
+            {
+                unitTech.setStyle("color", BLUE);
+            }
+            if (_unit.realAgility < _unit.agility)
+            {
+                unitAgility.setStyle("color", RED);
+            }
+            else if (_unit.realAgility > _unit.agility)
+            {
+                unitAgility.setStyle("color", BLUE);
+            }
+            if (_unit.realDefense < _unit.defense)
+            {
+                unitDefense.setStyle("color", RED);
+            }
+            else if (_unit.realDefense > _unit.defense)
+            {
+                unitDefense.setStyle("color", BLUE);
+            }
+            if (_unit.realIntelligence < _unit.intelligence)
+            {
+                unitIntelligence.setStyle("color", RED);
+            }
+            else if (_unit.realIntelligence > _unit.intelligence)
+            {
+                unitIntelligence.setStyle("color", BLUE);
+            }
+            if (_unit.realLuck < _unit.luck)
+            {
+                unitLuck.setStyle("color", RED);
+            }
+            else if (_unit.realLuck > _unit.luck)
+            {
+                unitLuck.setStyle("color", BLUE);
+            }
+            return;
+        }// end function
+
+        public function changeHiLigth(param1:String) : void
+        {
+            init();
+            return;
+        }// end function
+
+        public function resetHp(param1:int) : String
+        {
+            while (unitHpBar.numChildren > 0)
+            {
+                
+                unitHpBar.removeChildAt(0);
+            }
+            drawHpBar(_unit);
+            return _unit.maskedHp + "/" + _unit.maskedMaxHp;
+        }// end function
+
+        public function adjustBloodIcon() : void
+        {
+            if (_unit.sacrificible)
+            {
+                this["bloodIcon"].x = 60;
+            }
+            if (_unit.bloodImageUrl)
+            {
+                this["bloodIcon"].visible = true;
+            }
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            bgImage = bgImgOn;
+            return;
+        }// end function
+
+        public function drawHpBar(param1:UnitVO) : void
+        {
+            var _loc_2:* = drawSquare(0, 0, 80, 10, 8519680);
+            var _loc_3:* = new UIComponentSprite(_loc_2);
+            unitHpBar.addChild(_loc_3);
+            if (_unit.hp > _unit.realMaxHp)
+            {
+                _unit.hp = _unit.realMaxHp;
+            }
+            _loc_2 = drawSquare(0, 0, 80 * (_unit.hp / _unit.realMaxHp), 10, 5285376);
+            _loc_3.sprite = _loc_2;
+            unitHpBar.addChild(_loc_3);
+            return;
+        }// end function
+
+        public function drawSquare(param1:int, param2:int, param3:int, param4:int, param5:uint) : Sprite
+        {
+            var _loc_6:* = new Sprite();
+            new Sprite().graphics.beginFill(param5);
+            _loc_6.graphics.drawRect(param1, param2, param3, param4);
+            _loc_6.graphics.endFill();
+            return _loc_6;
+        }// end function
+
+        public function dataReset() : void
+        {
+            _skills = "";
+            weaponEndurance.setStyle("color", WHITE);
+            subWeaponEndurance.setStyle("color", WHITE);
+            unitHp.setStyle("color", WHITE);
+            unitStrength.setStyle("color", WHITE);
+            unitTech.setStyle("color", WHITE);
+            unitAgility.setStyle("color", WHITE);
+            unitDefense.setStyle("color", WHITE);
+            unitIntelligence.setStyle("color", WHITE);
+            unitLuck.setStyle("color", WHITE);
+            while (unitHpBar.numChildren > 0)
+            {
+                
+                unitHpBar.removeChildAt(0);
+            }
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:UnitPortrait id="_UnitStatus_UnitPortrait1" x="0" y="20" unit="_unit"/>
+	<mx:Image id="sacrificeIcon" x="25" y="210" source="{sacrificeIconImage}" visible="{_unit.sacrificible}"/>
+	<mx:Image id="bloodIcon" x="25" y="210" visible="false" source="{_unit.bloodImageUrl}"/>
+	<mx:Canvas y="20">
+		<mx:HBox x="160" y="22" horizontalGap="5">
+			<mx:HBox id="nameBox" width="100%" verticalAlign="middle" horizontalGap="5"/>
+			<mx:Canvas>
+				<mx:Label id="_UnitStatus_Label1" fontSize="17" color="#00000000" text="{_unit.name}"/>
+			</mx:Canvas>
+		</mx:HBox>
+		<mx:Label id="_UnitStatus_Label2" x="312" y="25" fontSize="14" color="#00000000" text="{_unit.jobMasterVO.nameLabel}"/>
+		<mx:Label id="_UnitStatus_Label3" x="231" y="61" fontSize="14" color="#00000000" text="{_unit.level}" visible="visibleBool"/>
+		<mx:Label id="_UnitStatus_Label4" x="312" y="61" fontSize="14" color="#00000000" text="_unitExpLabel" visible="visibleBool"/>
+		<mx:Label id="unitHp" x="231" y="87" fontSize="14" color="#00000000" text="{resetHp(_unit.hp)}" visible="visibleBool"/>
+		<mx:Canvas id="unitHpBar" x="312" y="92"/>
+		<mx:Image id="_UnitStatus_Image3" x="202" y="113" visible="visibleBool" source="{_weaponIcon}"/>
+		<mx:Label id="_UnitStatus_Label6" x="220" y="110" fontSize="14" color="#00000000" textAlign="right" text="baseDamage" visible="visibleBool"/>
+		<mx:Image id="_UnitStatus_Image4" x="253" y="113" visible="visibleBool" source="{_attackDefIcon}"/>
+		<mx:Label id="_UnitStatus_Label7" x="271" y="110" fontSize="14" color="#00000000" textAlign="right" text="{_unit.baseDefense}" visible="visibleBool"/>
+		<mx:Image id="_UnitStatus_Image5" x="304" y="113" visible="visibleBool" source="{_magicDefIcon}"/>
+		<mx:Label id="_UnitStatus_Label8" x="322" y="110" fontSize="14" color="#00000000" textAlign="right" text="{_unit.baseMagicalDefense}" visible="visibleBool"/>
+		<mx:Image id="_UnitStatus_Image6" x="355" y="113" visible="visibleBool" source="{_moveIcon}"/>
+		<mx:Label id="_UnitStatus_Label9" x="373" y="110" fontSize="14" color="#00000000" textAlign="right" text="{_unit.moveRange}" visible="visibleBool"/>
+		<mx:TextArea id="_UnitStatus_TextArea1" x="275" y="190" width="130" height="40" editable="false" fontSize="14" backgroundAlpha="0" borderStyle="none" text=""/>
+		<mx:Label id="unitStrength" x="232" y="139" fontSize="14" color="#00000000" textAlign="right" text="{_unit.realStrength}" visible="visibleBool"/>
+		<mx:Label id="unitTech" x="304" y="139" fontSize="14" color="#00000000" textAlign="right" text="{_unit.realTech}" visible="visibleBool"/>
+		<mx:Label id="unitAgility" x="373" y="139" fontSize="14" color="#00000000" textAlign="right" text="{_unit.realAgility}" visible="visibleBool"/>
+		<mx:Label id="unitDefense" x="232" y="161" fontSize="14" color="#00000000" textAlign="right" text="{_unit.realDefense}" visible="visibleBool"/>
+		<mx:Label id="unitIntelligence" x="304" y="161" fontSize="14" color="#00000000" textAlign="right" text="{_unit.realIntelligence}" visible="visibleBool"/>
+		<mx:Label id="unitLuck" x="373" y="161" fontSize="14" color="#00000000" textAlign="right" text="{_unit.realLuck}" visible="visibleBool"/>
+		<mx:Label id="_UnitStatus_Label16" x="465" y="33" fontSize="12" fontWeight="bold" color="#00000000" text=""/>
+		<mx:Label id="_UnitStatus_Label17" x="626" y="33" fontSize="12" color="#00000000" textAlign="center" text="{_unit.weapon.damage}"/>
+		<mx:Label id="_UnitStatus_Label18" x="668" y="33" fontSize="12" color="#00000000" textAlign="center" text="{_unit.weapon.hit}"/>
+		<mx:Label id="weaponEndurance" x="707" y="33" fontSize="12" color="#00000000" textAlign="left" text="{_unit.weapon.endurance}"/>
+		<mx:Label id="_UnitStatus_Label20" x="465" y="76" fontSize="12" fontWeight="bold" color="#00000000" text=""/>
+		<mx:Label id="_UnitStatus_Label21" x="626" y="76" fontSize="12" color="#00000000" textAlign="center" text="{_unit.subWeapon.damage}"/>
+		<mx:Label id="_UnitStatus_Label22" x="668" y="76" fontSize="12" color="#00000000" textAlign="center" text="{_unit.subWeapon.hit}"/>
+		<mx:Label id="subWeaponEndurance" x="707" y="76" fontSize="12" color="#00000000" textAlign="left" text="{_unit.subWeapon.endurance}"/>
+		<mx:Label id="_UnitStatus_Label24" x="465" y="118" fontSize="12" fontWeight="bold" color="#00000000" text=""/>
+		<mx:Label id="_UnitStatus_Label25" x="668" y="118" fontSize="12" color="#00000000" textAlign="center" text="{_unit.armor.avoidance}"/>
+		<mx:Label id="_UnitStatus_Label26" x="584" y="118" fontSize="12" color="#00000000" textAlign="center" text="{_unit.armor.physicalDefense}"/>
+		<mx:Label id="_UnitStatus_Label27" x="626" y="118" fontSize="12" color="#00000000" textAlign="center" text="{_unit.armor.magicalDefense}"/>
+		<mx:Label id="armorEndurance" x="707" y="118" fontSize="12" color="#00000000" textAlign="left" text="{_unit.armor.endurance}"/>
+		<mx:Label id="_UnitStatus_Label29" x="465" y="161" fontSize="12" fontWeight="bold" color="#00000000" text=""/>
+		<mx:Label id="_UnitStatus_Label30" x="582" y="161" fontSize="12" color="#00000000" text="{_unit.accessory.effectLabelAll}"/>
+		<mx:Label id="itemEndurance" x="465" y="204" fontSize="12" color="#00000000" text="{_unit.item.nameLabel}"/>
+		<mx:Label id="_UnitStatus_Label32" x="582" y="204" fontSize="12" color="#00000000" text="{_unit.item.effect}"/>
+	</mx:Canvas>
+
+</mx:Canvas>

@@ -1,0 +1,76 @@
+﻿package 
+{
+    import com.kbmj.viking.view.*;
+    import flash.display.*;
+    import mx.binding.*;
+    import mx.core.*;
+
+    public class _com_kbmj_viking_view_AlertWindowWatcherSetupUtil extends Sprite implements IWatcherSetupUtil
+    {
+
+        public function _com_kbmj_viking_view_AlertWindowWatcherSetupUtil()
+        {
+            return;
+        }// end function
+
+        public function setup(param1:Object, param2:Function, param3:Array, param4:Array) : void
+        {
+            var target:* = param1;
+            var propertyGetter:* = param2;
+            var bindings:* = param3;
+            var watchers:* = param4;
+            watchers[5] = new PropertyWatcher("movieButtonYes", {propertyChange:true}, [bindings[4]], propertyGetter);
+            watchers[7] = new PropertyWatcher("movieButtonNo", {propertyChange:true}, [bindings[6]], propertyGetter);
+            watchers[2] = new PropertyWatcher("text", {propertyChange:true}, [bindings[2]], propertyGetter);
+            watchers[1] = new PropertyWatcher("title", {propertyChange:true}, [bindings[1]], propertyGetter);
+            watchers[0] = new PropertyWatcher("movieWindow", {propertyChange:true}, [bindings[0]], propertyGetter);
+            watchers[3] = new PropertyWatcher("xs", {propertyChange:true}, [bindings[3], bindings[5], bindings[7], bindings[9]], propertyGetter);
+            watchers[4] = new FunctionReturnWatcher("getItemAt", target, function () : Array
+            {
+                return [0];
+            }// end function
+            , {collectionChange:true}, [bindings[3]], null);
+            watchers[6] = new FunctionReturnWatcher("getItemAt", target, function () : Array
+            {
+                return [1];
+            }// end function
+            , {collectionChange:true}, [bindings[5]], null);
+            watchers[8] = new FunctionReturnWatcher("getItemAt", target, function () : Array
+            {
+                return [2];
+            }// end function
+            , {collectionChange:true}, [bindings[7]], null);
+            watchers[10] = new FunctionReturnWatcher("getItemAt", target, function () : Array
+            {
+                return [3];
+            }// end function
+            , {collectionChange:true}, [bindings[9]], null);
+            watchers[11] = new PropertyWatcher("movieButtonCancel", {propertyChange:true}, [bindings[10]], propertyGetter);
+            watchers[9] = new PropertyWatcher("movieButtonOk", {propertyChange:true}, [bindings[8]], propertyGetter);
+            watchers[5].updateParent(target);
+            watchers[7].updateParent(target);
+            watchers[2].updateParent(target);
+            watchers[1].updateParent(target);
+            watchers[0].updateParent(target);
+            watchers[3].updateParent(target);
+            watchers[4].parentWatcher = watchers[3];
+            watchers[3].addChild(watchers[4]);
+            watchers[6].parentWatcher = watchers[3];
+            watchers[3].addChild(watchers[6]);
+            watchers[8].parentWatcher = watchers[3];
+            watchers[3].addChild(watchers[8]);
+            watchers[10].parentWatcher = watchers[3];
+            watchers[3].addChild(watchers[10]);
+            watchers[11].updateParent(target);
+            watchers[9].updateParent(target);
+            return;
+        }// end function
+
+        public static function init(param1:IFlexModuleFactory) : void
+        {
+            AlertWindow.watcherSetupUtil = new _com_kbmj_viking_view_AlertWindowWatcherSetupUtil;
+            return;
+        }// end function
+
+    }
+}

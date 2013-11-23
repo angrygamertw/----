@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" height="567" width="750">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  total:int = 0;
+
+
+        public function _HomeAllUnitListWindow_DataGridColumn2_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "jobName";
+            _loc_1.headerText = "種族";
+            _loc_1.width = 80;
+            return _loc_1;
+        }// end function
+
+        public function genderRequest(param1:Object) : String
+        {
+            return param1.gender == 0 ? ("男") : ("女");
+        }// end function
+
+        public function _HomeAllUnitListWindow_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllUnitListWindow_DataGridColumn6 = _loc_1;
+            _loc_1.dataField = "strength";
+            _loc_1.headerText = "力";
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllUnitListWindow_DataGridColumn6", _HomeAllUnitListWindow_DataGridColumn6);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllUnitListWindow_DataGridColumn8_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllUnitListWindow_DataGridColumn8 = _loc_1;
+            _loc_1.dataField = "agility";
+            _loc_1.headerText = "速";
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllUnitListWindow_DataGridColumn8", _HomeAllUnitListWindow_DataGridColumn8);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllUnitListWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllUnitListWindow_DataGridColumn4 = _loc_1;
+            _loc_1.dataField = "gender";
+            _loc_1.headerText = "性別";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllUnitListWindow_DataGridColumn4", _HomeAllUnitListWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllUnitListWindow_DataGridColumn11_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllUnitListWindow_DataGridColumn11 = _loc_1;
+            _loc_1.dataField = "luck";
+            _loc_1.headerText = "運";
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllUnitListWindow_DataGridColumn11", _HomeAllUnitListWindow_DataGridColumn11);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllUnitListWindow_ClassFactory2_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            totalLabel = _loc_1;
+            _loc_1.generator = HomeAllUnitListWindow_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function totalRequest(param1:Object) : int
+        {
+            return param1.strength + param1.tech + param1.agility + param1.defense + param1.intelligence + param1.luck;
+        }// end function
+
+        public function _HomeAllUnitListWindow_DataGridColumn13_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllUnitListWindow_DataGridColumn13 = _loc_1;
+            _loc_1.headerText = "総合";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllUnitListWindow_DataGridColumn13", _HomeAllUnitListWindow_DataGridColumn13);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllUnitListWindow_DataGridColumn1_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "name";
+            _loc_1.headerText = "名前";
+            _loc_1.itemRenderer = _HomeAllUnitListWindow_ClassFactory3_c();
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllUnitListWindow_DataGridColumn3_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "level";
+            _loc_1.headerText = "レベル";
+            _loc_1.width = 45;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllUnitListWindow_DataGridColumn5_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "age";
+            _loc_1.headerText = "年齢";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllUnitListWindow_DataGridColumn7_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllUnitListWindow_DataGridColumn7 = _loc_1;
+            _loc_1.dataField = "tech";
+            _loc_1.headerText = "技";
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllUnitListWindow_DataGridColumn7", _HomeAllUnitListWindow_DataGridColumn7);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllUnitListWindow_DataGridColumn9_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllUnitListWindow_DataGridColumn9 = _loc_1;
+            _loc_1.dataField = "defense";
+            _loc_1.headerText = "守";
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllUnitListWindow_DataGridColumn9", _HomeAllUnitListWindow_DataGridColumn9);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllUnitListWindow_DataGridColumn12_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "maxHp";
+            _loc_1.headerText = "HP";
+            _loc_1.width = 28;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllUnitListWindow_DataGridColumn10_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllUnitListWindow_DataGridColumn10 = _loc_1;
+            _loc_1.dataField = "intelligence";
+            _loc_1.headerText = "賢";
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllUnitListWindow_DataGridColumn10", _HomeAllUnitListWindow_DataGridColumn10);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllUnitListWindow_ClassFactory3_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = UnitDetailLabelRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllUnitListWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            genderLabel = _loc_1;
+            _loc_1.generator = HomeAllUnitListWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Panel id="tw01" layout="absolute" title="式姫一覧" width="700" height="567" styleName="PanelBase">
+		<mx:DataGrid id="_HomeAllUnitListWindow_DataGrid1" width="650" height="373" styleName="DataGridBase" sortableColumns="false" columns="{[_HomeAllUnitListWindow_DataGridColumn1_c(), _HomeAllUnitListWindow_DataGridColumn2_c(), _HomeAllUnitListWindow_DataGridColumn3_c(), _HomeAllUnitListWindow_DataGridColumn4_i(), _HomeAllUnitListWindow_DataGridColumn5_c(), _HomeAllUnitListWindow_DataGridColumn6_i(), _HomeAllUnitListWindow_DataGridColumn7_i(), _HomeAllUnitListWindow_DataGridColumn8_i(), _HomeAllUnitListWindow_DataGridColumn9_i(), _HomeAllUnitListWindow_DataGridColumn10_i(), _HomeAllUnitListWindow_DataGridColumn11_i(), _HomeAllUnitListWindow_DataGridColumn12_c(), _HomeAllUnitListWindow_DataGridColumn13_i()]}" right="25" top="76" dataProvider='{_units}'/>
+	</mx:Panel>
+	<mx:Canvas width="30" height="30" x="660" y="10">
+		<mx:Button width="26" height="26" x="5" styleName="closeBtn" buttonMode="true" fontSize="30" click="{onClose();}"/>
+	</mx:Canvas>
+
+</mx:PopupWindow>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        public static const  CONFIRMED:String = "confirmed";
+
+
+        public function confirmClick() : void
+        {
+            dispatchEvent(new Event(CONFIRMED));
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function cancelClick() : void
+        {
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Box width="330" height="180" styleName="DialogBg">
+		<mx:Canvas>
+			<mx:Text id="description" width="260" x="35" y="55" styleName="CenterText" text="descriptionText"/>
+			<mx:HBox y="145" horizontalCenter="20" horizontalGap="20">
+				<mx:Button label="" styleName="CancelCanaButton" buttonMode="true" click="{cancelClick();}"/>
+				<mx:Button label="" styleName="OkButton" buttonMode="true" click="{confirmClick();}"/>
+			</mx:HBox>
+		</mx:Canvas>
+	</mx:Box>
+
+</mx:Canvas>

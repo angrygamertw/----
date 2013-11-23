@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{addSwf();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public static const  UNION_TYPE_RECIPE:String = NAME + "unionTypeRecipe";
+        public static const  UNION_END:String = NAME + "unionEnd";
+        public static const  UNION_TYPE_AWAKE:String = NAME + "unionTypeAwake";
+        public static const  NAME:String = "unionTypeSelectWindow";
+        public static const  UNION_TYPE_NORMAL:String = NAME + "unionTypeNormal";
+
+
+        public function removeTutMarks() : void
+        {
+            tutMarkRecipeVisible = false;
+            return;
+        }// end function
+
+        public function addSwf() : void
+        {
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_back");
+            return;
+        }// end function
+
+        public function showTutMarkUnionType() : void
+        {
+            tutMarkRecipeVisible = visible;
+            return;
+        }// end function
+
+        public function init(param1:int) : void
+        {
+            normalUnionText = Utils.i18n("unionTypeSelectConf");
+            canNormalUnion = true;
+            if (param1 < 2)
+            {
+                canNormalUnion = false;
+                normalUnionText = Utils.i18n("unionTypeSelectCanNotUse");
+            }
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas>
+		<mx:Text id="_UnionTypeSelectWindow_Text1" x="340" y="302" styleName="PanelBaseTitle" text="{Utils.i18n("unionTypeSelectTitle")}"/>
+		<mx:Image source="_embed_mxml__swf_home_ceremony_button_ceremony_recipe_50_swf_1575807643" x="185" y="360" click="{sendEvent(UNION_TYPE_RECIPE);}"/>
+		<mx:Text id="_UnionTypeSelectWindow_Text2" x="170" y="415" styleName="BuildingName" text="{Utils.i18n("recipeUnionTitle")}"/>
+		<mx:TextArea id="_UnionTypeSelectWindow_TextArea1" x="160" y="435" width="110" height="60" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text="{Utils.i18n("unionTypeSelectRecipeUnionConf")}"/>
+		<mx:Image id="_UnionTypeSelectWindow_Image2" source="_embed_mxml__swf_home_ceremony_button_ceremony_be_united_50_swf_369708091" x="350" y="360" click="{sendEvent(UNION_TYPE_NORMAL);}" visible="canNormalUnion"/>
+		<mx:Image id="_UnionTypeSelectWindow_Image3" source="_embed_mxml__swf_home_ceremony_button_ceremony_be_united_off_50_swf_1082252581" x="350" y="360" visible="!canNormalUnion"/>
+		<mx:Text id="_UnionTypeSelectWindow_Text3" x="350" y="415" styleName="BuildingName" text="{Utils.i18n("normalUnionTitle")}"/>
+		<mx:TextArea id="_UnionTypeSelectWindow_TextArea2" x="330" y="435" width="110" height="60" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text="normalUnionText"/>
+		<mx:Image source="_embed_mxml__swf_home_ceremony_button_ceremony_united_awake_50_swf_542548247" x="510" y="360" click="{sendEvent(UNION_TYPE_AWAKE);}"/>
+		<mx:Text id="_UnionTypeSelectWindow_Text4" x="510" y="415" styleName="BuildingName" text="{Utils.i18n("awakeUnionTitle")}"/>
+		<mx:TextArea id="_UnionTypeSelectWindow_TextArea3" x="490" y="435" width="110" height="60" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text="{Utils.i18n("awakeUnionInfo")}"/>
+		<mx:HBox width="100" x="325" y="495">
+			<mx:Image id="_UnionTypeSelectWindow_Image5" click="{sendEvent(UNION_END);}" source="{_swf_close}"/>
+		</mx:HBox>
+	</mx:Canvas>
+	<mx:Image id="tutMarkRecipeUnion" source="_embed_mxml__swf_common_arrow_top_swf_788233961" width="75" height="75" y="460" x="250" visible="tutMarkRecipeVisible"/>
+
+</mx:PopupWindow>

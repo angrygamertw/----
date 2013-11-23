@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _unit:UnitVO;
+        private var  create:Boolean = false;
+
+
+        public function drawSquare(param1:int, param2:int, param3:int, param4:int, param5:uint) : Sprite
+        {
+            var _loc_6:* = new Sprite();
+            new Sprite().graphics.beginFill(param5, 0);
+            _loc_6.graphics.drawRect(param1, param2, param3, param4);
+            _loc_6.graphics.endFill();
+            return _loc_6;
+        }// end function
+
+        public function init() : void
+        {
+            unitStatus.unit = _unit;
+            create = true;
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:UnitStatus id="unitStatus" x="2" y="150"/>
+	<mx:Image id="_UnitStatusPopUpWindow_Image1" x="0" y="0" click="{onClose();}" source="{_buttonClose}"/>
+
+</mx:PopupWindow>

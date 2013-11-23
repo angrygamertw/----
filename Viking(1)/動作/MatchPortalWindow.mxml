@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.*;
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  descriptionWindow:ExpeditionDescriptionWindow;
+        public static var  EmbedSwfExpeditionPortal:Class;
+        public static const  CLOSE_MATCH_PORTAL_WINDOW:String = NAME + "closeExpeditionPortalWindow";
+        public static const  NAME:String = "MatchPortalWindow";
+        public static const  HOME_ACTION_GOTO_SPECIAL_MATCH:String = NAME + "gotoSpecialMatch";
+        public static const  HOME_ACTION_GOTO_MATCH:String = NAME + "gotoMatch";
+        public static const  HOME_ACTION_GOTO_SHAM:String = NAME + "gotoSham";
+        public static const  MATCH_GARRISON_WINDOW_OPEN:String = NAME + "matchGarrisonWindowOpen";
+        public static const  DESCRIPTION_COMPLETE:String = "descriptionComplete";
+        public static const  MINIMUM_RANK:int = 9;
+
+
+        public function removeEvent() : void
+        {
+            Loader(_swf_expedition_portal.getChildAt(0)).content.removeEventListener("BUTTON_BACK", backButtonsClicked);
+            Loader(_swf_expedition_portal.getChildAt(0)).content.removeEventListener("BUTTON_RAID", shamButtonsClicked);
+            Loader(_swf_expedition_portal.getChildAt(0)).content.removeEventListener("BUTTON_EXHIBITION", matchButtonsClicked);
+            Loader(_swf_expedition_portal.getChildAt(0)).content.removeEventListener("BUTTON_EXHIBITION_SPECIAL", specialMatchButtonsClicked);
+            return;
+        }// end function
+
+        public function shamButtonsClicked(event:Event) : void
+        {
+            dispatchEvent(new Event(HOME_ACTION_GOTO_SHAM));
+            return;
+        }// end function
+
+        public function matchButtonsClicked(event:Event) : void
+        {
+            dispatchEvent(new Event(HOME_ACTION_GOTO_MATCH));
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            MovieClip(Loader(_buttonGarrison.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_buttonGarrison.getChildAt(0)).content).gotoAndPlay("button_post_units");
+            MovieClip(Loader(_swf_expedition_portal.getChildAt(0)).content).gotoAndPlay(0);
+            if (_specialMatch)
+            {
+                MovieClip(Loader(_swf_expedition_portal.getChildAt(0)).content).gotoAndPlay("window_special");
+            }
+            return;
+        }// end function
+
+        public function specialMatchButtonsClicked(event:Event) : void
+        {
+            dispatchEvent(new Event(HOME_ACTION_GOTO_SPECIAL_MATCH));
+            return;
+        }// end function
+
+        public function backButtonsClicked(event:Event) : void
+        {
+            removeEvent();
+            dispatchEvent(new Event(CLOSE_MATCH_PORTAL_WINDOW));
+            return;
+        }// end function
+
+        public function setExpeditionRank(param1:int) : void
+        {
+            _rankId = param1;
+            if (param1 < MINIMUM_RANK)
+            {
+                return;
+            }
+            return;
+        }// end function
+
+        public function startUnitSelectGarrison() : void
+        {
+            sendEvent(MATCH_GARRISON_WINDOW_OPEN);
+            return;
+        }// end function
+
+        public function buttonsClicked(param1:int) : void
+        {
+            var level:* = param1;
+            if (_rankId < descriptionWindow.evilPoints[(level - 1)].minimum_rank_id || descriptionWindow.evilPoints[(level - 1)].max_rank_id < _rankId)
+            {
+                return;
+            }
+            descriptionWindow.init(String(level));
+            this.popupWindow(descriptionWindow, false);
+            if (!descriptionWindow.hasEventListener(ExpeditionDescriptionWindow.DESCRIPTION_COMPLETE))
+            {
+                descriptionWindow.addEventListener(ExpeditionDescriptionWindow.DESCRIPTION_COMPLETE, function (event:PopupEvent) : void
+            {
+                dispatchEvent(new PopupEvent(DESCRIPTION_COMPLETE, {topographyId:event.param.topographyId, level:event.param.level, evilPointId:event.param.evilPointId, forbiddenJobIds:event.param.forbiddenJobIds}));
+                return;
+            }// end function
+            );
+            }
+            return;
+        }// end function
+
+        public function addEvent() : void
+        {
+            Loader(_swf_expedition_portal.getChildAt(0)).content.addEventListener("BUTTON_BACK", backButtonsClicked);
+            Loader(_swf_expedition_portal.getChildAt(0)).content.addEventListener("BUTTON_RAID", shamButtonsClicked);
+            Loader(_swf_expedition_portal.getChildAt(0)).content.addEventListener("BUTTON_EXHIBITION", matchButtonsClicked);
+            Loader(_swf_expedition_portal.getChildAt(0)).content.addEventListener("BUTTON_EXHIBITION_SPECIAL", specialMatchButtonsClicked);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_MatchPortalWindow_Image1" source="{_swf_expedition_portal}"/>
+	<mx:Image id="garrison" y="42" x="10" click="{startUnitSelectGarrison();}" source="{_buttonGarrison}"/>
+
+</mx:PopupWindow>

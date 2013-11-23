@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+
+        public function confirm() : void
+        {
+            onClose();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Box width="330" height="180" styleName="DialogBg">
+		<mx:Canvas>
+			<mx:Text id="_NoGuildAlertWindow_Text1" width="200" x="107" y="65" fontSize="12" text="{Utils.i18n("noGuildAlertWindowNoGuild")}"/>
+			<mx:Button id="ok_button" x="123" y="145" styleName="OkButton" buttonMode="true" click="{onClose();}"/>
+		</mx:Canvas>
+	</mx:Box>
+
+</mx:PopupWindow>

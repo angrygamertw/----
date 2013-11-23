@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml" width="20">
+	<mx:Script><![CDATA[
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.styles.*;
+
+    ]]></mx:Script>
+
+	<mx:Image id="normalButton" click="{outerDocument.addSelectIndex(data);}" source="{outerDocument.setSelectUnitButton(data)}"/>
+
+</mx:Box>

@@ -1,0 +1,1105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{createComp();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _resourceVO:ResourceVO;
+        private var  recipeAbsentWindow:RecipeAbsentWindow;
+        public var  checkUnionWindow:CheckUnionWindow;
+        private var  selectRecipe:Object;
+        private var  leyLine:Boolean = false;
+        private var  recipeDescriptionWindow:RecipeDescriptionWindow;
+        private var  unitStatusPopUpWindow:UnitStatusPopUpWindow;
+        private var  _tutMarkRecipeUnionVisible:Boolean = false;
+        public static const  ADD_UNIT_SWF:String = NAME + "addUnitSwf";
+        public static const  REMOVE_UNIT_SWF:String = NAME + "subUnitSwf";
+        public static const  NAME:String = "recipeUnionWindow";
+        public static const  RECIPE_UNION_RUN:String = NAME + "recipeUnion";
+        public static const  RECIPE_UNION_END:String = NAME + "recipeUnionEnd";
+
+
+        public function _RecipeUnionWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn1 = _loc_1;
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn1", _RecipeUnionWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn43_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "level";
+            _loc_1.headerText = "Lv";
+            _loc_1.width = 37;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn20_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn20 = _loc_1;
+            _loc_1.dataField = "jobMasterVO.nameLabel";
+            _loc_1.width = 80;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn20", _RecipeUnionWindow_DataGridColumn20);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn31_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn31 = _loc_1;
+            _loc_1.dataField = "jobMasterVO.nameLabel";
+            _loc_1.width = 80;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn31", _RecipeUnionWindow_DataGridColumn31);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_ClassFactory9_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRendererTutorial1 = _loc_1;
+            _loc_1.generator = RecipeUnionWindow_inlineComponent5;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn42_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn42 = _loc_1;
+            _loc_1.dataField = "jobMasterVO.nameLabel";
+            _loc_1.width = 80;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn42", _RecipeUnionWindow_DataGridColumn42);
+            return _loc_1;
+        }// end function
+
+        public function getItemText(param1:Object) : String
+        {
+            return param1 ? (param1.quantity.toString()) : ("0");
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn30_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn30 = _loc_1;
+            _loc_1.dataField = "name";
+            _loc_1.itemRenderer = _RecipeUnionWindow_ClassFactory3_c();
+            _loc_1.width = 80;
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn30", _RecipeUnionWindow_DataGridColumn30);
+            return _loc_1;
+        }// end function
+
+        public function setSelectUnitButton(param1:Object) : Class
+        {
+            if (isLack(spiritOfFire) || isLack(spiritOfEarth) || isLack(spiritOfFire))
+            {
+                return selectOffImage;
+            }
+            return selectImage;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn41_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn41 = _loc_1;
+            _loc_1.dataField = "name";
+            _loc_1.itemRenderer = _RecipeUnionWindow_ClassFactory4_c();
+            _loc_1.width = 75;
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn41", _RecipeUnionWindow_DataGridColumn41);
+            return _loc_1;
+        }// end function
+
+        public function closeRecipeUnion() : void
+        {
+            yinUnit = new UnitVO();
+            yangUnit = new UnitVO();
+            selectUnitConfirm = false;
+            yangNecessarySoul = 0;
+            yinNecessarySoul = 0;
+            var _loc_1:String = null;
+            spiritOfWater = null;
+            var _loc_1:* = _loc_1;
+            spiritOfEarth = _loc_1;
+            spiritOfFire = _loc_1;
+            sendEvent(RECIPE_UNION_END);
+            return;
+        }// end function
+
+        public function _RecipeUnionWindow_ClassFactory8_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRendererTutorial0 = _loc_1;
+            _loc_1.generator = RecipeUnionWindow_inlineComponent4;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn40_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn40 = _loc_1;
+            _loc_1.width = 78;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn40", _RecipeUnionWindow_DataGridColumn40);
+            return _loc_1;
+        }// end function
+
+        public function isLack(param1:Object) : Boolean
+        {
+            return param1 && param1.quantity > getMaterial(param1.itemId).quantity;
+        }// end function
+
+        public function _RecipeUnionWindow_ClassFactory7_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRenderer2 = _loc_1;
+            _loc_1.generator = RecipeUnionWindow_inlineComponent3;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function init(param1:Boolean) : void
+        {
+            yinUnit = new UnitVO();
+            yangUnit = new UnitVO();
+            description = Utils.i18n("pecipeUnionPleaseSelectedRecipe");
+            selectUnitConfirm = false;
+            leyLine = param1;
+            yangNecessarySoul = 0;
+            yinNecessarySoul = 0;
+            var _loc_2:String = null;
+            spiritOfWater = null;
+            var _loc_2:* = _loc_2;
+            spiritOfEarth = _loc_2;
+            spiritOfFire = _loc_2;
+            return;
+        }// end function
+
+        public function showYinTutMark(param1:Object) : Boolean
+        {
+            var _loc_2:* = yinUnitList_tutorial.dataProvider.getItemIndex(param1);
+            if (_loc_2 == 0 && _tutMarkRecipeUnionVisible)
+            {
+                return visible;
+            }
+            return false;
+        }// end function
+
+        public function _RecipeUnionWindow_ClassFactory6_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRenderer1 = _loc_1;
+            _loc_1.generator = RecipeUnionWindow_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn50_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn50 = _loc_1;
+            _loc_1.dataField = "luck";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn50", _RecipeUnionWindow_DataGridColumn50);
+            return _loc_1;
+        }// end function
+
+        public function getItemColor(param1:Object) : uint
+        {
+            return isLack(param1) ? (15073298) : (0);
+        }// end function
+
+        public function _RecipeUnionWindow_ClassFactory5_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRenderer0 = _loc_1;
+            _loc_1.generator = RecipeUnionWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function setSelectRecipeButton(param1:Object) : Class
+        {
+            var data:* = param1;
+            if (_homeAllUnits.filter(function (param1:UnitVO, param2:int, param3:Array) : Boolean
+            {
+                return param1.jobMasterVO.masterId == data.yangUnit.job_id && param1.level >= data.yangUnit.level;
+            }// end function
+            ).length <= 0)
+            {
+                return selectOffImage;
+            }
+            if (_homeAllUnits.filter(function (param1:UnitVO, param2:int, param3:Array) : Boolean
+            {
+                return param1.jobMasterVO.masterId == data.yinUnit.job_id && param1.level >= data.yinUnit.level;
+            }// end function
+            ).length <= 0)
+            {
+                return selectOffImage;
+            }
+            return selectImage;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn19_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn19 = _loc_1;
+            _loc_1.dataField = "name";
+            _loc_1.itemRenderer = _RecipeUnionWindow_ClassFactory2_c();
+            _loc_1.width = 75;
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn19", _RecipeUnionWindow_DataGridColumn19);
+            return _loc_1;
+        }// end function
+
+        public function startIndex() : void
+        {
+            sendPopupEvent(REMOVE_UNIT_SWF, {unit:yangUnit});
+            sendPopupEvent(REMOVE_UNIT_SWF, {unit:yinUnit});
+            viewStack.selectedIndex = 0;
+            yinUnit = new UnitVO();
+            yangUnit = new UnitVO();
+            description = Utils.i18n("pecipeUnionPleaseSelectedRecipe");
+            yangNecessarySoul = 0;
+            yinNecessarySoul = 0;
+            selectUnitConfirm = false;
+            yangUnitCanvas.visible = false;
+            yinUnitCanvas.visible = false;
+            return;
+        }// end function
+
+        public function recipeDescription(param1:Object) : void
+        {
+            popupWindow(recipeDescriptionWindow);
+            recipeDescriptionWindow.description = param1.recipeDescription;
+            return;
+        }// end function
+
+        public function _RecipeUnionWindow_ClassFactory4_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = UnitDetailLabelRenderer;
+            return _loc_1;
+        }// end function
+
+        public function addLeyLineEffect(param1:int) : int
+        {
+            return param1 - Math.ceil(param1 * 0.1);
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn18_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn18 = _loc_1;
+            _loc_1.width = 78;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn18", _RecipeUnionWindow_DataGridColumn18);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_ClassFactory3_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = UnitDetailLabelRenderer;
+            return _loc_1;
+        }// end function
+
+        public function setTutMarkVisible(param1:Boolean) : void
+        {
+            if (!param1)
+            {
+                tutVisible = true;
+                nonTutVisible = false;
+                _tutMarkRecipeUnionVisible = true;
+            }
+            else
+            {
+                _tutMarkRecipeUnionVisible = false;
+                tutVisible = false;
+                nonTutVisible = true;
+            }
+            return;
+        }// end function
+
+        public function addSelectIndex(param1:Object) : void
+        {
+            var data:* = param1;
+            if (isLack(spiritOfFire) || isLack(spiritOfEarth) || isLack(spiritOfFire))
+            {
+                return;
+            }
+            if (viewStack.selectedIndex == 0)
+            {
+                selectRecipe = data;
+                if (_homeAllUnits.filter(function (param1:UnitVO, param2:int, param3:Array) : Boolean
+            {
+                return param1.jobMasterVO.masterId == selectRecipe.yangUnit.job_id && param1.level >= selectRecipe.yangUnit.level;
+            }// end function
+            ).length <= 0 || _homeAllUnits.filter(function (param1:UnitVO, param2:int, param3:Array) : Boolean
+            {
+                return param1.jobMasterVO.masterId == selectRecipe.yinUnit.job_id && param1.level >= selectRecipe.yinUnit.level;
+            }// end function
+            ).length <= 0)
+                {
+                    return;
+                }
+                spiritOfFire = getItem("spirit_of_fire");
+                spiritOfEarth = getItem("spirit_of_earth");
+                spiritOfWater = getItem("spirit_of_water");
+                description = Utils.i18n("normalUnionSelectYangUnit");
+                selectUnitConfirm = false;
+                yangCandidateUnit = _homeAllUnits.filter(function (param1:UnitVO, param2:int, param3:Array) : Boolean
+            {
+                return param1.jobMasterVO.masterId == selectRecipe.yangUnit.job_id && param1.level >= selectRecipe.yangUnit.level;
+            }// end function
+            );
+                var _loc_3:* = viewStack;
+                var _loc_4:* = viewStack.selectedIndex + 1;
+                _loc_3.selectedIndex = _loc_4;
+            }
+            else if (viewStack.selectedIndex == 1)
+            {
+                yangUnit = new UnitVO();
+                yangUnit = UnitVO(data);
+                description = Utils.i18n("normalUnionSelectYinUnit");
+                selectUnitConfirm = true;
+                yangUnitCanvas.visible = true;
+                yangNecessarySoul = necessaryUnionSoul(yangUnit);
+                sendPopupEvent(ADD_UNIT_SWF, {unit:yangUnit, type:"yang"});
+                yinCandidateUnit = _homeAllUnits.filter(function (param1:UnitVO, param2:int, param3:Array) : Boolean
+            {
+                return param1.jobMasterVO.masterId == selectRecipe.yinUnit.job_id && param1.level >= selectRecipe.yinUnit.level && param1 != yangUnit;
+            }// end function
+            );
+                var _loc_3:* = viewStack;
+                var _loc_4:* = viewStack.selectedIndex + 1;
+                _loc_3.selectedIndex = _loc_4;
+            }
+            else if (viewStack.selectedIndex == 2)
+            {
+                yinUnit = new UnitVO();
+                yinUnit = UnitVO(data);
+                description = "";
+                selectUnitConfirm = true;
+                yinNecessarySoul = necessaryUnionSoul(yinUnit);
+                yinUnitCanvas.visible = true;
+                checkUnionWindow.yangUnit = yangUnit;
+                checkUnionWindow.yinUnit = yinUnit;
+                checkUnionWindow.init();
+                sendPopupEvent(ADD_UNIT_SWF, {unit:yinUnit, type:"yin"});
+                this.popupWindow(checkUnionWindow, false);
+                if (yangNecessarySoul + yinNecessarySoul > _soulCrystal)
+                {
+                    checkUnionWindow.viewStack.selectedIndex = 1;
+                }
+            }
+            return;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn29_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn29 = _loc_1;
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn29", _RecipeUnionWindow_DataGridColumn29);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn17_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn17 = _loc_1;
+            _loc_1.dataField = "luck";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn17", _RecipeUnionWindow_DataGridColumn17);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn9_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn9 = _loc_1;
+            _loc_1.dataField = "jobMasterVO.nameLabel";
+            _loc_1.width = 80;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn9", _RecipeUnionWindow_DataGridColumn9);
+            return _loc_1;
+        }// end function
+
+        public function getSoulSize(param1:int) : int
+        {
+            if (leyLine)
+            {
+                return addLeyLineEffect(param1);
+            }
+            return param1;
+        }// end function
+
+        public function showRecipeTutMark(param1:Object) : Boolean
+        {
+            var _loc_2:* = recipe_list_tutorial.dataProvider.getItemIndex(param1);
+            if (_loc_2 == 0 && _tutMarkRecipeUnionVisible)
+            {
+                return visible;
+            }
+            return false;
+        }// end function
+
+        public function _RecipeUnionWindow_ClassFactory2_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = UnitDetailLabelRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn28_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn28 = _loc_1;
+            _loc_1.dataField = "luck";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn28", _RecipeUnionWindow_DataGridColumn28);
+            return _loc_1;
+        }// end function
+
+        public function createComp() : void
+        {
+            checkUnionWindow.addEventListener(CheckUnionWindow.START_UNION, function (event:Event) : void
+            {
+                unionCeremony();
+                return;
+            }// end function
+            );
+            checkUnionWindow.addEventListener(CheckUnionWindow.START_INDEX, function (event:Event) : void
+            {
+                startIndex();
+                return;
+            }// end function
+            );
+            MovieClip(Loader(_swf_back.getChildAt(0)).content).gotoAndPlay("button_back");
+            MovieClip(Loader(_swf_cancel_yang.getChildAt(0)).content).gotoAndPlay("button_back");
+            MovieClip(Loader(_swf_cancel_yin.getChildAt(0)).content).gotoAndPlay("button_back");
+            return;
+        }// end function
+
+        public function showYangTutMark(param1:Object) : Boolean
+        {
+            var _loc_2:* = yangUnitList_tutorial.dataProvider.getItemIndex(param1);
+            if (_loc_2 == 0 && _tutMarkRecipeUnionVisible)
+            {
+                return visible;
+            }
+            return false;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn39_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn39 = _loc_1;
+            _loc_1.dataField = "luck";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn39", _RecipeUnionWindow_DataGridColumn39);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn8_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn8 = _loc_1;
+            _loc_1.dataField = "name";
+            _loc_1.itemRenderer = _RecipeUnionWindow_ClassFactory1_c();
+            _loc_1.width = 80;
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn8", _RecipeUnionWindow_DataGridColumn8);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn16_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn16 = _loc_1;
+            _loc_1.dataField = "intelligence";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn16", _RecipeUnionWindow_DataGridColumn16);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_ClassFactory1_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = UnitDetailLabelRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn27_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn27 = _loc_1;
+            _loc_1.dataField = "intelligence";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn27", _RecipeUnionWindow_DataGridColumn27);
+            return _loc_1;
+        }// end function
+
+        public function unionCeremony() : void
+        {
+            sendPopupEvent(REMOVE_UNIT_SWF, {unit:yangUnit});
+            sendPopupEvent(REMOVE_UNIT_SWF, {unit:yinUnit});
+            viewStack.selectedIndex = 0;
+            selectUnitConfirm = false;
+            yangNecessarySoul = 0;
+            yinNecessarySoul = 0;
+            var _loc_1:String = null;
+            spiritOfWater = null;
+            var _loc_1:* = _loc_1;
+            spiritOfEarth = _loc_1;
+            spiritOfFire = _loc_1;
+            sendPopupEvent(RECIPE_UNION_RUN, {yangUnit:yangUnit, yinUnit:yinUnit, recipeId:selectRecipe.master.masterId});
+            return;
+        }// end function
+
+        public function getSoulColor(param1:int, param2:int) : uint
+        {
+            if (param1 == 0)
+            {
+                return 0;
+            }
+            return param1 + param2 > _soulCrystal ? (15073298) : (0);
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn15_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn15 = _loc_1;
+            _loc_1.dataField = "defense";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn15", _RecipeUnionWindow_DataGridColumn15);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn38_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn38 = _loc_1;
+            _loc_1.dataField = "intelligence";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn38", _RecipeUnionWindow_DataGridColumn38);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn7_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn7 = _loc_1;
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn7", _RecipeUnionWindow_DataGridColumn7);
+            return _loc_1;
+        }// end function
+
+        public function getMaterial(param1:int) : MaterialVO
+        {
+            var _loc_2:MaterialVO = null;
+            for each (_loc_2 in _resourceVO.materials)
+            {
+                
+                if (_loc_2.masterVO.masterId == param1)
+                {
+                    break;
+                }
+            }
+            return _loc_2;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn26_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn26 = _loc_1;
+            _loc_1.dataField = "defense";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn26", _RecipeUnionWindow_DataGridColumn26);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn49_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn49 = _loc_1;
+            _loc_1.dataField = "intelligence";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn49", _RecipeUnionWindow_DataGridColumn49);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn14_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn14 = _loc_1;
+            _loc_1.dataField = "agility";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn14", _RecipeUnionWindow_DataGridColumn14);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn37_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn37 = _loc_1;
+            _loc_1.dataField = "defense";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn37", _RecipeUnionWindow_DataGridColumn37);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn6 = _loc_1;
+            _loc_1.dataField = "description";
+            _loc_1.setStyle("fontSize", 11);
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn6", _RecipeUnionWindow_DataGridColumn6);
+            return _loc_1;
+        }// end function
+
+        public function necessaryUnionSoul(param1:UnitVO) : int
+        {
+            return getSoulSize(Math.ceil(param1.jobMasterVO.consumptionAnima * param1.level * 0.5));
+        }// end function
+
+        public function subSelectIndex() : void
+        {
+            yangUnitCanvas.visible = false;
+            yinUnitCanvas.visible = false;
+            if (viewStack.selectedIndex == 2)
+            {
+                viewStack.selectedIndex = 1;
+                sendPopupEvent(REMOVE_UNIT_SWF, {unit:yangUnit});
+                yinUnit = new UnitVO();
+                yangUnit = new UnitVO();
+                yangNecessarySoul = 0;
+                yinNecessarySoul = 0;
+                description = Utils.i18n("normalUnionSelectYangUnit");
+                selectUnitConfirm = false;
+            }
+            else if (viewStack.selectedIndex == 1)
+            {
+                viewStack.selectedIndex = 0;
+                yinUnit = new UnitVO();
+                yangUnit = new UnitVO();
+                description = Utils.i18n("pecipeUnionPleaseSelectedRecipe");
+                yangNecessarySoul = 0;
+                yinNecessarySoul = 0;
+                selectUnitConfirm = false;
+                var _loc_1:String = null;
+                spiritOfWater = null;
+                var _loc_1:* = _loc_1;
+                spiritOfEarth = _loc_1;
+                spiritOfFire = _loc_1;
+            }
+            return;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn25_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn25 = _loc_1;
+            _loc_1.dataField = "agility";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn25", _RecipeUnionWindow_DataGridColumn25);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn48_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn48 = _loc_1;
+            _loc_1.dataField = "defense";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn48", _RecipeUnionWindow_DataGridColumn48);
+            return _loc_1;
+        }// end function
+
+        public function onClick(param1:UnitVO) : void
+        {
+            if (param1.unitId == 0)
+            {
+                return;
+            }
+            unitStatusPopUpWindow = new UnitStatusPopUpWindow();
+            unitStatusPopUpWindow.unit = param1;
+            this.popupWindow(unitStatusPopUpWindow, false);
+            return;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn13_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn13 = _loc_1;
+            _loc_1.dataField = "tech";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn13", _RecipeUnionWindow_DataGridColumn13);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn36_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn36 = _loc_1;
+            _loc_1.dataField = "agility";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn36", _RecipeUnionWindow_DataGridColumn36);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn5_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn5 = _loc_1;
+            _loc_1.width = 127;
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn5", _RecipeUnionWindow_DataGridColumn5);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn24_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn24 = _loc_1;
+            _loc_1.dataField = "tech";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn24", _RecipeUnionWindow_DataGridColumn24);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn47_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn47 = _loc_1;
+            _loc_1.dataField = "agility";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn47", _RecipeUnionWindow_DataGridColumn47);
+            return _loc_1;
+        }// end function
+
+        public function candidateExist(param1:Object) : Boolean
+        {
+            var recipe:* = param1;
+            if (_homeAllUnits.filter(function (param1:UnitVO, param2:int, param3:Array) : Boolean
+            {
+                return param1.jobMasterVO.code == recipe.yangCode;
+            }// end function
+            ).length <= 0)
+            {
+                return false;
+            }
+            if (_homeAllUnits.filter(function (param1:UnitVO, param2:int, param3:Array) : Boolean
+            {
+                return param1.jobMasterVO.code == recipe.yinCode;
+            }// end function
+            ).length <= 0)
+            {
+                return false;
+            }
+            return true;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn35_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn35 = _loc_1;
+            _loc_1.dataField = "tech";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn35", _RecipeUnionWindow_DataGridColumn35);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn12_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn12 = _loc_1;
+            _loc_1.dataField = "strength";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn12", _RecipeUnionWindow_DataGridColumn12);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn4 = _loc_1;
+            _loc_1.width = 78;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn4", _RecipeUnionWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn23_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn23 = _loc_1;
+            _loc_1.dataField = "strength";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn23", _RecipeUnionWindow_DataGridColumn23);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_ClassFactory12_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            recipeNameRenderer = _loc_1;
+            _loc_1.generator = RecipeUnionWindow_inlineComponent8;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn46_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn46 = _loc_1;
+            _loc_1.dataField = "tech";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn46", _RecipeUnionWindow_DataGridColumn46);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn11_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "hp";
+            _loc_1.headerText = "HP";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn34_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn34 = _loc_1;
+            _loc_1.dataField = "strength";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn34", _RecipeUnionWindow_DataGridColumn34);
+            return _loc_1;
+        }// end function
+
+        public function getItem(param1:String) : Object
+        {
+            var _loc_2:Object = null;
+            for each (_loc_2 in selectRecipe.master.items)
+            {
+                
+                if (_loc_2.name == param1)
+                {
+                    return _loc_2;
+                }
+            }
+            return null;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "description";
+            _loc_1.setStyle("fontSize", 11);
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn3", _RecipeUnionWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_ClassFactory11_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            expLabel = _loc_1;
+            _loc_1.generator = RecipeUnionWindow_inlineComponent7;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn45_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn45 = _loc_1;
+            _loc_1.dataField = "strength";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn45", _RecipeUnionWindow_DataGridColumn45);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn22_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "hp";
+            _loc_1.headerText = "HP";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn33_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "hp";
+            _loc_1.headerText = "HP";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn10_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "level";
+            _loc_1.headerText = "Lv";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _RecipeUnionWindow_DataGridColumn2 = _loc_1;
+            _loc_1.width = 130;
+            BindingManager.executeBindings(this, "_RecipeUnionWindow_DataGridColumn2", _RecipeUnionWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn44_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "hp";
+            _loc_1.headerText = "HP";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn21_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "level";
+            _loc_1.headerText = "Lv";
+            _loc_1.width = 37;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_ClassFactory10_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRendererTutorial2 = _loc_1;
+            _loc_1.generator = RecipeUnionWindow_inlineComponent6;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _RecipeUnionWindow_DataGridColumn32_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "level";
+            _loc_1.headerText = "Lv";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="unitLayer" x="-35" y="-100"/>
+	<mx:Text id="_RecipeUnionWindow_Text1" styleName="PanelBaseTitle" x="300" y="201" text="{Utils.i18n("recipeUnionTitle")}"/>
+	<mx:Text id="descriptionText" x="55" y="230" fontSize="11" text="description"/>
+	<mx:Canvas height="470" width="680">
+		<mx:ViewStack id="viewStack" x="55" y="255">
+			<mx:VBox height="200">
+				<mx:DataGrid id="recipe_list" rowCount="4" width="590" styleName="DataGridBase" selectable="false" sortableColumns="false" includeInLayout="false" columns="{[_RecipeUnionWindow_DataGridColumn1_i(), _RecipeUnionWindow_DataGridColumn2_i(), _RecipeUnionWindow_DataGridColumn3_i()]}" dataProvider='{_allRecipe}' visible="nonTutVisible"/>
+				<mx:DataGrid id="recipe_list_tutorial" rowCount="4" width="590" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_RecipeUnionWindow_DataGridColumn4_i(), _RecipeUnionWindow_DataGridColumn5_i(), _RecipeUnionWindow_DataGridColumn6_i()]}" dataProvider='{_allRecipe}' visible="tutVisible"/>
+				<mx:HBox>
+					<mx:Spacer width="230"/>
+					<mx:Image id="_RecipeUnionWindow_Image1" click="{closeRecipeUnion();}" source="{_swf_back}"/>
+				</mx:HBox>
+			</mx:VBox>
+			<mx:VBox>
+				<mx:DataGrid id="yangUnitList" rowCount="4" width="590" styleName="DataGridBase" selectable="false" sortableColumns="false" includeInLayout="false" columns="{[_RecipeUnionWindow_DataGridColumn7_i(), _RecipeUnionWindow_DataGridColumn8_i(), _RecipeUnionWindow_DataGridColumn9_i(), _RecipeUnionWindow_DataGridColumn10_c(), _RecipeUnionWindow_DataGridColumn11_c(), _RecipeUnionWindow_DataGridColumn12_i(), _RecipeUnionWindow_DataGridColumn13_i(), _RecipeUnionWindow_DataGridColumn14_i(), _RecipeUnionWindow_DataGridColumn15_i(), _RecipeUnionWindow_DataGridColumn16_i(), _RecipeUnionWindow_DataGridColumn17_i()]}" dataProvider='{yangCandidateUnit}' visible="nonTutVisible"/>
+				<mx:DataGrid id="yangUnitList_tutorial" rowCount="4" width="590" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_RecipeUnionWindow_DataGridColumn18_i(), _RecipeUnionWindow_DataGridColumn19_i(), _RecipeUnionWindow_DataGridColumn20_i(), _RecipeUnionWindow_DataGridColumn21_c(), _RecipeUnionWindow_DataGridColumn22_c(), _RecipeUnionWindow_DataGridColumn23_i(), _RecipeUnionWindow_DataGridColumn24_i(), _RecipeUnionWindow_DataGridColumn25_i(), _RecipeUnionWindow_DataGridColumn26_i(), _RecipeUnionWindow_DataGridColumn27_i(), _RecipeUnionWindow_DataGridColumn28_i()]}" dataProvider='{yangCandidateUnit}' visible="tutVisible"/>
+				<mx:HBox>
+					<mx:Spacer width="230"/>
+					<mx:Image id="_RecipeUnionWindow_Image2" click="{subSelectIndex();}" source="{_swf_cancel_yang}"/>
+				</mx:HBox>
+			</mx:VBox>
+			<mx:VBox>
+				<mx:DataGrid id="yinUnitList" rowCount="4" width="590" styleName="DataGridBase" selectable="false" sortableColumns="false" includeInLayout="false" columns="{[_RecipeUnionWindow_DataGridColumn29_i(), _RecipeUnionWindow_DataGridColumn30_i(), _RecipeUnionWindow_DataGridColumn31_i(), _RecipeUnionWindow_DataGridColumn32_c(), _RecipeUnionWindow_DataGridColumn33_c(), _RecipeUnionWindow_DataGridColumn34_i(), _RecipeUnionWindow_DataGridColumn35_i(), _RecipeUnionWindow_DataGridColumn36_i(), _RecipeUnionWindow_DataGridColumn37_i(), _RecipeUnionWindow_DataGridColumn38_i(), _RecipeUnionWindow_DataGridColumn39_i()]}" dataProvider='{yinCandidateUnit}' visible="nonTutVisible"/>
+				<mx:DataGrid id="yinUnitList_tutorial" rowCount="4" width="590" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_RecipeUnionWindow_DataGridColumn40_i(), _RecipeUnionWindow_DataGridColumn41_i(), _RecipeUnionWindow_DataGridColumn42_i(), _RecipeUnionWindow_DataGridColumn43_c(), _RecipeUnionWindow_DataGridColumn44_c(), _RecipeUnionWindow_DataGridColumn45_i(), _RecipeUnionWindow_DataGridColumn46_i(), _RecipeUnionWindow_DataGridColumn47_i(), _RecipeUnionWindow_DataGridColumn48_i(), _RecipeUnionWindow_DataGridColumn49_i(), _RecipeUnionWindow_DataGridColumn50_i()]}" dataProvider='{yinCandidateUnit}' visible="tutVisible"/>
+				<mx:HBox>
+					<mx:Spacer width="230"/>
+					<mx:Image id="_RecipeUnionWindow_Image3" click="{subSelectIndex();}" source="{_swf_cancel_yin}"/>
+				</mx:HBox>
+			</mx:VBox>
+			<mx:VBox>
+				<mx:Text id="_RecipeUnionWindow_Text3" x="120" y="60" text="{Utils.i18n("recipeUnionConf", yangUnit.name, yinUnit.name)}"/>
+				<mx:HBox width="300" x="110" y="250">
+					<mx:Button x="10" y="60" buttonMode="true" overSkin="_embed_mxml__images_home_btn_makemail_on_png_429251209" upSkin="_embed_mxml__images_home_btn_makemail_off_png_1742476087" downSkin="_embed_mxml__images_home_btn_makemail_on_png_429251209" click="{unionCeremony();}"/>
+					<mx:Button x="10" y="150" buttonMode="true" overSkin="_embed_mxml__images_home_st_btn_delcancel_on_png_138482313" upSkin="_embed_mxml__images_home_st_btn_delcancel_off_png_818309943" downSkin="_embed_mxml__images_home_st_btn_delcancel_on_png_138482313" click="{startIndex();}"/>
+				</mx:HBox>
+			</mx:VBox>
+		</mx:ViewStack>
+	</mx:Canvas>
+	<mx:Canvas>
+		<mx:Canvas id="yangUnitCanvas" visible="false">
+			<mx:Label id="_RecipeUnionWindow_Label1" x="70" y="90" buttonMode="true" mouseChildren="false" textDecoration="underline" click="{onClick(yangUnit);}" text="{Utils.i18n("generalName") + ":" + yangUnit.name}"/>
+			<mx:Label id="_RecipeUnionWindow_Label2" x="70" y="110" text="{Utils.i18n("generalJob") + ":" + yangUnit.jobMasterVO.nameLabel}"/>
+			<mx:Label id="_RecipeUnionWindow_Label3" x="70" y="130" text="{"Lv:" + yangUnit.level}"/>
+			<mx:Label id="_RecipeUnionWindow_Label4" x="70" y="150" text="{Utils.i18n("normalUnionNecessorySoulCrystalCount") + ":" + yangNecessarySoul}"/>
+		</mx:Canvas>
+		<mx:Canvas id="yinUnitCanvas" visible="false">
+			<mx:Label id="_RecipeUnionWindow_Label5" x="500" y="90" buttonMode="true" mouseChildren="false" textDecoration="underline" click="{onClick(yinUnit);}" text="{Utils.i18n("generalName") + ":" + yinUnit.name}"/>
+			<mx:Label id="_RecipeUnionWindow_Label6" x="500" y="110" text="{Utils.i18n("generalJob") + ":" + yinUnit.jobMasterVO.nameLabel}"/>
+			<mx:Label id="_RecipeUnionWindow_Label7" x="500" y="130" text="{"Lv:" + yinUnit.level}"/>
+			<mx:Label id="_RecipeUnionWindow_Label8" x="500" y="150" text="{Utils.i18n("normalUnionNecessorySoulCrystalCount") + ":" + yinNecessarySoul}"/>
+		</mx:Canvas>
+		<mx:Text id="totalSoulSize" x="255" y="5" fontSize="12" text="yangNecessarySoul + yinNecessarySoul" color="#00000000"/>
+		<mx:Text id="totalFireSize" x="315" y="5" fontSize="12" text="getItemText(spiritOfFire)" color="#00000000"/>
+		<mx:Text id="totalEarthSize" x="375" y="5" fontSize="12" text="getItemText(spiritOfEarth)" color="#00000000"/>
+		<mx:Text id="totalWaterSize" x="435" y="5" fontSize="12" text="getItemText(spiritOfWater)" color="#00000000"/>
+	</mx:Canvas>
+
+</mx:PopupWindow>

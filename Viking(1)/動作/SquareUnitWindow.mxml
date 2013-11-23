@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="740" height="567" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.home.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  confirmSummonHeroWindow:ConfirmSummonHeroWindow;
+        private var  squareConfirmWindow:SquareConfirmWindow;
+        private var  _mercenaries:ArrayCollection;
+        private var  squareRefreshConfirmWindow:SquareRefreshConfirmWindow;
+
+
+        public function _SquareUnitWindow_DataGridColumn1_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "unit.name";
+            _loc_1.headerText = "名前";
+            _loc_1.width = 100;
+            _loc_1.itemRenderer = _SquareUnitWindow_ClassFactory1_c();
+            return _loc_1;
+        }// end function
+
+        public function _SquareUnitWindow_DataGridColumn3_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "unit.level";
+            _loc_1.headerText = "Lv";
+            _loc_1.width = 25;
+            return _loc_1;
+        }// end function
+
+        public function _SquareUnitWindow_DataGridColumn5_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "unit.genderLabel";
+            _loc_1.headerText = "性別";
+            _loc_1.width = 25;
+            return _loc_1;
+        }// end function
+
+        public function _SquareUnitWindow_DataGridColumn7_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "requirement.nameLabel";
+            _loc_1.headerText = "雇用条件";
+            _loc_1.width = 100;
+            return _loc_1;
+        }// end function
+
+        public function init() : void
+        {
+            squareConfirmWindow.addEventListener(SquareConfirmWindow.CONFIRMED, confirmHandler);
+            squareRefreshConfirmWindow.addEventListener(SquareRefreshConfirmWindow.CONFIRMED, confirmRefreshHandler);
+            confirmSummonHeroWindow.addEventListener(ConfirmSummonHeroWindow.CONFIRMED, confirmSummonHeroHandler);
+            confirmSummonHeroWindow.addEventListener(ConfirmSummonHeroWindow.CONFIRMED_BRAVE, confirmSummonHeroHandler);
+            return;
+        }// end function
+
+        public function _SquareUnitWindow_ClassFactory2_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = BloodImageRenderer;
+            return _loc_1;
+        }// end function
+
+        public function summonBrave() : void
+        {
+            confirmSummonHeroWindow.x = 100;
+            confirmSummonHeroWindow.y = 150;
+            confirmSummonHeroWindow.setLayout("Brave");
+            this.popupWindow(confirmSummonHeroWindow, false);
+            return;
+        }// end function
+
+        public function refreshMercenaries() : void
+        {
+            squareRefreshConfirmWindow.x = 100;
+            squareRefreshConfirmWindow.y = 150;
+            this.popupWindow(squareRefreshConfirmWindow, false);
+            return;
+        }// end function
+
+        public function _SquareUnitWindow_DataGridColumn2_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "unit.jobName";
+            _loc_1.headerText = "種族";
+            _loc_1.width = 100;
+            return _loc_1;
+        }// end function
+
+        public function _SquareUnitWindow_DataGridColumn4_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "unit.age";
+            _loc_1.headerText = "年齢";
+            _loc_1.width = 25;
+            return _loc_1;
+        }// end function
+
+        public function _SquareUnitWindow_DataGridColumn6_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.headerText = "血脈";
+            _loc_1.width = 25;
+            _loc_1.itemRenderer = _SquareUnitWindow_ClassFactory2_c();
+            return _loc_1;
+        }// end function
+
+        public function _SquareUnitWindow_DataGridColumn8_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "price";
+            _loc_1.headerText = "費用";
+            _loc_1.width = 50;
+            return _loc_1;
+        }// end function
+
+        public function confirmRefreshHandler(event:Event) : void
+        {
+            sendEvent(Viking.HOME_REFRESH_MERCENARY);
+            return;
+        }// end function
+
+        public function showConfirmation() : void
+        {
+            var _loc_1:MercenaryVO = null;
+            if (unitList.selectedIndex >= 0)
+            {
+                _loc_1 = mercenaries.getItemAt(unitList.selectedIndex) as MercenaryVO;
+                if (_loc_1)
+                {
+                    squareConfirmWindow.mercenary = _loc_1;
+                    squareConfirmWindow.x = 200;
+                    squareConfirmWindow.y = 150;
+                    this.popupWindow(squareConfirmWindow, false);
+                }
+            }
+            return;
+        }// end function
+
+        public function _SquareUnitWindow_ClassFactory1_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = UnitDetailLabelRenderer;
+            return _loc_1;
+        }// end function
+
+        public function itemClickHandler(event:ListEvent) : void
+        {
+            var _loc_2:* = mercenaries.getItemAt(event.rowIndex) as MercenaryVO;
+            employButton.enabled = _loc_2.canEmploy;
+            return;
+        }// end function
+
+        public function confirmHandler(event:PopupEvent) : void
+        {
+            sendPopupEvent(Viking.HOME_EMPLOY_MERCENARY, event.param);
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function confirmSummonHeroHandler(event:Event) : void
+        {
+            switch(event.type)
+            {
+                case ConfirmSummonHeroWindow.CONFIRMED:
+                {
+                    sendEvent(Viking.HOME_SUMMON_HERO);
+                    break;
+                }
+                case ConfirmSummonHeroWindow.CONFIRMED_BRAVE:
+                {
+                    sendEvent(Viking.HOME_SUMMON_BRAVE);
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function summonHero() : void
+        {
+            confirmSummonHeroWindow.x = 100;
+            confirmSummonHeroWindow.y = 150;
+            confirmSummonHeroWindow.setLayout("Hero");
+            this.popupWindow(confirmSummonHeroWindow, false);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Button width="26" height="26" styleName="closeBtn" buttonMode="true" fontSize="30" top="30" right="20" click="{onClose();}"/>
+	<mx:VBox top="38" horizontalCenter="0">
+		<mx:Text styleName="UnitSelectText" text="本日雇用出来る式姫です。毎日0:00に雇用出来る式姫が変更されます。" top="45" left="25"/>
+		<mx:DataGrid id="unitList" styleName="UnitListGrid" y="70" width="700" rowCount="3" height="96" sortableColumns="false" verticalScrollPolicy="off" columns="{[_SquareUnitWindow_DataGridColumn1_c(), _SquareUnitWindow_DataGridColumn2_c(), _SquareUnitWindow_DataGridColumn3_c(), _SquareUnitWindow_DataGridColumn4_c(), _SquareUnitWindow_DataGridColumn5_c(), _SquareUnitWindow_DataGridColumn6_c(), _SquareUnitWindow_DataGridColumn7_c(), _SquareUnitWindow_DataGridColumn8_c()]}" right="25" itemClick="{itemClickHandler(event);}" dataProvider='{mercenaries}'/>
+		<mx:Text id="_SquareUnitWindow_Text2" styleName="UnitSelectText" text="0:00をまたぐと表示されている式姫が雇えなくなるのでご注意下さい。" top="120" left="25" color="#00bc403a"/>
+		<mx:HBox width="100%">
+			<mx:Spacer width="100%"/>
+			<mx:Button label="" width="87" height="28" styleName="CancelCanaButton" buttonMode="true" click="{onClose();}"/>
+			<mx:Button id="employButton" label="" width="87" height="28" styleName="OnlyOkButton" buttonMode="true" click="{showConfirmation();}"/>
+			<mx:Spacer width="100%"/>
+		</mx:HBox>
+	</mx:VBox>
+
+</mx:PopupWindow>

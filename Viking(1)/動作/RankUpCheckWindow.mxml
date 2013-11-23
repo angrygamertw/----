@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{setup();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public static const  NAME:String = "rankUpCheckWindow";
+        public static const  RANK_UP:String = NAME + "rankUp";
+
+
+        public function closeWindow() : void
+        {
+            onClose();
+            MovieClip(Loader(_swf_no.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_no.getChildAt(0)).content).gotoAndPlay("button_no");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_close_window.getChildAt(0)).content).gotoAndPlay(1);
+            return;
+        }// end function
+
+        public function rankUp() : void
+        {
+            sendEvent(RANK_UP);
+            this.onClose();
+            MovieClip(Loader(_swf_yes.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_yes.getChildAt(0)).content).gotoAndPlay("button_yes");
+            return;
+        }// end function
+
+        public function closed() : void
+        {
+            this.onClose();
+            return;
+        }// end function
+
+        public function setup() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_300x200");
+            MovieClip(Loader(_swf_yes.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_no.getChildAt(0)).content).gotoAndPlay("button_no");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_RankUpCheckWindow_Image1" source="{_swf_window}"/>
+	<mx:Text id="_RankUpCheckWindow_Text1" styleName="DealTitle" x="230" y="180" width="300" text="{Utils.i18n("rankUpCheckTitle")}"/>
+	<mx:Canvas>
+		<mx:Canvas id="check">
+			<mx:Text id="_RankUpCheckWindow_Text2" x="250" y="215" fontSize="14" text="{Utils.i18n("rankUpCheckCanRankUp")}"/>
+			<mx:Text id="_RankUpCheckWindow_Text3" x="250" y="285" fontSize="14" text="{Utils.i18n("rankUpCheckAskRankUp")}"/>
+			<mx:Image id="_RankUpCheckWindow_Image2" y="330" click="{rankUp();}" x="325 - 65" source="{_swf_yes}"/>
+			<mx:Image id="_RankUpCheckWindow_Image3" y="330" click="{closeWindow();}" x="325 + 65" source="{_swf_no}"/>
+		</mx:Canvas>
+		<mx:Canvas id="announcement">
+			<mx:Text id="_RankUpCheckWindow_Text4" x="250" y="215" fontSize="14" text="{Utils.i18n("localize41")}"/>
+			<mx:Text id="_RankUpCheckWindow_Text5" x="250" y="245" fontSize="14" text="{Utils.i18n("rankUpMessage")}"/>
+			<mx:Image id="_RankUpCheckWindow_Image4" x="370" y="275" source="{_swf_icon_rank}"/>
+			<mx:Text id="indigoMessage" x="250" y="305" visible="false" fontSize="14" text="{Utils.i18n("indigoRankUp")}"/>
+			<mx:Image id="_RankUpCheckWindow_Image5" x="325" y="330" click="{closeWindow();}" source="{_swf_close}"/>
+		</mx:Canvas>
+	</mx:Canvas>
+	<mx:Image id="_RankUpCheckWindow_Image6" x="505" y="180" click="{closeWindow();}" source="{_swf_close_window}"/>
+
+</mx:PopupWindow>

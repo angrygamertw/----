@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" 669386_swf_name1="new EmbedSwfWindowName()" 669387_swf_name2="new EmbedSwfWindowName()" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  EmbedSwfWindowVs:Class;
+        private var  EmbedSwfWindowBg:Class;
+        private var  EmbedSwfWindowName:Class;
+        private var  EmbedSwfWindowComment:Class;
+        public static const  WAIT_ENDED:String = "MatchMovieWindow/WaitEnded";
+        public static const  MOVIE_ENDED:String = "MatchMovieWindow/MovieEnded";
+        public static const  ANIMATION_ENDED:String = "MatchMovieWindow/AnimationEnded";
+
+
+        public function startTimer(event:Event) : void
+        {
+            var e:* = event;
+            vibration();
+            var timer:* = new Timer(4500, 1);
+            timer.addEventListener(TimerEvent.TIMER, function (event:TimerEvent) : void
+            {
+                sendPopupEvent(WAIT_ENDED, tacticsParams);
+                return;
+            }// end function
+            );
+            timer.start();
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            MovieClip(Loader(_swf_vs.getChildAt(0)).content).gotoAndPlay(0);
+            Loader(_swf_vs.getChildAt(0)).content.addEventListener("ENLARGE_END", startTimer);
+            this.addEventListener(WAIT_ENDED, startTactics);
+            return;
+        }// end function
+
+        public function startTactics(event:Event) : void
+        {
+            sendPopupEvent(MOVIE_ENDED, tacticsParams);
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function vibration() : void
+        {
+            var timer:Timer;
+            timer = new Timer(33, 14);
+            timer.addEventListener(TimerEvent.TIMER, function (event:TimerEvent) : void
+            {
+                if (timer.currentCount >= 14)
+                {
+                    matchMovieCanvas.x = 0;
+                    matchMovieCanvas.y = 0;
+                }
+                else
+                {
+                    matchMovieCanvas.x = Utils.xRandomInt(-6, 6);
+                    matchMovieCanvas.y = Utils.xRandomInt(-6, 6);
+                }
+                return;
+            }// end function
+            );
+            timer.start();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="matchMovieCanvas" x="0" y="0">
+		<mx:Image id="_MatchMovieWindow_Image1" source="{_swf_bg}"/>
+		<mx:Image id="_MatchMovieWindow_Image2" x="-10" y="69" source="{playerUnitImage}"/>
+		<mx:Image id="_MatchMovieWindow_Image3" x="400" y="69" source="{targetUnitImage}"/>
+		<mx:Image id="_MatchMovieWindow_Image4" x="58" y="20" source="{_swf_name1}"/>
+		<mx:Image id="_MatchMovieWindow_Image5" x="433" y="20" source="{_swf_name2}"/>
+		<mx:Label id="_MatchMovieWindow_Label1" x="98" y="46" width="150" fontSize="14" text="{_tacticsParams.playerName}"/>
+		<mx:Label id="_MatchMovieWindow_Label2" x="473" y="46" width="150" fontSize="14" text="{_tacticsParams.targetName}"/>
+		<mx:Image id="_MatchMovieWindow_Image6" x="25" y="440" source="{_swf_comment1}"/>
+		<mx:Image id="_MatchMovieWindow_Image7" x="400" y="440" source="{_swf_comment2}"/>
+		<mx:Text id="_MatchMovieWindow_Text1" x="48" y="460" width="290" height="70" fontSize="14" text="{_tacticsParams.comment}"/>
+		<mx:Text id="_MatchMovieWindow_Text2" x="423" y="460" width="290" height="70" fontSize="14" text="{_tacticsParams.targetComment}"/>
+		<mx:Image id="_MatchMovieWindow_Image8" x="263" y="215" source="{_swf_vs}"/>
+	</mx:Canvas>
+
+</mx:PopupWindow>

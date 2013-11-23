@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:CanvasWithPopUp xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.effects.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  selectedActivity:String;
+        public var  collectUnitWindow:CollectUnitWindow;
+        private var  _units:Array;
+        public static const  NO_UNIT:String = NAME + "noUnit";
+        public static const  GATHERING_ACTIVITIES:Array = ["logging", "mining", "hunting", "quarrying", "training", "collecting"];
+        public static const  OPEN_UNIT_LIST:String = NAME + "openUnitList";
+        public static var  EmbedSwfRankIcon:Class;
+        public static const  CLOSE_UNIT_LIST:String = NAME + "closeUnitList";
+        public static const  CLOSED_COLLECT_WINDOW:String = NAME + "closedCollectWindow";
+        public static const  NAME:String = "collectWindow";
+
+
+        public function closeWindow() : void
+        {
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function unitSelectedHandler(event:PopupEvent) : void
+        {
+            sendEvent(CLOSE_UNIT_LIST);
+            PopUpManager.removePopUp(collectUnitWindow);
+            this.dispatchEvent(new PopupEvent(Viking.HOME_GATHER, {unitId:event.param.unitId, activity:selectedActivity, quantity:event.param.quantity}));
+            onClose();
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            collectUnitWindow.addEventListener(CollectUnitWindow.SELECTED, unitSelectedHandler);
+            return;
+        }// end function
+
+        public function _CollectWindow_Glow2_i() : Glow
+        {
+            var _loc_1:* = new Glow();
+            glowoff = _loc_1;
+            _loc_1.alphaFrom = 0.9;
+            _loc_1.alphaTo = 0;
+            _loc_1.blurXFrom = 10;
+            _loc_1.blurXTo = 2;
+            _loc_1.blurYFrom = 10;
+            _loc_1.blurYTo = 2;
+            _loc_1.color = 16766976;
+            _loc_1.inner = false;
+            _loc_1.knockout = false;
+            _loc_1.strength = 1;
+            return _loc_1;
+        }// end function
+
+        public function onClose() : void
+        {
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function _CollectWindow_Glow1_i() : Glow
+        {
+            var _loc_1:* = new Glow();
+            glow = _loc_1;
+            _loc_1.alphaFrom = 0.1;
+            _loc_1.alphaTo = 0.9;
+            _loc_1.blurXFrom = 2;
+            _loc_1.blurXTo = 10;
+            _loc_1.blurYFrom = 2;
+            _loc_1.blurYTo = 10;
+            _loc_1.color = 16766976;
+            _loc_1.inner = false;
+            _loc_1.knockout = false;
+            _loc_1.strength = 1;
+            return _loc_1;
+        }// end function
+
+        public function showUnits(param1:int) : void
+        {
+            var activityIndex:* = param1;
+            selectedActivity = GATHERING_ACTIVITIES[activityIndex];
+            var selectUnits:* = new Array();
+            selectUnits = units;
+            collectUnitWindow.units = selectUnits;
+            collectUnitWindow.init();
+            this.popupWindow(collectUnitWindow, false);
+            collectUnitWindow.training(false);
+            switch(activityIndex)
+            {
+                case 0:
+                {
+                    collectUnitWindow.listText.text = Utils.i18n("collectActionFires");
+                    collectUnitWindow.listTitle.text = Utils.i18n("generalMiningFires");
+                    break;
+                }
+                case 1:
+                {
+                    collectUnitWindow.listText.text = Utils.i18n("collectActionWater");
+                    collectUnitWindow.listTitle.text = Utils.i18n("generalMiningWater");
+                    break;
+                }
+                case 2:
+                {
+                    collectUnitWindow.listText.text = Utils.i18n("collectActionLands");
+                    collectUnitWindow.listTitle.text = Utils.i18n("generalMiningLands");
+                    break;
+                }
+                case 3:
+                {
+                    collectUnitWindow.listText.text = Utils.i18n("collectActionSilver");
+                    collectUnitWindow.listTitle.text = Utils.i18n("generalMiningSilvers");
+                    break;
+                }
+                case 4:
+                {
+                    collectUnitWindow.listText.text = Utils.i18n("collectActionTraining");
+                    collectUnitWindow.listTitle.text = Utils.i18n("generalTraining");
+                    collectUnitWindow.training(true);
+                    break;
+                }
+                case 5:
+                {
+                    collectUnitWindow.listText.text = Utils.i18n("collectActionGreens");
+                    collectUnitWindow.listTitle.text = Utils.i18n("generalCollectGreens");
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            collectUnitWindow.addEventListener(CollectUnitWindow.CLOSE_UNIT_LIST, function () : void
+            {
+                collectUnitWindow.removeEventListener(CollectUnitWindow.CLOSE_UNIT_LIST, arguments.callee);
+                sendEvent(CLOSE_UNIT_LIST);
+                return;
+            }// end function
+            );
+            sendEvent(OPEN_UNIT_LIST);
+            return;
+        }// end function
+
+        public function noUnitAlert() : void
+        {
+            sendEvent(NO_UNIT);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Canvas id="buttonLayer"/>
+	<mx:Canvas id="commandCanvas" x="330">
+		<mx:Text id="_CollectWindow_Text1" x="195" y="38" fontSize="15" fontWeight="bold" color="#00ffffff" text="{Utils.i18n("generalAction")}"/>
+		<mx:Image x="285" y="36" source="_embed_mxml__swf_common_button_close_window_swf_1370265653" click="{onClose();}"/>
+	</mx:Canvas>
+
+</mx:CanvasWithPopUp>

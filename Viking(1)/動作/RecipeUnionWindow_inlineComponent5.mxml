@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" width="78">
+	<mx:Script><![CDATA[
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.styles.*;
+
+        public var  _RecipeUnionWindow_inlineComponent5_Image1:Image;
+
+    ]]></mx:Script>
+
+	<mx:Image id="_RecipeUnionWindow_inlineComponent5_Image1" source="_embed_mxml__swf_common_arrow_right_swf_759350985" width="18" height="20" visible="{outerDocument.showYangTutMark(data)}"/>
+	<mx:Image id="normalButton" click="{outerDocument.addSelectIndex(data);}" source="{outerDocument.setSelectUnitButton(data)}"/>
+
+</mx:HBox>

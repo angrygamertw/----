@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:CanvasWithPopUp xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _dumpData:Object;
+        public var  weaponDetail:WeaponDetail;
+        private var  equipmentDetail:EquipmentDetail;
+        public static const  EQUIPMENT_COLLECTIVE_DUMP:String = "HomeAllItem/EquipmentCollectiveDump";
+        public static const  EQUIPMENT_DUMP:String = "HomeAllItem/EquipmentDump";
+        public static const  CLOSED_HOME_ALL_ITEM:String = "HomeAllItem/ClosedHomeAllItem";
+
+
+        public function _HomeAllItem_DataGridColumn5_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn5 = _loc_1;
+            _loc_1.dataField = "hit";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn5", _HomeAllItem_DataGridColumn5);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_ClassFactory2_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRenderer = _loc_1;
+            _loc_1.generator = HomeAllItem_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn26_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn26 = _loc_1;
+            _loc_1.dataField = "rarity";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn26", _HomeAllItem_DataGridColumn26);
+            return _loc_1;
+        }// end function
+
+        public function componentToolTip() : String
+        {
+            return Utils.i18n("generalShowDetail");
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn14_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn14 = _loc_1;
+            _loc_1.dataField = "endurance";
+            _loc_1.width = 60;
+            _loc_1.labelFunction = itemEnduranceLabel;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn14", _HomeAllItem_DataGridColumn14);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn4 = _loc_1;
+            _loc_1.dataField = "damage";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn4", _HomeAllItem_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            nameRenderer = _loc_1;
+            _loc_1.generator = HomeAllItem_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn25_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn25 = _loc_1;
+            _loc_1.dataField = "endurance";
+            _loc_1.width = 65;
+            _loc_1.labelFunction = itemEnduranceLabel;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn25", _HomeAllItem_DataGridColumn25);
+            return _loc_1;
+        }// end function
+
+        public function onDump(param1:Object) : void
+        {
+            dumpData = param1;
+            dispatchEvent(new Event(EQUIPMENT_DUMP));
+            return;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn13_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn13 = _loc_1;
+            _loc_1.dataField = "avoidance";
+            _loc_1.width = 45;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn13", _HomeAllItem_DataGridColumn13);
+            return _loc_1;
+        }// end function
+
+        public function collectiveDump() : void
+        {
+            var _loc_1:Array = [];
+            _loc_1 = _loc_1.concat(viewDataWeapon.source.find("selected", true));
+            _loc_1 = _loc_1.concat(viewDataArmor.source.find("selected", true));
+            _loc_1 = _loc_1.concat(viewDataAccessory.source.find("selected", true));
+            _loc_1 = _loc_1.concat(viewDataItem.source.find("selected", true));
+            if (_loc_1.length <= 0)
+            {
+                return;
+            }
+            dispatchEvent(new PopupEvent(EQUIPMENT_COLLECTIVE_DUMP, _loc_1));
+            return;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "weaponTypeLabel";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn3", _HomeAllItem_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn24_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn24 = _loc_1;
+            _loc_1.dataField = "effect";
+            _loc_1.width = 150;
+            _loc_1.sortable = false;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn24", _HomeAllItem_DataGridColumn24);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn12_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn12 = _loc_1;
+            _loc_1.dataField = "magicalDefense";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn12", _HomeAllItem_DataGridColumn12);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "masterId";
+            _loc_1.width = 100;
+            _loc_1.labelFunction = itemNameLabel;
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn2", _HomeAllItem_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn23_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn23 = _loc_1;
+            _loc_1.dataField = "masterId";
+            _loc_1.width = 100;
+            _loc_1.labelFunction = itemNameLabel;
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn23", _HomeAllItem_DataGridColumn23);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn11_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn11 = _loc_1;
+            _loc_1.dataField = "physicalDefense";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn11", _HomeAllItem_DataGridColumn11);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn19_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn19 = _loc_1;
+            _loc_1.dataField = "effectLabelAll";
+            _loc_1.width = 150;
+            _loc_1.sortable = false;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn19", _HomeAllItem_DataGridColumn19);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "selected";
+            _loc_1.editable = true;
+            _loc_1.rendererIsEditor = true;
+            _loc_1.editorDataField = "selected";
+            _loc_1.width = 30;
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn1", _HomeAllItem_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn9_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn9 = _loc_1;
+            _loc_1.dataField = "selected";
+            _loc_1.editable = true;
+            _loc_1.rendererIsEditor = true;
+            _loc_1.editorDataField = "selected";
+            _loc_1.width = 30;
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn9", _HomeAllItem_DataGridColumn9);
+            return _loc_1;
+        }// end function
+
+        public function onDetail(param1:Object) : void
+        {
+            if (param1.masterType == "WeaponMaster" || param1.masterType == "ArmorMaster" || param1.masterType == "AccessoryMaster")
+            {
+                weaponDetail.viewData = param1;
+                if (weaponDetail.viewData)
+                {
+                    popupWindow(weaponDetail, false);
+                }
+            }
+            else
+            {
+                equipmentDetail.viewData = param1;
+                if (equipmentDetail.viewData)
+                {
+                    popupWindow(equipmentDetail);
+                }
+            }
+            return;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn22_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn22 = _loc_1;
+            _loc_1.dataField = "selected";
+            _loc_1.editable = true;
+            _loc_1.rendererIsEditor = true;
+            _loc_1.editorDataField = "selected";
+            _loc_1.width = 30;
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn22", _HomeAllItem_DataGridColumn22);
+            return _loc_1;
+        }// end function
+
+        public function itemEnduranceLabel(param1:Object, param2:DataGridColumn) : String
+        {
+            return param1.enduranceLabel;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn10_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn10 = _loc_1;
+            _loc_1.dataField = "masterId";
+            _loc_1.width = 100;
+            _loc_1.labelFunction = itemNameLabel;
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn10", _HomeAllItem_DataGridColumn10);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn18_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn18 = _loc_1;
+            _loc_1.dataField = "masterId";
+            _loc_1.width = 100;
+            _loc_1.labelFunction = itemNameLabel;
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn18", _HomeAllItem_DataGridColumn18);
+            return _loc_1;
+        }// end function
+
+        public function itemNameLabel(param1:Object, param2:DataGridColumn) : String
+        {
+            return param1.nameLabel;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn21_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn21 = _loc_1;
+            _loc_1.dataField = "description";
+            _loc_1.sortable = false;
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn21", _HomeAllItem_DataGridColumn21);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn8_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn8 = _loc_1;
+            _loc_1.dataField = "description";
+            _loc_1.sortable = false;
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn8", _HomeAllItem_DataGridColumn8);
+            return _loc_1;
+        }// end function
+
+        public function setEquipment(param1:ResourceVO) : void
+        {
+            var homeResource:* = param1;
+            viewDataWeapon = new ArrayCollection(homeResource.weapons);
+            viewDataArmor = new ArrayCollection(homeResource.armors);
+            viewDataAccessory = new ArrayCollection(homeResource.accessories);
+            viewDataItem = new ArrayCollection(homeResource.items);
+            viewDataWeapon.source.forEach(function (param1, param2:int, param3:Array) : void
+            {
+                param1.selected = false;
+                return;
+            }// end function
+            );
+            viewDataArmor.source.forEach(function (param1, param2:int, param3:Array) : void
+            {
+                param1.selected = false;
+                return;
+            }// end function
+            );
+            viewDataAccessory.source.forEach(function (param1, param2:int, param3:Array) : void
+            {
+                param1.selected = false;
+                return;
+            }// end function
+            );
+            viewDataItem.source.forEach(function (param1, param2:int, param3:Array) : void
+            {
+                param1.selected = false;
+                return;
+            }// end function
+            );
+            return;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn29_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn29 = _loc_1;
+            _loc_1.dataField = "quantity";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn29", _HomeAllItem_DataGridColumn29);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn7_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn7 = _loc_1;
+            _loc_1.dataField = "rarity";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn7", _HomeAllItem_DataGridColumn7);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn28_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn28 = _loc_1;
+            _loc_1.dataField = "masterId";
+            _loc_1.width = 150;
+            _loc_1.labelFunction = itemNameLabel;
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn28", _HomeAllItem_DataGridColumn28);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn17_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn17 = _loc_1;
+            _loc_1.dataField = "selected";
+            _loc_1.editable = true;
+            _loc_1.rendererIsEditor = true;
+            _loc_1.editorDataField = "selected";
+            _loc_1.width = 30;
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn17", _HomeAllItem_DataGridColumn17);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_ClassFactory4_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            checkBoxRenderer = _loc_1;
+            _loc_1.generator = HomeAllItem_inlineComponent4;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn31_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn31 = _loc_1;
+            _loc_1.dataField = "description";
+            _loc_1.sortable = false;
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn31", _HomeAllItem_DataGridColumn31);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn20_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn20 = _loc_1;
+            _loc_1.dataField = "rarity";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn20", _HomeAllItem_DataGridColumn20);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn16_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn16 = _loc_1;
+            _loc_1.dataField = "description";
+            _loc_1.sortable = false;
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn16", _HomeAllItem_DataGridColumn16);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn6 = _loc_1;
+            _loc_1.dataField = "endurance";
+            _loc_1.width = 65;
+            _loc_1.labelFunction = itemEnduranceLabel;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn6", _HomeAllItem_DataGridColumn6);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn27_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn27 = _loc_1;
+            _loc_1.dataField = "description";
+            _loc_1.sortable = false;
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn27", _HomeAllItem_DataGridColumn27);
+            return _loc_1;
+        }// end function
+
+        public function _HomeAllItem_ClassFactory3_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            toolTipRenderer = _loc_1;
+            _loc_1.generator = HomeAllItem_inlineComponent3;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function setMaterials(param1:Array) : void
+        {
+            viewDataMaterial = new ArrayCollection(param1);
+            return;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn30_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn30 = _loc_1;
+            _loc_1.dataField = "rarity";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn30", _HomeAllItem_DataGridColumn30);
+            return _loc_1;
+        }// end function
+
+        public function close() : void
+        {
+            dispatchEvent(new PopupEvent(CLOSED_HOME_ALL_ITEM, {window:this}));
+            return;
+        }// end function
+
+        public function _HomeAllItem_DataGridColumn15_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _HomeAllItem_DataGridColumn15 = _loc_1;
+            _loc_1.dataField = "rarity";
+            _loc_1.width = 45;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_HomeAllItem_DataGridColumn15", _HomeAllItem_DataGridColumn15);
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Canvas id="itemList" x="47" y="114"/>
+	<mx:Text id="_HomeAllItem_Text1" styleName="PanelBaseTitle" x="325" y="83" text="{Utils.i18n("homeAllItemItemList")}"/>
+	<mx:VBox width="660" x="25" y="140" verticalGap="-2">
+		<mx:ViewStack id="myViewStack" width="656" height="334" borderStyle="none" paddingLeft="12">
+			<mx:VBox id="_HomeAllItem_VBox2" width="100%" height="100%" label="{Utils.i18n("generalWeapon")}">
+				<mx:DataGrid id="weapon_data_list" width="640" rowCount="11" rowHeight="27" styleName="DataGridBase" selectable="false" columns="{[_HomeAllItem_DataGridColumn1_i(), _HomeAllItem_DataGridColumn2_i(), _HomeAllItem_DataGridColumn3_i(), _HomeAllItem_DataGridColumn4_i(), _HomeAllItem_DataGridColumn5_i(), _HomeAllItem_DataGridColumn6_i(), _HomeAllItem_DataGridColumn7_i(), _HomeAllItem_DataGridColumn8_i()]}" dataProvider='{viewDataWeapon}'/>
+			</mx:VBox>
+			<mx:VBox id="_HomeAllItem_VBox3" width="100%" height="100%" label="{Utils.i18n("generalEquipArmor")}">
+				<mx:DataGrid id="armor_data_list" width="640" rowCount="11" rowHeight="27" styleName="DataGridBase" selectable="false" columns="{[_HomeAllItem_DataGridColumn9_i(), _HomeAllItem_DataGridColumn10_i(), _HomeAllItem_DataGridColumn11_i(), _HomeAllItem_DataGridColumn12_i(), _HomeAllItem_DataGridColumn13_i(), _HomeAllItem_DataGridColumn14_i(), _HomeAllItem_DataGridColumn15_i(), _HomeAllItem_DataGridColumn16_i()]}" dataProvider='{viewDataArmor}'/>
+			</mx:VBox>
+			<mx:VBox id="_HomeAllItem_VBox4" width="100%" height="100%" label="{Utils.i18n("generalEquipAccessory")}">
+				<mx:DataGrid id="accessory_data_list" width="640" rowCount="11" rowHeight="27" styleName="DataGridBase" selectable="false" columns="{[_HomeAllItem_DataGridColumn17_i(), _HomeAllItem_DataGridColumn18_i(), _HomeAllItem_DataGridColumn19_i(), _HomeAllItem_DataGridColumn20_i(), _HomeAllItem_DataGridColumn21_i()]}" dataProvider='{viewDataAccessory}'/>
+			</mx:VBox>
+			<mx:VBox id="_HomeAllItem_VBox5" width="100%" height="100%" label="{Utils.i18n("generalMaterial")}">
+				<mx:DataGrid id="item_data_list" width="640" rowCount="11" rowHeight="27" styleName="DataGridBase" selectable="false" columns="{[_HomeAllItem_DataGridColumn22_i(), _HomeAllItem_DataGridColumn23_i(), _HomeAllItem_DataGridColumn24_i(), _HomeAllItem_DataGridColumn25_i(), _HomeAllItem_DataGridColumn26_i(), _HomeAllItem_DataGridColumn27_i()]}" dataProvider='{viewDataItem}'/>
+			</mx:VBox>
+			<mx:VBox id="_HomeAllItem_VBox6" width="100%" height="100%" label="{Utils.i18n("confirmBuildMaterial")}">
+				<mx:DataGrid id="material_data_list" width="640" rowCount="11" rowHeight="27" styleName="DataGridBase" selectable="false" columns="{[_HomeAllItem_DataGridColumn28_i(), _HomeAllItem_DataGridColumn29_i(), _HomeAllItem_DataGridColumn30_i(), _HomeAllItem_DataGridColumn31_i()]}" dataProvider='{viewDataMaterial}'/>
+			</mx:VBox>
+		</mx:ViewStack>
+	</mx:VBox>
+	<mx:Image x="665" y="79" width="20" height="20" source="_embed_mxml__swf_common_button_close_window_swf_1370265653" click="{close();}"/>
+	<mx:Canvas id="buttonLayer"/>
+
+</mx:CanvasWithPopUp>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" height="560" width="760">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.events.*;
+        import flash.geom.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _unit:UnitVO;
+        private var  _standbyUnit_X:Array;
+        protected var  _unitIndex:Object;
+        private var  _standbyUnit_Y:Array;
+        public static const  SELECT_UNIT:String = "selectUnit";
+
+
+        public function getUnitPosition(param1:int) : Point
+        {
+            var _loc_2:* = param1 % 5;
+            var _loc_3:* = param1 / 5;
+            var _loc_4:* = 500 - _loc_3 * 65 - _loc_2 * 47;
+            var _loc_5:* = 140 + _loc_3 * 25 - _loc_2 * 25;
+            return new Point(_loc_4, _loc_5);
+        }// end function
+
+        public function handleMouseEvent(event:MouseEvent) : void
+        {
+            var _loc_2:* = _unitIndex[event.target.name];
+            switch(event.type)
+            {
+                case MouseEvent.CLICK:
+                {
+                    if (_unit != _units[_loc_2])
+                    {
+                        _unit = _units[_loc_2];
+                        dispatchEvent(new Event(SELECT_UNIT));
+                    }
+                    break;
+                }
+                case MouseEvent.MOUSE_OVER:
+                {
+                    unitStatus.unit = _units[_loc_2];
+                    break;
+                }
+                case MouseEvent.MOUSE_OUT:
+                {
+                    unitStatus.unit = new UnitVO();
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            var _loc_2:Point = null;
+            _unitIndex = new Object();
+            _unit = new UnitVO();
+            var _loc_1:int = 0;
+            while (_loc_1 < _units.length)
+            {
+                
+                _loc_2 = getUnitPosition(_loc_1);
+                _units[_loc_1].loader.x = _loc_2.x;
+                _units[_loc_1].loader.y = _loc_2.y;
+                _units[_loc_1].loader.addEventListener(MouseEvent.CLICK, handleMouseEvent);
+                _units[_loc_1].loader.addEventListener(MouseEvent.MOUSE_OVER, handleMouseEvent);
+                _units[_loc_1].loader.addEventListener(MouseEvent.MOUSE_OUT, handleMouseEvent);
+                _units[_loc_1].loader.name = "unit" + _loc_1;
+                _unitIndex[_units[_loc_1].loader.name] = _loc_1;
+                bg.addChildAt(_units[_loc_1].uic, (_loc_1 + 1));
+                _loc_1++;
+            }
+            return;
+        }// end function
+
+        public function removeUnits() : void
+        {
+            var _loc_1:int = 0;
+            while (_loc_1 < _units.length)
+            {
+                
+                _units[_loc_1].loader.removeEventListener(MouseEvent.CLICK, handleMouseEvent);
+                _units[_loc_1].loader.removeEventListener(MouseEvent.MOUSE_OVER, handleMouseEvent);
+                _units[_loc_1].loader.removeEventListener(MouseEvent.MOUSE_OUT, handleMouseEvent);
+                if (bg.contains(_units[_loc_1].uic))
+                {
+                    bg.removeChild(_units[_loc_1].uic);
+                }
+                _loc_1++;
+            }
+            return;
+        }// end function
+
+        public function onClose() : void
+        {
+            removeUnits();
+            super.onClose();
+            return;
+        }// end function
+
+        public function close() : void
+        {
+            onClose();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Panel id="bg" layout="absolute" title="種族チェンジ" styleName="UnitListPanel" width="760" height="560">
+		<mx:UnitStatus id="unitStatus" x="15" y="290"/>
+	</mx:Panel>
+	<mx:Button id="exit" width="26" height="26" y="15" x="728" styleName="closeBtn" buttonMode="true" fontSize="30" click="{onClose();}"/>
+
+</mx:PopupWindow>

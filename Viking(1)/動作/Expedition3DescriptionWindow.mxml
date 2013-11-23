@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{comp();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _evilPoints:Array;
+        private var  _available:Boolean = false;
+        private var  _evilPoint:Object;
+        public static var  EmbedSwfExpeditionDetail:Class;
+        public static const  NAME:String = "ExpeditionDescriptionWindow";
+        public static const  DESCRIPTION_COMPLETE:String = NAME + "/descriptionComplete";
+
+
+        public function close() : void
+        {
+            notVisibleText();
+            this.onClose();
+            return;
+        }// end function
+
+        public function comp() : void
+        {
+            descriptionTextText.visible = false;
+            expeditionText.visible = false;
+            okButtonImage.visible = false;
+            noButtonImage.visible = false;
+            closeButtonImage.visible = false;
+            MovieClip(Loader(_swf_ok.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_no.getChildAt(0)).content).gotoAndPlay("button_no");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            return;
+        }// end function
+
+        public function init(param1:String) : void
+        {
+            var expeditionLevel:* = param1;
+            MovieClip(Loader(_swf_bg.getChildAt(0)).content).gotoAndPlay("w_start");
+            level = expeditionLevel;
+            evilPoint = _evilPoints.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                return param1.level == level;
+            }// end function
+            )[0];
+            descriptionText = evilPoint.description;
+            topographyId = evilPoint.topography_id;
+            forbiddenJobIds = evilPoint.forbidden_job_ids;
+            titleText = Utils.i18n("expedition3") + level + Utils.i18n("localize155");
+            confirmText = Utils.i18n("localize156");
+            _available = evilPoint.available;
+            if (!_available)
+            {
+                confirmText = Utils.i18n("expeditionUnavailable");
+            }
+            Loader(_swf_bg.getChildAt(0)).content.addEventListener("ENLARGE_END", visibleText);
+            return;
+        }// end function
+
+        public function clicked() : void
+        {
+            trace("topography_id:" + topographyId);
+            trace("level:" + level);
+            dispatchEvent(new PopupEvent(DESCRIPTION_COMPLETE, {topographyId:topographyId, level:level, evilPointId:evilPoint.id, forbiddenJobIds:forbiddenJobIds, evilPointType:evilPoint.evil_point_type}));
+            descriptionTextText.visible = false;
+            expeditionText.visible = false;
+            okButtonImage.visible = false;
+            noButtonImage.visible = false;
+            closeButtonImage.visible = false;
+            this.onClose();
+            return;
+        }// end function
+
+        public function visibleText(event:Event) : void
+        {
+            descriptionTextText.visible = true;
+            expeditionText.visible = true;
+            okButtonImage.visible = _available;
+            noButtonImage.visible = _available;
+            closeButtonImage.visible = !_available;
+            return;
+        }// end function
+
+        public function notVisibleText() : void
+        {
+            descriptionTextText.visible = false;
+            expeditionText.visible = false;
+            okButtonImage.visible = false;
+            noButtonImage.visible = false;
+            closeButtonImage.visible = false;
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_Expedition3DescriptionWindow_Image1" source="{_swf_bg}"/>
+	<mx:Label id="titleTextLabel" x="210" y="103" width="340" styleName="PanelBaseTitle" color="#00ffffff" textAlign="center" text="titleText"/>
+	<mx:Text id="descriptionTextText" x="210" y="150" width="340" fontSize="14" textAlign="left" color="#00ffffff" text="descriptionText"/>
+	<mx:Text id="expeditionText" x="210" y="415" width="340" fontSize="14" textAlign="center" color="#00ffffff" text="confirmText"/>
+	<mx:Image id="okButtonImage" x="255" y="450" click="{clicked();}" source="{_swf_ok}"/>
+	<mx:Image id="noButtonImage" x="395" y="450" click="{close();}" source="{_swf_no}"/>
+	<mx:Image id="closeButtonImage" x="325" y="450" click="{close();}" source="{_swf_close}"/>
+
+</mx:PopupWindow>

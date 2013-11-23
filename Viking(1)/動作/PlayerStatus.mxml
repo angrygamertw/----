@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.vo.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  bronze:Class;
+        private var  silver:Class;
+        private var  zenith:Class;
+        private var  platina:Class;
+        private var  diamond:Class;
+        private var  gold:Class;
+        private var  apprentice:Class;
+
+
+        public function init() : void
+        {
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas height="97" width="390" fontSize="12" color="#00433530">
+		<mx:Text id="_PlayerStatus_Text1" x="66" y="14" styleName="BaseTit" text="{playerVO.playerName}"/>
+		<mx:Image id="_PlayerStatus_Image1" source="_embed_mxml__swf_home_unit_status_icon_icon_money_swf_196506313" x="176" y="17" toolTip="{Utils.i18n("generalMoney")}"/>
+		<mx:Label id="_PlayerStatus_Label1" x="195" y="15" textAlign="left" text="{playerVO.gold}"/>
+		<mx:Image id="_PlayerStatus_Image2" source="_embed_mxml__swf_home_unit_status_icon_icon_soul_swf_1153289065" x="270" y="17" toolTip="{Utils.i18n("generalSoulSphere")}"/>
+		<mx:Label id="_PlayerStatus_Label2" x="289" y="15" textAlign="left" text="{playerVO.soulCrystal}"/>
+		<mx:Image id="_PlayerStatus_Image3" source="_embed_mxml__swf_home_unit_status_icon_icon_treasure_swf_792817129" x="27" y="40" toolTip="{Utils.i18n("generalRarity")}"/>
+		<mx:Label id="_PlayerStatus_Label3" x="46" y="39" textAlign="left" text="{playerVO.rarity}"/>
+		<mx:Image id="_PlayerStatus_Image4" source="_embed_mxml__swf_home_unit_status_icon_icon_battle_swf_561096717" x="82" y="40" toolTip="{Utils.i18n("generalBonusBattlesCount")}"/>
+		<mx:Label id="_PlayerStatus_Label4" x="101" y="39" textAlign="left" text="{playerVO.bonusBattlesCount}"/>
+		<mx:Image id="_PlayerStatus_Image5" source="_embed_mxml__swf_home_unit_status_icon_icon_occupationticket_swf_160765577" x="129" y="40" toolTip="{Utils.i18n("generalPossessionTicket")}"/>
+		<mx:Label id="_PlayerStatus_Label5" x="148" y="39" textAlign="left" text="{playerVO.possessionTicket}"/>
+		<mx:Image id="_PlayerStatus_Image6" source="_embed_mxml__swf_home_unit_status_icon_icon_possession_swf_1427292425" x="176" y="40" toolTip="{Utils.i18n("generalPropertiesCount")}"/>
+		<mx:Label id="_PlayerStatus_Label6" x="195" y="39" textAlign="left" text="{playerVO.propertiesCount + "/" + playerVO.propertiesCountMax + "(" + playerVO.levelMaxPropertiesCount + ")"}"/>
+		<mx:Image id="_PlayerStatus_Image7" source="_embed_mxml__swf_home_unit_status_icon_icon_shikihime_swf_2065734565" x="270" y="40" toolTip="{Utils.i18n("generalUnitCount")}"/>
+		<mx:Label id="_PlayerStatus_Label7" x="289" y="39" text="{playerVO.unitCount + "/" + playerVO.maxUnitCount}"/>
+		<mx:Canvas id="rankLayer"/>
+	</mx:Canvas>
+
+</mx:Canvas>

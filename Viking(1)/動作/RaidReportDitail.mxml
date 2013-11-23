@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{comp();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public static const  REPORT_DITAIL_CLOSE:String = "reportDitailClose";
+
+
+        public function closeDitailReport() : void
+        {
+            myUnits.removeImage();
+            enemyUnits.removeImage();
+            sendEvent(REPORT_DITAIL_CLOSE);
+            onClose();
+            return;
+        }// end function
+
+        public function getEnemyName(param1:Object) : String
+        {
+            return !param1.isTarget ? (param1.target_player_name) : (param1.player_name);
+        }// end function
+
+        public function comp() : void
+        {
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            return;
+        }// end function
+
+        public function getTargetPointText(param1:Object) : String
+        {
+            var _loc_2:* = param1.type == "colonyReport" ? (param1.colony_name) : (param1.topography_name);
+            return _loc_2 ? (_loc_2) : ("");
+        }// end function
+
+        public function init(param1:Object, param2:PlayerVO) : void
+        {
+            this.report = param1;
+            this.playerVO = param2;
+            return;
+        }// end function
+
+        public function getTitle(param1:Object, param2:PlayerVO) : String
+        {
+            var _loc_3:String = "";
+            var _loc_4:Array = ["", Utils.i18n("generalFactionNameBlueDragon"), Utils.i18n("generalFactionNameSuzaku"), Utils.i18n("generalFactionNameWhiteTiger"), Utils.i18n("generalFactionNameTortoise")];
+            var _loc_5:* = param1.object_id == 2 || param1.guild_name ? (Utils.i18n("generalAtack")) : (Utils.i18n("generalInvasion"));
+            if (param1.player_name != param2.playerName && param1.target_player_name != param2.playerName && !param1.colony_name)
+            {
+                _loc_3 = Utils.i18n("reportGuildMember");
+                if (param2.guild.id == param1.guild_id)
+                {
+                    _loc_3 = _loc_3 + (param1.player_name + "(" + Utils.i18n("localize202") + ": " + param1.playerHomePoint.x + "," + param1.playerHomePoint.y + ")");
+                    _loc_3 = _loc_3 + (param1.target_player_name + "(" + Utils.i18n("localize202") + ": " + param1.targetHomePoint.x + "," + param1.targetHomePoint.y + ")" + Utils.i18n("reportRaidOffense", _loc_5));
+                }
+                else
+                {
+                    _loc_3 = _loc_3 + (param1.target_player_name + "(" + Utils.i18n("localize202") + ": " + param1.targetHomePoint.x + "," + param1.targetHomePoint.y + ")");
+                    _loc_3 = _loc_3 + (param1.player_name + "(" + Utils.i18n("localize202") + ": " + param1.playerHomePoint.x + "," + param1.playerHomePoint.y + ")" + Utils.i18n("reportRaidDefense", _loc_5));
+                }
+            }
+            else if (!param1.isTarget && param1.targetHomePoint)
+            {
+                _loc_3 = param1.target_player_name + "(" + Utils.i18n("localize202") + ": " + param1.targetHomePoint.x + "," + param1.targetHomePoint.y + ")" + Utils.i18n("reportRaidOffense", _loc_5);
+            }
+            else
+            {
+                _loc_3 = param1.player_name + "(" + Utils.i18n("localize202") + ": " + param1.playerHomePoint.x + "," + param1.playerHomePoint.y + ")" + Utils.i18n("reportRaidDefense", _loc_5);
+            }
+            return _loc_3;
+        }// end function
+
+        public function sortUnit(param1:Array, param2:String) : Array
+        {
+            var _loc_4:Object = null;
+            var _loc_3:* = new Array();
+            for each (_loc_4 in param1 as Array)
+            {
+                
+                if (_loc_4 && _loc_4.player_name == param2)
+                {
+                    _loc_3.unshift(_loc_4);
+                    continue;
+                }
+                _loc_3.push(_loc_4);
+            }
+            return _loc_3;
+        }// end function
+
+        public function getMyName(param1:Object) : String
+        {
+            return param1.type == "colonyReport" ? (param1.guild_name) : (param1.isTarget ? (param1.target_player_name) : (param1.player_name));
+        }// end function
+
+        public function getTargetText(param1:Object) : String
+        {
+            var _loc_2:* = param1.type == "colonyReport" ? (param1.guild_name) : (param1.object_name);
+            return _loc_2 ? (_loc_2) : ("");
+        }// end function
+
+        public function getResultText(param1:Boolean) : String
+        {
+            return param1 ? (Utils.i18n("localize107")) : (Utils.i18n("localize213"));
+        }// end function
+
+        public function getFinishTime(param1:Object) : String
+        {
+            return param1.finished_at ? (param1.finished_at) : ("");
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Text id="_RaidReportDitail_Text1" styleName="PanelBaseTitle" x="330" y="80" text="{Utils.i18n("localize214")}"/>
+	<mx:Image source="_embed_mxml__swf_battle_report_window_report_swf_144807557" width="705"/>
+	<mx:Canvas x="20" y="70">
+		<mx:Label id="_RaidReportDitail_Label1" x="0" y="50" width="600" mouseChildren="false" fontSize="14" text="getTitle(_report, _playerVO)"/>
+		<mx:Label id="_RaidReportDitail_Label2" x="110" y="80" width="300" mouseChildren="false" fontSize="14" text="{Utils.i18n("localize215") + "：" + getFinishTime(_report)}"/>
+		<mx:Label id="_RaidReportDitail_Label3" x="110" y="100" width="300" mouseChildren="false" fontSize="14" text="{Utils.i18n("localize216") + "：" + getTargetPointText(_report)}"/>
+		<mx:Label id="_RaidReportDitail_Label4" x="110" y="120" width="300" mouseChildren="false" fontSize="14" text="{Utils.i18n("localize217") + "：" + getTargetText(_report)}"/>
+		<mx:Label id="_RaidReportDitail_Label5" x="430" y="90" width="300" mouseChildren="false" fontSize="20" text="_result"/>
+		<mx:Label id="_RaidReportDitail_Label6" x="430" y="120" width="300" mouseChildren="false" fontSize="14" text="_resultDitail"/>
+		<mx:Label id="_RaidReportDitail_Label7" x="155" y="140" mouseChildren="false" fontSize="16" text="getMyName(_report)"/>
+		<mx:Label id="_RaidReportDitail_Label8" x="570" y="148" mouseChildren="false" fontSize="16" text="getEnemyName(_report)"/>
+		<mx:RaidDitailUnitsRenderer id="myUnits" x="20" y="200"/>
+		<mx:RaidDitailUnitsRenderer id="enemyUnits" x="380" y="200"/>
+	</mx:Canvas>
+	<mx:Image id="_RaidReportDitail_Image2" x="325" y="495" click="{closeDitailReport();}" source="{_swf_close}"/>
+
+</mx:PopupWindow>

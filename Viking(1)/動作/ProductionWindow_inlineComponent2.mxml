@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public var  _ProductionWindow_inlineComponent2_Label1:Label;
+
+    ]]></mx:Script>
+
+	<mx:Label id="_ProductionWindow_inlineComponent2_Label1" buttonMode="true" mouseChildren="false" toolTip="詳細" color="#00bc403a" textDecoration="underline" click="{outerDocument.onDetailUpgradeItems(data);}" text="{data.masterVO.nameLabel}"/>
+
+</mx:Box>

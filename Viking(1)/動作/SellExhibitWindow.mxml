@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{_init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  leyLine:Boolean = false;
+        private var  _cancelData:Object;
+        private var  exhibitCount:int;
+        public static const  EXHIBIT_CANCEL:String = NAME + "/exhibitCancel";
+        public static const  CLOSE_GOODS_EXHIBIT:String = "closegoodsExhibit";
+        private static const  WINDOW_Y:int = 80;
+        private static const  BUTTON_X:int = 245;
+        private static const  BUTTON_Y:int = 490;
+        private static const  WINDOW_X:int = 20;
+        public static const  EXHIBIT_LIMIT:String = "exhibitLimit";
+        public static const  NAME:String = "SellExhibitWindow";
+        public static const  GOODS_EXHIBIT:String = "goodsExhibit";
+        private static const  WINDOW_HT:int = 460;
+        private static const  WINDOW_WD:int = 560;
+
+
+        public function closeWindow() : void
+        {
+            dispatchEvent(new Event(CLOSE_GOODS_EXHIBIT));
+            PopUpManager.removePopUp(this);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_close_window.getChildAt(0)).content).gotoAndPlay(1);
+            return;
+        }// end function
+
+        public function _SellExhibitWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellExhibitWindow_DataGridColumn1 = _loc_1;
+            _loc_1.width = 20;
+            BindingManager.executeBindings(this, "_SellExhibitWindow_DataGridColumn1", _SellExhibitWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function init(param1:Array, param2:Boolean) : void
+        {
+            if (param1)
+            {
+                exhibitData = new ArrayCollection(param1);
+                exhibitCount = param1.length;
+            }
+            var _loc_3:* = param2;
+            leyLine = param2;
+            if (_loc_3)
+            {
+                _priceHeader = Utils.i18n("marketConfirmPriceUp");
+            }
+            else
+            {
+                _priceHeader = Utils.i18n("marketConfirmPrice");
+            }
+            return;
+        }// end function
+
+        public function _SellExhibitWindow_DataGridColumn5_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellExhibitWindow_DataGridColumn5 = _loc_1;
+            _loc_1.width = 110;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SellExhibitWindow_DataGridColumn5", _SellExhibitWindow_DataGridColumn5);
+            return _loc_1;
+        }// end function
+
+        public function getPriceLabel(param1:Object) : String
+        {
+            if (leyLine)
+            {
+                return param1.price + " + " + int(param1.price * 0.05);
+            }
+            return String(param1.price);
+        }// end function
+
+        public function _SellExhibitWindow_ClassFactory4_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            priceRenderer = _loc_1;
+            _loc_1.generator = SellExhibitWindow_inlineComponent4;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function setNumber(param1:Object) : int
+        {
+            var _loc_2:* = exhibitData.getItemIndex(param1);
+            _loc_2++;
+            return _loc_2;
+        }// end function
+
+        public function _SellExhibitWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellExhibitWindow_DataGridColumn4 = _loc_1;
+            _loc_1.dataField = "quantity";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SellExhibitWindow_DataGridColumn4", _SellExhibitWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function _SellExhibitWindow_ClassFactory3_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            nameLabelRenderer = _loc_1;
+            _loc_1.generator = SellExhibitWindow_inlineComponent3;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _SellExhibitWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellExhibitWindow_DataGridColumn3 = _loc_1;
+            BindingManager.executeBindings(this, "_SellExhibitWindow_DataGridColumn3", _SellExhibitWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _SellExhibitWindow_ClassFactory2_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            numberRenderer = _loc_1;
+            _loc_1.generator = SellExhibitWindow_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function onExhibit() : void
+        {
+            if (exhibitCount >= 7)
+            {
+                dispatchEvent(new Event(EXHIBIT_LIMIT));
+            }
+            else
+            {
+                dispatchEvent(new Event(GOODS_EXHIBIT));
+            }
+            MovieClip(Loader(_swf_exhibit.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_exhibit.getChildAt(0)).content).gotoAndPlay("button_exhibit");
+            return;
+        }// end function
+
+        public function onExhibitCancel(param1:Object) : void
+        {
+            _cancelData = param1;
+            dispatchEvent(new Event(EXHIBIT_CANCEL));
+            return;
+        }// end function
+
+        public function _SellExhibitWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellExhibitWindow_DataGridColumn2 = _loc_1;
+            _loc_1.width = 75;
+            BindingManager.executeBindings(this, "_SellExhibitWindow_DataGridColumn2", _SellExhibitWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _SellExhibitWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            buttonRenderer = _loc_1;
+            _loc_1.generator = SellExhibitWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function setNameLabel(param1:Object) : String
+        {
+            if (param1.instanceType == "Weapon")
+            {
+                return param1.nameLabel + "(" + param1.endurance + ")";
+            }
+            return param1.nameLabel;
+        }// end function
+
+        public function _init() : void
+        {
+            MovieClip(Loader(_swf_exhibit.getChildAt(0)).content).gotoAndPlay("button_exhibit");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Text id="_SellExhibitWindow_Text1" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("sellExhibitList")}"/>
+	<mx:Canvas id="exhibitCanvas">
+		<mx:Label id="_SellExhibitWindow_Label1" fontSize="14" x="WINDOW_X + 20" y="WINDOW_Y + 35" text="{Utils.i18n("sellEchibitCanSellCount")}"/>
+		<mx:Text id="_SellExhibitWindow_Text2" fontSize="14" x="WINDOW_X + 20" y="WINDOW_Y + 35 + 30" text="{Utils.i18n("generalPossessionMoney") + ":" + _gold}"/>
+		<mx:DataGrid id="_SellExhibitWindow_DataGrid1" rowHeight="26" rowCount="7" verticalScrollPolicy="off" styleName="DataGridBase" sortableColumns="false" selectable="false" columns="{[_SellExhibitWindow_DataGridColumn1_i(), _SellExhibitWindow_DataGridColumn2_i(), _SellExhibitWindow_DataGridColumn3_i(), _SellExhibitWindow_DataGridColumn4_i(), _SellExhibitWindow_DataGridColumn5_i()]}" x="WINDOW_X + 20" y="WINDOW_Y + 35 + 60" width="WINDOW_WD - 40" dataProvider='{exhibitData}'/>
+		<mx:Image id="_SellExhibitWindow_Image1" click="{onExhibit();}" x="BUTTON_X - 65" y="BUTTON_Y" source="{_swf_exhibit}"/>
+		<mx:Image id="_SellExhibitWindow_Image2" click="{closeWindow();}" x="BUTTON_X + 65" y="BUTTON_Y" source="{_swf_close}"/>
+		<mx:Image id="_SellExhibitWindow_Image3" click="{closeWindow();}" x="WINDOW_X + WINDOW_WD - 25" y="WINDOW_Y" source="{_swf_close_window}"/>
+	</mx:Canvas>
+
+</mx:PopupWindow>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" verticalAlign="middle">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.styles.*;
+
+        public var  _SearchGuildWindow_inlineComponent2_Image1:Image;
+        public var  _SearchGuildWindow_inlineComponent2_Label1:Label;
+
+    ]]></mx:Script>
+
+	<mx:Canvas>
+		<mx:Image id="_SearchGuildWindow_inlineComponent2_Image1" source="{outerDocument.getIcon(data)}"/>
+	</mx:Canvas>
+	<mx:Label id="_SearchGuildWindow_inlineComponent2_Label1" buttonMode="true" mouseChildren="false" fontSize="12" color="#00bc403a" textDecoration="underline" click="{outerDocument.onGuildDetail(data);}" text="{outerDocument.getGuildName(data)}" toolTip="{Utils.i18n("generalShowDetail")}"/>
+
+</mx:HBox>

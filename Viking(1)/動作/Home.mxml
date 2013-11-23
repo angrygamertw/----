@@ -1,0 +1,588 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:CanvasWithPopUp xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.view.home.*;
+        import com.kbmj.viking.vo.*;
+        import com.kbmj.viking.vo.home.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.geom.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.effects.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        public var  landID:int = 0;
+        private var  oldSelectIndex:int = 0;
+        public var  nowInfo:String;
+        public var  nowInfoId:int;
+        private var  _postUnits:Array;
+        private var  _homeMaps:Array;
+        private var  descriptionVisibleIndex:int = 0;
+        private var  confirmFinishTaskWindow:ConfirmFinishTaskWindow;
+        public var  _loc_3:String = new String();
+        private var  toDay:Date;
+        private var  pageSize:Number = 0;
+        private var  allDescription:String;
+        private var  _IncrementTasks:TaskVO;
+        public var  firstHome:Boolean = true;
+        public var  savedInfo:String = "b_moving";
+        public static var  EmbedSwfResearch:Class;
+        public static const  RAID_COMMAND_SELECT:String = "raidCommandSelect";
+        public static var  EmbedSwfInfoChat:Class;
+        public static const  CHAT_UPDATE:String = "chatUpdate";
+        public static const  CHAT_LOG:String = "chatLog";
+        public static var  EmbedSwfBalloonIcon:Class;
+
+
+        public function popupWindowByClass(param1:Class) : void
+        {
+            var _loc_2:* = PopUpManager.createPopUp(this, param1, true);
+            _loc_2.x = 30;
+            _loc_2.y = 5;
+            return;
+        }// end function
+
+        public function setBuildingAt(param1:Object, param2:int) : void
+        {
+            if (!param1)
+            {
+                buildingImages.setItemAt(null, param2);
+                return;
+            }
+            if (param1.underConstruction)
+            {
+                if (param1.buildingMasterVO.masterId == 14)
+                {
+                    buildingImages10.y = 200;
+                }
+            }
+            else if (param1.buildingMasterVO.masterId == 14)
+            {
+                buildingImages10.y = 200;
+            }
+            return;
+        }// end function
+
+        public function setAllUnit(param1:HomeAllUnit, param2:Array) : void
+        {
+            param1.allUnits = param2;
+            unitList.addChild(param1);
+            return;
+        }// end function
+
+        public function getIncrementMaxTasksText() : String
+        {
+            if (isMaxTaskIncrement())
+            {
+                return Utils.i18n("localize0") + "<br/>&nbsp;&nbsp;" + player.incrementMaxTasksAtLabel + Utils.i18n("localize1");
+            }
+            return Utils.i18n("localize2") + "<br/>&nbsp;&nbsp;" + Utils.i18n("localize3");
+        }// end function
+
+        public function changeFaction(param1) : void
+        {
+            MovieClip(Loader(_swf_faction.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_faction.getChildAt(0)).content).gotoAndPlay(param1);
+            return;
+        }// end function
+
+        public function setPostUnits(param1:Array, param2:int, param3:String) : void
+        {
+            _postUnits[param2] = new Object();
+            if (param3 == "Warrior")
+            {
+                _postUnits[param2].unit1 = param1[0];
+                _postUnits[param2].unit2 = param1[1];
+            }
+            else if (param3 == "Fort")
+            {
+                _postUnits[param2].unit = param1[0];
+            }
+            return;
+        }// end function
+
+        public function chatButtonsAnimation(param1:String) : void
+        {
+            MovieClip(Loader(_swf_info_chat.getChildAt(0)).content).gotoAndPlay(param1);
+            return;
+        }// end function
+
+        public function onDescriptionNextButton() : void
+        {
+            var _loc_3:* = descriptionVisibleIndex + 1;
+            descriptionVisibleIndex = _loc_3;
+            var _loc_1:int = 0;
+            while (_loc_1 < descriptionVisible.length)
+            {
+                
+                descriptionVisible.setItemAt(false, _loc_1);
+                _loc_1++;
+            }
+            descriptionVisible.setItemAt(true, descriptionVisibleIndex);
+            if (pageSize <= descriptionVisibleIndex)
+            {
+                descriptionCloseButtonVisible = true;
+                descriptionButtonVisible = false;
+            }
+            return;
+        }// end function
+
+        public function onDescriptionOpen() : void
+        {
+            descriptionWindowVisible = true;
+            return;
+        }// end function
+
+        public function _Home_WipeDown1_i() : WipeDown
+        {
+            var _loc_1:* = new WipeDown();
+            wipeOut = _loc_1;
+            _loc_1.duration = 500;
+            return _loc_1;
+        }// end function
+
+        public function finishTask(param1:TaskVO) : void
+        {
+            confirmFinishTaskWindow.task = param1;
+            confirmFinishTaskWindow.init();
+            popupWindow(confirmFinishTaskWindow, false);
+            return;
+        }// end function
+
+        public function clickCloseBalloon() : void
+        {
+            if (!balloonCanvas.visible)
+            {
+                return;
+            }
+            MovieClip(Loader(_swf_balloon.getChildAt(0)).content).gotoAndPlay("w_close");
+            balloonCanvas.visible = false;
+            return;
+        }// end function
+
+        public function remarkStart() : void
+        {
+            assistantBalloon.visible = true;
+            assistantText.visible = false;
+            Loader(_swf_balloon.getChildAt(0)).content.addEventListener("ENLARGE_END", function (event:Event) : void
+            {
+                Loader(_swf_balloon.getChildAt(0)).content.removeEventListener("ENLARGE_END", arguments.callee);
+                assistantText.visible = true;
+                return;
+            }// end function
+            );
+            balloonCanvas.visible = true;
+            MovieClip(Loader(_swf_balloon.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_balloon_close.getChildAt(0)).content).gotoAndPlay(0);
+            return;
+        }// end function
+
+        public function clickButtons(param1:String, param2:int, param3:int) : void
+        {
+            pressedButtonPointX = param2;
+            pressedButtonPointY = param3;
+            pressedButtonVisible = true;
+            sendEvent(param1);
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            confirmFinishTaskWindow.addEventListener(ConfirmFinishTaskWindow.CONFIRMED, function (event:PopupEvent) : void
+            {
+                dispatchEvent(new PopupEvent(Viking.FINISH_TASK_IMMEDIATELY, event.param));
+                return;
+            }// end function
+            );
+            MovieClip(Loader(_swf_research.getChildAt(0)).content).gotoAndPlay("w_start");
+            Loader(_swf_research.getChildAt(0)).content.addEventListener("ENLARGE_END", function (event:Event) : void
+            {
+                researchText.visible = true;
+                return;
+            }// end function
+            );
+            Loader(_swf_research.getChildAt(0)).content.addEventListener("CLOSE", function (event:Event) : void
+            {
+                researchText.visible = false;
+                guildChatWindow.oldChatTextFilterRefresh();
+                return;
+            }// end function
+            );
+            MovieClip(Loader(_swf_info_chat.getChildAt(0)).content).gotoAndPlay("b_guild");
+            return;
+        }// end function
+
+        public function guildTabEvent(event:Event) : void
+        {
+            switch(event.type)
+            {
+                case "chatComment":
+                {
+                    dispatchEvent(new Event(CHAT_LOG));
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function incrementMaxTasks() : void
+        {
+            sendEvent(Viking.INCREMENT_MAX_TASK_CONFIRM);
+            return;
+        }// end function
+
+        public function toolTipCreateEventHandle(event:ToolTipEvent, param2:int) : void
+        {
+            var _loc_3:HomeMapBuildingMouseOver = null;
+            var _loc_4:HomeMapVacantMouseOver = null;
+            if (param2 > (homeMaps.length - 1))
+            {
+                return;
+            }
+            if (homeMaps[param2].buildingVO)
+            {
+                _loc_3 = new HomeMapBuildingMouseOver();
+                _loc_3.building = homeMaps[param2].buildingVO;
+                if (_postUnits[homeMaps[param2].buildingVO.buildingId])
+                {
+                    _loc_3.waitUnits = _postUnits[homeMaps[param2].buildingVO.buildingId];
+                }
+                event.toolTip = _loc_3;
+            }
+            else
+            {
+                _loc_4 = new HomeMapVacantMouseOver();
+                event.toolTip = _loc_4;
+            }
+            return;
+        }// end function
+
+        public function onDescriptionCloce() : void
+        {
+            descriptionWindowVisible = false;
+            return;
+        }// end function
+
+        public function _Home_Glow2_i() : Glow
+        {
+            var _loc_1:* = new Glow();
+            glowoff = _loc_1;
+            _loc_1.alphaFrom = 0.9;
+            _loc_1.alphaTo = 0;
+            _loc_1.blurXFrom = 10;
+            _loc_1.blurXTo = 2;
+            _loc_1.blurYFrom = 10;
+            _loc_1.blurYTo = 2;
+            _loc_1.color = 16766976;
+            _loc_1.inner = false;
+            _loc_1.knockout = false;
+            _loc_1.strength = 1;
+            return _loc_1;
+        }// end function
+
+        public function setAllItem(param1:HomeVO) : void
+        {
+            var homeVO:* = param1;
+            homeAllItem.setEquipment(homeVO.resourceVO);
+            homeAllItem.setMaterials(homeVO.resourceVO.materials.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                return param1.quantity > 0;
+            }// end function
+            ));
+            return;
+        }// end function
+
+        public function removeTutMarks() : void
+        {
+            tutMarkAllMap.visible = false;
+            tutMarkSubjugation.visible = false;
+            tutMarkCeremony.visible = false;
+            tutMarkShikihime.visible = false;
+            tutMarkProduction.visible = false;
+            tutMarkResearch.visible = false;
+            return;
+        }// end function
+
+        public function _Home_ClassFactory1_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = TaskTextRenderer;
+            return _loc_1;
+        }// end function
+
+        public function removeBuildingAt(param1:int) : void
+        {
+            setBuildingAt(null, param1);
+            return;
+        }// end function
+
+        public function _Home_Glow1_i() : Glow
+        {
+            var _loc_1:* = new Glow();
+            glow = _loc_1;
+            _loc_1.alphaFrom = 0.1;
+            _loc_1.alphaTo = 0.9;
+            _loc_1.blurXFrom = 2;
+            _loc_1.blurXTo = 10;
+            _loc_1.blurYFrom = 2;
+            _loc_1.blurYTo = 10;
+            _loc_1.color = 16766976;
+            _loc_1.inner = false;
+            _loc_1.knockout = false;
+            _loc_1.strength = 1;
+            return _loc_1;
+        }// end function
+
+        public function isMaxTaskIncrement() : Boolean
+        {
+            return player && player.incrementMaxTasks;
+        }// end function
+
+        public function setAllSleepUnit(param1:HomeAllSleepUnit) : void
+        {
+            sleepUnitList.addChild(param1);
+            return;
+        }// end function
+
+        public function _Home_WipeUp1_i() : WipeUp
+        {
+            var _loc_1:* = new WipeUp();
+            wipeIn = _loc_1;
+            _loc_1.duration = 500;
+            return _loc_1;
+        }// end function
+
+        public function _Home_Fade2_i() : Fade
+        {
+            var _loc_1:* = new Fade();
+            fadeIn = _loc_1;
+            _loc_1.duration = 700;
+            _loc_1.alphaFrom = 0;
+            _loc_1.alphaTo = 1;
+            return _loc_1;
+        }// end function
+
+        public function MouseDownFunc() : void
+        {
+            stage.displayState = StageDisplayState.FULL_SCREEN;
+            return;
+        }// end function
+
+        public function removeButtons() : void
+        {
+            pressedButtonVisible = false;
+            return;
+        }// end function
+
+        public function _Home_Fade1_i() : Fade
+        {
+            var _loc_1:* = new Fade();
+            fadeOut = _loc_1;
+            _loc_1.duration = 500;
+            _loc_1.alphaFrom = 1;
+            _loc_1.alphaTo = 0;
+            return _loc_1;
+        }// end function
+
+        public function sendBuildEvent(param1:String, param2:int = 0) : void
+        {
+            landID = param2;
+            this.dispatchEvent(new Event(param1));
+            return;
+        }// end function
+
+        public function getResearchLevel() : void
+        {
+            researchLevels.setItemAt(_homeMaps[1].buildingVO.level, 0);
+            researchLevels.setItemAt(_homeMaps[3].buildingVO.level, 1);
+            researchLevels.setItemAt(_homeMaps[4].buildingVO.level, 2);
+            researchLevels.setItemAt(_homeMaps[6].buildingVO.level, 3);
+            researchLevels.setItemAt(_homeMaps[8].buildingVO.level, 4);
+            return;
+        }// end function
+
+        public function onItemClick() : void
+        {
+            switch(myViewStack.selectedIndex)
+            {
+                case 0:
+                {
+                    dispatchEvent(new Event(Viking.HOME_MAIN_VIEW));
+                    break;
+                }
+                case 1:
+                {
+                    dispatchEvent(new Event(Viking.HOME_ALL_UNIT_VIEW));
+                    break;
+                }
+                case 2:
+                {
+                    dispatchEvent(new Event(Viking.HOME_ALL_ITEM_VIEW));
+                    break;
+                }
+                case 3:
+                {
+                    dispatchEvent(new Event(Viking.HOME_ALL_SLEEP_UNIT_VIEW));
+                    break;
+                }
+                case 4:
+                {
+                    dispatchEvent(new Event(Viking.HOME_ESTABLISHMENT_VIEW));
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function getBuildingPosition(param1:int) : Point
+        {
+            var _loc_2:* = "buildingImages" + param1 as String;
+            var _loc_3:* = new Point(this[_loc_2].x, this[_loc_2].y);
+            return _loc_3;
+        }// end function
+
+        public function lotClicked(param1:int) : void
+        {
+            sendBuildEvent(Viking.HOME_BUILD, param1);
+            return;
+        }// end function
+
+        public function popupBuildWindow(param1:BuildWindow, param2:Array, param3:int, param4:Object) : void
+        {
+            param1.playerRank = param3;
+            param1.constructions = param2;
+            param1.buildings = param4;
+            param1.homeBuildings = homeMaps;
+            this.popupWindow(param1);
+            return;
+        }// end function
+
+        public function changeRank(param1) : void
+        {
+            MovieClip(Loader(_swf_rank.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_rank.getChildAt(0)).content).gotoAndPlay(param1);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:HBox width="760" height="560" horizontalGap="0">
+		<mx:ViewStack id="myViewStack" width="100%" height="100%" x="0" y="0">
+			<mx:Canvas label="Base" width="100%" height="100%" horizontalScrollPolicy="off">
+				<mx:Image id="buildingImages0" x="399" y="121" source="{buildingImages.getItemAt(0)}"/>
+				<mx:Image id="buildingImages1" x="453" y="148" source="{buildingImages.getItemAt(1)}"/>
+				<mx:Image id="buildingImages2" x="534" y="189" source="{buildingImages.getItemAt(2)}"/>
+				<mx:Image id="buildingImages3" x="595" y="218" source="{buildingImages.getItemAt(3)}"/>
+				<mx:Image id="buildingImages4" x="368" y="158" source="{buildingImages.getItemAt(4)}"/>
+				<mx:Image id="buildingImages10" x="432" y="194" source="{buildingImages.getItemAt(10)}"/>
+				<mx:Image id="buildingImages5" x="297" y="178" source="{buildingImages.getItemAt(5)}"/>
+				<mx:Image id="buildingImages11" x="376" y="223" source="{buildingImages.getItemAt(11)}"/>
+				<mx:Image id="buildingImages6" x="229" y="204" source="{buildingImages.getItemAt(6)}"/>
+				<mx:Image id="buildingImages7" x="312" y="255" source="{buildingImages.getItemAt(7)}"/>
+				<mx:Image id="buildingImages8" x="369" y="286" source="{buildingImages.getItemAt(8)}"/>
+				<mx:Image id="buildingImages9" x="425" y="316" source="{buildingImages.getItemAt(9)}"/>
+				<mx:Canvas id="buildingLevelIcon"/>
+				<mx:Image id="base" source="_embed_mxml__images_home_base_bg_jpg_678991691"/>
+				<mx:Image source="_embed_mxml__swf_home_window_scroll_swf_667863501"/>
+				<mx:Canvas id="assistantLayer"/>
+				<mx:Image id="_Home_Image15" source="{_swf_research}"/>
+				<mx:Canvas id="researchText" visible="false">
+					<mx:Text id="_Home_Text1" x="55" y="490" fontSize="16" color="#00ffffff" text="{researchLevels.getItemAt(0)}"/>
+					<mx:Text id="_Home_Text2" x="123" y="490" fontSize="16" color="#00ffffff" text="{researchLevels.getItemAt(1)}"/>
+					<mx:Text id="_Home_Text3" x="191" y="490" fontSize="16" color="#00ffffff" text="{researchLevels.getItemAt(2)}"/>
+					<mx:Text id="_Home_Text4" x="89" y="528" fontSize="16" color="#00ffffff" text="{researchLevels.getItemAt(3)}"/>
+					<mx:Text id="_Home_Text5" x="157" y="528" fontSize="16" color="#00ffffff" text="{researchLevels.getItemAt(4)}"/>
+				</mx:Canvas>
+				<mx:Image x="235" y="155" source="_embed_mxml__swf_all_map_button_battle_start_swf_144946677" click="{sendEvent(Viking.HOME_ACTION_GOTO_ALL_MAP);}"/>
+				<mx:Image x="440" y="275" source="_embed_mxml__swf_all_map_button_raid_start_swf_1270185481" click="{sendEvent(Viking.HOME_ACTION_GOTO_MATCH_PORTAL);}"/>
+				<mx:Image x="510" y="275" source="_embed_mxml__swf_home_subjugation_button_subjugation_swf_1866369907" click="{sendEvent(Viking.HOME_ACTION_GOTO_SUBJUGATION);}"/>
+				<mx:Image x="285" y="275" source="_embed_mxml__swf_home_colony_button_colony_swf_1236500461" click="{sendEvent(Viking.HOME_ACTION_GOTO_COLONY);}"/>
+				<mx:Image x="510" y="150" source="_embed_mxml__swf_home_expedition_buttons_button_expedition_swf_123861613" click="{sendEvent(Viking.HOME_ACTION_GOTO_EXPEDITION_PORTAL);}"/>
+				<mx:Image x="366" y="192" source="_embed_mxml__swf_home_buttons_button_ceremony_swf_818387595" click="{sendEvent(Viking.HOME_ACTION_OPEN_CEREMONY_WINDOW);}"/>
+				<mx:Image id="galleryButton" source="_embed_mxml__swf_home_buttons_button_wu_xing_swf_79898025" y="192" x="439" click="{clickButtons(Viking.HOME_ALL_GALLERY_VIEW, 439, 192);}"/>
+				<mx:Image x="518" y="218" source="_embed_mxml__swf_home_buttons_button_market_50_swf_1496843013" click="{dispatchEvent(new PopupEvent(Viking.HOME_ENTER_CITY, 'market'));}"/>
+				<mx:Image x="572" y="228" source="_embed_mxml__swf_home_buttons_button_guild_50_swf_817337175" click="{dispatchEvent(new PopupEvent(Viking.HOME_ENTER_CITY, 'guild'));}"/>
+				<mx:Image id="tutMarkAllMap" source="_embed_mxml__swf_common_arrow_bottom_swf_1091498217" visible="false" y="130" x="280"/>
+				<mx:Image id="tutMarkSubjugation" source="_embed_mxml__swf_common_arrow_top_swf_788233961" visible="false" y="335" x="570"/>
+				<mx:Image id="tutMarkCeremony" source="_embed_mxml__swf_common_arrow_top_swf_788233961" visible="false" y="256" x="382"/>
+				<mx:Canvas id="firstTimeCanvas" visible="true">
+					<mx:Image id="assistantBalloon" x="217" y="80" click="{clickCloseBalloon();}" source="{_swf_balloon}"/>
+					<mx:Canvas id="balloonCanvas" click="{clickCloseBalloon();}">
+						<mx:TextArea id="assistantText" x="215" y="97" width="440" height="45" editable="false" fontSize="13" backgroundAlpha="0" borderStyle="none"/>
+					</mx:Canvas>
+				</mx:Canvas>
+				<mx:Image id="questButton" source="_embed_mxml__swf_home_buttons_button_quest_swf_1169381901" y="205" x="297" visible="true" click="{dispatchEvent(new PopupEvent(Viking.HOME_ENTER_CITY, 'quest'));}"/>
+				<mx:Image id="tribulationButton" source="_embed_mxml__swf_home_buttons_button_quest_tutorial_swf_841274807" y="205" x="297" visible="false" click="{sendEvent(Viking.HOME_SHOW_TUTORIAL_WINDOW);}"/>
+				<mx:Image id="tutMarkTutorial" source="_embed_mxml__swf_common_arrow_top_swf_788233961" visible="false" y="265" x="315"/>
+				<mx:Canvas id="infoCanvas"/>
+				<mx:Canvas id="infoButtonCanvas" x="68" visible="false"/>
+				<mx:Image id="infoChat" visible="false" source="{_swf_info_chat}"/>
+				<mx:Image id="products" source="_embed_mxml__swf_window_info_products_swf_1304559433" x="363" y="0"/>
+				<mx:Image id="info" source="_embed_mxml__swf_window_info_home_swf_1388347787" x="0" y="0"/>
+				<mx:PlayerStatus id="playerStatus" x="10"/>
+				<mx:ProductionInfoWindow id="productionInfoWindow" x="380" y="14"/>
+				<mx:Image id="_Home_Image35" x="37" y="17" source="{_swf_faction}"/>
+				<mx:Image id="_Home_Image36" x="58" y="17" source="{_swf_rank}"/>
+				<mx:Canvas>
+					<mx:Box id="taskBox" visible="false" x="225" y="392" height="150" width="450">
+						<mx:List id="taskList" itemRenderer="_Home_ClassFactory1_c()" styleName="InfoBoxTab" selectable="false" rowHeight="50" backgroundAlpha="0" dataProvider='{_tasks}'/>
+					</mx:Box>
+					<mx:Box id="infoBox" visible="false" x="225" y="382">
+						<mx:Box id="info_txt_box_news" styleName="InfoTxtBox" height="176" width="450" buttonMode="false" useHandCursor="false"/>
+					</mx:Box>
+					<mx:Box id="chatBox" visible="false" x="225" y="332">
+						<mx:GuildChatWindow id="guildChatWindow" width="455" height="178" location="home" y="5"/>
+					</mx:Box>
+				</mx:Canvas>
+				<mx:Image id="notPressed" source="_embed_mxml__images_black_jpg_491440297" alpha="0" visible="false" width="100%" height="100%"/>
+				<mx:Canvas id="actionButton" x="490">
+					<mx:Image id="researchButton" y="285" x="198" source="_embed_mxml__swf_home_buttons_button_research_swf_688361655" click="{clickButtons(Viking.HOME_ACTION_OPEN_RESEARCH_WINDOW, 193, 285);}"/>
+					<mx:Image id="prodctionButton" source="_embed_mxml__swf_home_buttons_button_production_swf_1962213061" y="145" x="198" click="{clickButtons(Viking.HOME_SHOW_PRODUCTION_WINDOW, 193, 145);}"/>
+					<mx:Image id="shikihimeButton" source="_embed_mxml__swf_home_buttons_button_shikihime_swf_1006170409" y="75" x="198" click="{clickButtons(Viking.HOME_ALL_UNIT_VIEW, 193, 75);}"/>
+					<mx:Image id="itemButton" source="_embed_mxml__swf_home_buttons_button_item_swf_924773449" y="215" x="198" click="{clickButtons(Viking.HOME_ALL_ITEM_VIEW, 193, 215);}"/>
+					<mx:HBox x="143" y="8" width="150">
+						<mx:Canvas>
+							<mx:Image id="mailButton" source="_embed_mxml__swf_home_buttons_button_mail_50_swf_77670281" click="{clickButtons(Viking.HOME_MAIL_LIST, 128, -5);}"/>
+							<mx:Image id="_Home_Image43" source="_embed_mxml__swf_home_icon_button_50_new_swf_933026285" mouseEnabled="false" mouseChildren="false" visible="_unreadMail"/>
+						</mx:Canvas>
+						<mx:Spacer width="0"/>
+						<mx:Image id="reportButton" source="_embed_mxml__swf_home_buttons_button_report_50_swf_1031336821" x="205" y="8" click="{clickButtons(Viking.HOME_BATTLE_REPORT_LIST, 190, -5);}"/>
+					</mx:HBox>
+					<mx:Image id="pressedButton" source="_embed_mxml__swf_home_buttons_button_close_swf_1270316553" width="50" height="50" click="{sendEvent(Viking.HOME_CLOSE_NOW_WINDOW);}" x="pressedButtonPointX" y="pressedButtonPointY" visible="pressedButtonVisible"/>
+					<mx:Image id="tutMarkShikihime" source="_embed_mxml__swf_common_arrow_top_swf_788233961" visible="false" y="130" x="212"/>
+					<mx:Image id="tutMarkProduction" source="_embed_mxml__swf_common_arrow_top_swf_788233961" visible="false" y="200" x="212"/>
+					<mx:Image id="tutMarkResearch" source="_embed_mxml__swf_common_arrow_top_swf_788233961" visible="false" y="345" x="212"/>
+				</mx:Canvas>
+				<mx:Image id="notPressedShikihime" source="_embed_mxml__images_black_jpg_491440297" alpha="0" visible="true" width="100%" height="100%"/>
+				<mx:Image id="firstTimeBG" source="_embed_mxml__images_black_jpg_491440297" alpha="0" visible="true" width="100%" height="100%"/>
+				<mx:Canvas id="windowLayer"/>
+				<mx:Image id="fade" source="_embed_mxml__images_black_jpg_491440297" alpha="1" visible="true" width="100%" height="100%"/>
+			</mx:Canvas>
+			<mx:Canvas id="unitList" label="View 2" width="100%" height="100%"/>
+			<mx:Canvas id="galleryList" label="View 6" width="100%" height="100%"/>
+			<mx:Canvas id="itemList" label="View 3" width="100%" height="100%">
+				<mx:HomeAllItem id="homeAllItem"/>
+			</mx:Canvas>
+			<mx:Canvas id="sleepUnitList" label="View 4" width="100%" height="100%"/>
+			<mx:Canvas id="establishment" label="View 5" width="100%" height="100%">
+				<mx:HomeEstablishment id="homeEstablishment"/>
+			</mx:Canvas>
+		</mx:ViewStack>
+	</mx:HBox>
+
+</mx:CanvasWithPopUp>

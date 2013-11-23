@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.vo.home.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  _buildDetail:Object;
+        public static const  CLOSE_WINDOW:String = "ConfirmBuildWindow/closewindow";
+        public static const  CONFIRMED:String = "ConfirmBuildWindow/confirmed";
+
+
+        public function _ConfirmBuildWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ConfirmBuildWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "materials";
+            BindingManager.executeBindings(this, "_ConfirmBuildWindow_DataGridColumn1", _ConfirmBuildWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _ConfirmBuildWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ConfirmBuildWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "days";
+            _loc_1.width = 65;
+            BindingManager.executeBindings(this, "_ConfirmBuildWindow_DataGridColumn3", _ConfirmBuildWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _ConfirmBuildWindow_ClassFactory1_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = UnitDetailRendererForBuilding;
+            return _loc_1;
+        }// end function
+
+        public function onClose() : void
+        {
+            PopUpManager.removePopUp(this);
+            dispatchEvent(new Event(CLOSE_WINDOW));
+            return;
+        }// end function
+
+        public function _ConfirmBuildWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ConfirmBuildWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "unit.name";
+            _loc_1.itemRenderer = _ConfirmBuildWindow_ClassFactory1_c();
+            _loc_1.width = 90;
+            BindingManager.executeBindings(this, "_ConfirmBuildWindow_DataGridColumn2", _ConfirmBuildWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function onConfirm() : void
+        {
+            confirmButtonEnabled = false;
+            dispatchEvent(new Event(CONFIRMED));
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Canvas id="confirmCanvas">
+		<mx:Box width="530" height="544">
+			<mx:Canvas>
+				<mx:Text id="_ConfirmBuildWindow_Text1" styleName="DialogText" x="234" y="210" text="{Utils.i18n("confirmBuildResearch", buildDetail.constructionName)}"/>
+				<mx:DataGrid id="unit_building" styleName="UnitBuilding" width="290" rowHeight="55" rowCount="1" x="235" y="235" selectable="false" sortableColumns="false" columns="{[_ConfirmBuildWindow_DataGridColumn1_i(), _ConfirmBuildWindow_DataGridColumn2_i(), _ConfirmBuildWindow_DataGridColumn3_i()]}" dataProvider='{buildDetails}'/>
+				<mx:Canvas id="buttonLayer"/>
+			</mx:Canvas>
+		</mx:Box>
+	</mx:Canvas>
+
+</mx:Canvas>

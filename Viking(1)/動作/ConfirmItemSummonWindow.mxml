@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public static const  CONFIRMED:String = "ConfirmReunionWindow/Confirmed";
+
+
+        public function init() : void
+        {
+            MovieClip(Loader(_swf_bg.getChildAt(0)).content).gotoAndPlay("center_300x200");
+            MovieClip(Loader(_swf_bg.getChildAt(0)).content).x = -240;
+            MovieClip(Loader(_swf_bg.getChildAt(0)).content).y = -240;
+            MovieClip(Loader(_swf_ok_button.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_cancel_button.getChildAt(0)).content).gotoAndPlay("button_no");
+            return;
+        }// end function
+
+        public function onConfirm() : void
+        {
+            sendPopupEvent(CONFIRMED, _summonType);
+            onClose();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_ConfirmItemSummonWindow_Image1" source="{_swf_bg}"/>
+	<mx:VBox>
+		<mx:Label id="_ConfirmItemSummonWindow_Label1" fontSize="14" text=""/>
+		<mx:Spacer height="100%"/>
+		<mx:Label id="_ConfirmItemSummonWindow_Label2" fontSize="14" text=""/>
+		<mx:Spacer height="100%"/>
+	</mx:VBox>
+	<mx:HBox x="25" y="75">
+		<mx:Image id="_ConfirmItemSummonWindow_Image2" click="{onConfirm();}" source="{_swf_ok_button}"/>
+		<mx:Spacer width="110"/>
+		<mx:Image id="_ConfirmItemSummonWindow_Image3" click="{onClose();}" source="{_swf_cancel_button}"/>
+	</mx:HBox>
+
+</mx:PopupWindow>

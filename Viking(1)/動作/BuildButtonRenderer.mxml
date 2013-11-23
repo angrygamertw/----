@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import flash.events.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.styles.*;
+
+
+        public function onClick() : void
+        {
+            parentDocument.buildButtonClicked(data.unit);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="okButton" source="_embed_mxml__swf_home_buttons_button_list_decide_swf_1291455405" click="{onClick();}"/>
+
+</mx:Box>

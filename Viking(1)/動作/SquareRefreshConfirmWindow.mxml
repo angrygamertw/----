@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.managers.*;
+
+        public static const  CONFIRMED:String = "squareRefreshConfirmWindow/Confirmed";
+
+
+        public function onConfirm() : void
+        {
+            sendEvent(CONFIRMED);
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:VBox>
+		<mx:Spacer height="100%"/>
+		<mx:VBox left="85" top="80">
+			<mx:HBox horizontalGap="4">
+				<mx:Image source="_embed_mxml__images_icon_power_png_227571469"/>
+				<mx:Label styleName="UnitSelectText" text="神力100を消費して本日雇用出来る式姫を変更しますか？"/>
+			</mx:HBox>
+			<mx:HBox>
+				<mx:Spacer width="30"/>
+				<mx:VBox>
+					<mx:Label id="_SquareRefreshConfirmWindow_Label2" styleName="UnitSelectText" text="0:00をまたぐと雇用出来る式姫が変更されますので" color="#00bc403a"/>
+					<mx:Label id="_SquareRefreshConfirmWindow_Label3" styleName="UnitSelectText" text="0:00付近でのご利用にはご注意下さい。" color="#00bc403a"/>
+				</mx:VBox>
+			</mx:HBox>
+			<mx:Spacer height="20"/>
+			<mx:HBox width="100%" left="255" horizontalGap="10">
+				<mx:Spacer width="100%"/>
+				<mx:Button label="" styleName="CancelCanaButton" buttonMode="true" click="{onClose();}"/>
+				<mx:Button label="" styleName="OkButton" buttonMode="true" click="{onConfirm();}"/>
+				<mx:Spacer width="100%"/>
+			</mx:HBox>
+		</mx:VBox>
+		<mx:Spacer height="100%"/>
+	</mx:VBox>
+
+</mx:PopupWindow>

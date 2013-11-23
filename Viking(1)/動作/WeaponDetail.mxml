@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  EmbedSwfWindowCommon:Class;
+        private var  _viewData:Object;
+        private var  EmbedSwfButtonCommon:Class;
+
+
+        public function init() : void
+        {
+            Loader(_swf_close.getChildAt(0)).content.addEventListener("BUTTON_CLOSE", function (event:Event) : void
+            {
+                buttonClick();
+                return;
+            }// end function
+            );
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            detailCanvas.visible = false;
+            Loader(_swf_window.getChildAt(0)).content.addEventListener("ENLARGE_END", function (event:Event) : void
+            {
+                detailCanvas.visible = true;
+                return;
+            }// end function
+            );
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_400x460");
+            return;
+        }// end function
+
+        public function buttonClick() : void
+        {
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_400x460");
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Image id="_WeaponDetail_Image1" source="{_swf_window}"/>
+	<mx:Image id="_WeaponDetail_Image2" x="325" y="490" source="{_swf_close}"/>
+	<mx:Box width="500" height="450" x="150" y="150">
+		<mx:Canvas id="detailCanvas">
+			<mx:Image source="_embed_mxml__images_base_st_icon_battle_png_722824843" x="35"/>
+			<mx:Label id="_WeaponDetail_Label1" styleName="ItemDetailLabel" x="60" y="4" text="{viewData.nameLabel}"/>
+			<mx:Text id="_WeaponDetail_Text1" styleName="ItemDetail" width="450" x="40" y="34" text="{viewData.description}"/>
+			<mx:Text id="_WeaponDetail_Text2" styleName="ItemDetailText" width="80" x="98" y="75" textAlign="left" text=""/>
+			<mx:Text id="_WeaponDetail_Text3" styleName="ItemDetailText" x="85" y="98" width="50" textAlign="center" text=""/>
+			<mx:Text id="_WeaponDetail_Text4" styleName="ItemDetailText" x="181" y="98" width="50" textAlign="center" text=""/>
+			<mx:Text id="_WeaponDetail_Text5" styleName="ItemDetailText" x="273" y="98" width="50" textAlign="center" text=""/>
+			<mx:Text id="_WeaponDetail_Text6" styleName="ItemDetailText" x="369" y="98" width="50" textAlign="center" text=""/>
+			<mx:Text id="_WeaponDetail_Text7" styleName="ItemDetailText" x="85" y="120" width="50" textAlign="center" text=""/>
+			<mx:Text id="_WeaponDetail_Text8" styleName="ItemDetailText" x="181" y="120" width="50" textAlign="center" text=""/>
+			<mx:Text id="_WeaponDetail_Text9" styleName="ItemDetailText" x="273" y="120" width="50" textAlign="center" text=""/>
+			<mx:Text id="_WeaponDetail_Text10" styleName="ItemDetailText" x="369" y="120" width="50" textAlign="center" text=""/>
+			<mx:Text id="_WeaponDetail_Text11" styleName="ItemDetailText" x="72" y="154" width="50" textAlign="center" text="{viewData.strength}"/>
+			<mx:Text id="_WeaponDetail_Text12" styleName="ItemDetailText" x="149" y="154" width="50" textAlign="center" text="{viewData.intelligence}"/>
+			<mx:Text id="_WeaponDetail_Text13" styleName="ItemDetailText" x="225" y="154" width="50" textAlign="center" text="{viewData.tech}"/>
+			<mx:Text id="_WeaponDetail_Text14" styleName="ItemDetailText" x="301" y="154" width="50" textAlign="center" text="{viewData.defense}"/>
+			<mx:Text id="_WeaponDetail_Text15" styleName="ItemDetailText" x="377" y="154" width="50" textAlign="center" text="{viewData.agility}"/>
+			<mx:Text id="_WeaponDetail_Text16" styleName="ItemDetailText" x="72" y="176" width="50" textAlign="center" text="{viewData.luck}"/>
+			<mx:Text id="_WeaponDetail_Text17" styleName="ItemDetailText" x="149" y="176" width="50" textAlign="center" text="{viewData.maxHp}"/>
+			<mx:Text id="_WeaponDetail_Text18" styleName="ItemDetailText" x="270" y="175" width="200" textAlign="left" text=""/>
+			<mx:Text id="_WeaponDetail_Text19" styleName="ItemDetailText" x="46" y="235" width="370" textAlign="left" text="{viewData.equipabilityJobNameLabel}"/>
+			<mx:Canvas id="buttonLayer" y="335" x="185"/>
+		</mx:Canvas>
+	</mx:Box>
+
+</mx:Canvas>

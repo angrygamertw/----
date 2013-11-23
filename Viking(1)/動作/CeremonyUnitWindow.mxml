@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import flash.events.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+
+        public static const  SUMMON_CEREMONY:String = NAME + "SUMMON_CEREMONY";
+        public static const  NAME:String = "CeremonyTypeSelectWindow";
+
+
+        public function finishTutorial() : void
+        {
+            sendEvent(Viking.HOME_FINISH_TUTORIAL);
+            onClose();
+            return;
+        }// end function
+
+        public function summonCeremony() : void
+        {
+            sendEvent(SUMMON_CEREMONY);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas>
+		<mx:HBox width="100" x="110" y="250">
+			<mx:Button label="" styleName="OnlyOkButton" buttonMode="true" mouseChildren="false" click="{onClose();}"/>
+		</mx:HBox>
+	</mx:Canvas>
+
+</mx:PopupWindow>

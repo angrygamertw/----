@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.events.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _unit:UnitVO;
+        public static const  SACRIFICE_UNIT_CONFIRMED:String = "sacrificeUnitConfirmed";
+
+
+        public function onSacrifice() : void
+        {
+            sendPopupEvent(SACRIFICE_UNIT_CONFIRMED, _unit);
+            onClose();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas/>
+	<mx:Box width="330" height="180" styleName="DialogBg">
+		<mx:Canvas>
+			<mx:Text width="230" x="65" y="50" text="この式姫を神に捧げますか？" fontSize="14"/>
+			<mx:Button id="cancel_button" x="75" y="145" styleName="CancelCanaButton" buttonMode="true" click="{onClose();}"/>
+			<mx:Button id="okButton" x="180" y="145" styleName="OkButton" buttonMode="true" click="{onSacrifice();}"/>
+		</mx:Canvas>
+	</mx:Box>
+
+</mx:PopupWindow>

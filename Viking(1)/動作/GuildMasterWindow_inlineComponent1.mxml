@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public var  _GuildMasterWindow_inlineComponent1_Image1:Image;
+        public var  _GuildMasterWindow_inlineComponent1_Label1:Label;
+
+    ]]></mx:Script>
+
+	<mx:Image id="_GuildMasterWindow_inlineComponent1_Image1" width="24" horizontalAlign="right" source="{outerDocument.masterImg(data)}"/>
+	<mx:Label id="_GuildMasterWindow_inlineComponent1_Label1" text="{outerDocument.playerName(data)}"/>
+
+</mx:HBox>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _gallery:Object;
+        private var  EmbedSwfWindowGallery:Class;
+        public static const  LOGIN_ANIMATION_END:String = "loginAnimationEnd";
+
+
+        public function closeWindow(event:Event) : void
+        {
+            onClose();
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            Loader(_swf.getChildAt(0)).content.addEventListener("BUTTON_BACK", closeWindow);
+            MovieClip(Loader(_swf.getChildAt(0)).content).stop();
+            return;
+        }// end function
+
+        public function setDetailFrame(param1:String) : void
+        {
+            MovieClip(Loader(_swf.getChildAt(0)).content).gotoAndPlay("id_" + param1);
+            return;
+        }// end function
+
+        public function showItemName(event:Event) : void
+        {
+            Loader(_swf.getChildAt(0)).content.removeEventListener("ANIMATION_END", showItemName);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_GalleryDetail_Image1" source="{_swf}"/>
+	<mx:Image id="fireMaterialIcon" x="142" y="283" source="/images/wu_xing/icon_wu_xing_01.png" visible="fireMaterialIconVisible"/>
+	<mx:Image id="earthMaterialIcon" x="195" y="322" source="/images/wu_xing/icon_wu_xing_02.png" visible="earthMaterialIconVisible"/>
+	<mx:Image id="waterMaterialIcon" x="174" y="382" source="/images/wu_xing/icon_wu_xing_03.png" visible="waterMaterialIconVisible"/>
+	<mx:Image id="goldMaterialIcon" x="108" y="382" source="/images/wu_xing/icon_wu_xing_04.png" visible="goldMaterialIconVisible"/>
+	<mx:Image id="plantMaterialIcon" x="89" y="322" source="/images/wu_xing/icon_wu_xing_05.png" visible="plantMaterialIconVisible"/>
+	<mx:Text id="descriptionText" x="36" y="110" width="260" height="90" fontSize="11" text="_description"/>
+	<mx:Text id="prizeNameText" x="58" y="444" width="200" height="30" fontSize="18" text="_prizeName"/>
+
+</mx:PopupWindow>

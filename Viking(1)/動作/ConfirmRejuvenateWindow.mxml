@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.managers.*;
+
+        public static const  CONFIRMED:String = "ConfirmRejuvenateWindow/Confirmed";
+
+
+        public function onConfirm() : void
+        {
+            sendEvent(CONFIRMED);
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:VBox>
+		<mx:Spacer height="100%"/>
+		<mx:VBox horizontalCenter="20" top="100">
+			<mx:HBox horizontalGap="2">
+				<mx:Image source="_embed_mxml__images_icon_power_png_227571469"/>
+				<mx:Label styleName="UnitSelectText" text="神力300を消費してこの式姫を若返らせますか？"/>
+			</mx:HBox>
+			<mx:Label id="_ConfirmRejuvenateWindow_Label2" styleName="UnitSelectText" text="" color="#00ff0000"/>
+			<mx:HBox width="100%" horizontalCenter="20" horizontalGap="10">
+				<mx:Spacer width="100%"/>
+				<mx:Button label="" styleName="CancelCanaButton" buttonMode="true" click="{onClose();}"/>
+				<mx:Button label="" styleName="OkButton" buttonMode="true" click="{onConfirm();}"/>
+				<mx:Spacer width="100%"/>
+			</mx:HBox>
+		</mx:VBox>
+		<mx:Spacer height="100%"/>
+	</mx:VBox>
+
+</mx:PopupWindow>

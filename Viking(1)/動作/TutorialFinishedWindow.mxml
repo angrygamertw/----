@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import mx.core.*;
+        import mx.events.*;
+
+
+        public function showNext() : void
+        {
+            sendEvent(Viking.HOME_SHOW_NEXT_TUTORIAL);
+            onClose();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+
+</mx:PopupWindow>

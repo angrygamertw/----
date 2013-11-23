@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  EmbedSwfWindowCommon:Class;
+        public static const  LOGIN_ANIMATION_END:String = "loginAnimationEnd";
+
+
+        public function setDrawItem(param1:Object) : void
+        {
+            if (param1.name)
+            {
+                _itemName = param1.name;
+            }
+            return;
+        }// end function
+
+        public function closeWindow() : void
+        {
+            dispatchEvent(new Event(LOGIN_ANIMATION_END));
+            onClose();
+            return;
+        }// end function
+
+        public function setConsecutiveLoginItem(param1:Object) : void
+        {
+            if (param1.name)
+            {
+                _consecutiveLoginItemName = param1.name;
+            }
+            return;
+        }// end function
+
+        public function showRemainingCount() : void
+        {
+            consecutiveOkButton.visible = true;
+            remainingCountText.visible = true;
+            MovieClip(Loader(_swf.getChildAt(0)).content).gotoAndPlay("window_limited_continue");
+            return;
+        }// end function
+
+        public function showConsecutiveLoginItem() : void
+        {
+            consecutiveOkButton.visible = true;
+            consecutiveLoginItemText.visible = true;
+            MovieClip(Loader(_swf.getChildAt(0)).content).gotoAndPlay("window_limited_present");
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            if (_itemName)
+            {
+                startDrawAnimation();
+            }
+            else
+            {
+                showConsecutiveLogin();
+            }
+            return;
+        }// end function
+
+        public function initView() : void
+        {
+            itemNameText.visible = false;
+            consecutiveLoginItemText.visible = false;
+            remainingCountText.visible = false;
+            okButton.visible = false;
+            consecutiveOkButton.visible = false;
+            MovieClip(Loader(_swf_button.getChildAt(0)).content).gotoAndPlay("button_ok");
+            MovieClip(Loader(_swf_consecutive_button.getChildAt(0)).content).gotoAndPlay("button_ok");
+            return;
+        }// end function
+
+        public function showItemName(event:Event) : void
+        {
+            Loader(_swf.getChildAt(0)).content.removeEventListener("ANIMATION_END", showItemName);
+            itemNameText.visible = true;
+            okButton.visible = true;
+            MovieClip(Loader(_swf.getChildAt(0)).content).gotoAndPlay("window_rank_01");
+            return;
+        }// end function
+
+        public function startDrawAnimation() : void
+        {
+            initView();
+            MovieClip(Loader(_swf.getChildAt(0)).content).gotoAndPlay(0);
+            Loader(_swf.getChildAt(0)).content.addEventListener("ANIMATION_END", showItemName);
+            return;
+        }// end function
+
+        public function setRemainingCountLabel(param1:int) : void
+        {
+            if (param1 == 0)
+            {
+                return;
+            }
+            _remainingCountLabel = param1.toString();
+            return;
+        }// end function
+
+        public function showConsecutiveLogin() : void
+        {
+            initView();
+            if (_consecutiveLoginItemName)
+            {
+                showConsecutiveLoginItem();
+            }
+            else if (_remainingCountLabel)
+            {
+                showRemainingCount();
+            }
+            else
+            {
+                closeWindow();
+            }
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_LoginItemWindow_Image1" source="{_swf}"/>
+	<mx:Text id="itemNameText" x="225" y="185" visible="false" width="300" height="30" textAlign="center" fontSize="18" color="#00ff0000" text="_itemName"/>
+	<mx:Image id="okButton" x="320" y="305" visible="false" click="{showConsecutiveLogin();}" source="{_swf_button}"/>
+	<mx:Text id="consecutiveLoginItemText" x="108" y="265" visible="false" width="300" height="30" textAlign="center" fontSize="18" color="#00ff0000" text="_consecutiveLoginItemName"/>
+	<mx:Text id="remainingCountText" x="245" y="240" visible="false" width="300" height="30" textAlign="center" fontSize="18" color="#00ff0000" text="_remainingCountLabel"/>
+	<mx:Image id="consecutiveOkButton" x="320" y="305" visible="false" click="{closeWindow();}" source="{_swf_consecutive_button}"/>
+
+</mx:PopupWindow>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _coffinId:int;
+        public static const  SELECT_SLEEPING_UNIT:String = "selectSleepingUnit";
+        public static const  SELECTED:String = "CollectUnitWindow/Selected";
+
+
+        public function _SelectSleepUnitWindow_DataGridColumn3_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "level";
+            _loc_1.headerText = "Lv";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _SelectSleepUnitWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SelectSleepUnitWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "name";
+            _loc_1.itemRenderer = _SelectSleepUnitWindow_ClassFactory2_c();
+            BindingManager.executeBindings(this, "_SelectSleepUnitWindow_DataGridColumn1", _SelectSleepUnitWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _SelectSleepUnitWindow_DataGridColumn5_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SelectSleepUnitWindow_DataGridColumn5 = _loc_1;
+            _loc_1.dataField = "strength";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SelectSleepUnitWindow_DataGridColumn5", _SelectSleepUnitWindow_DataGridColumn5);
+            return _loc_1;
+        }// end function
+
+        public function _SelectSleepUnitWindow_DataGridColumn7_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "hp";
+            _loc_1.headerText = "HP";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _SelectSleepUnitWindow_ClassFactory2_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = UnitDetailLabelRenderer;
+            return _loc_1;
+        }// end function
+
+        public function onItemClick() : void
+        {
+            if (unitList.selectedItem)
+            {
+                sendPopupEvent(SELECT_SLEEPING_UNIT, {unitId:unitList.selectedItem.unitId, coffinId:_coffinId});
+                init();
+                this.onClose();
+            }
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_720x460");
+            MovieClip(Loader(_swf_ok.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_back.getChildAt(0)).content).gotoAndPlay("button_no");
+            MovieClip(Loader(_swf_close_window.getChildAt(0)).content).gotoAndPlay(1);
+            return;
+        }// end function
+
+        public function _SelectSleepUnitWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SelectSleepUnitWindow_DataGridColumn4 = _loc_1;
+            _loc_1.dataField = "exp";
+            _loc_1.width = 90;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SelectSleepUnitWindow_DataGridColumn4", _SelectSleepUnitWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function _SelectSleepUnitWindow_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SelectSleepUnitWindow_DataGridColumn6 = _loc_1;
+            _loc_1.dataField = "defense";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SelectSleepUnitWindow_DataGridColumn6", _SelectSleepUnitWindow_DataGridColumn6);
+            return _loc_1;
+        }// end function
+
+        public function _SelectSleepUnitWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            expLabelRenderer = _loc_1;
+            _loc_1.generator = SelectSleepUnitWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _SelectSleepUnitWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SelectSleepUnitWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "jobMasterVO.nameLabel";
+            _loc_1.width = 115;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SelectSleepUnitWindow_DataGridColumn2", _SelectSleepUnitWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_SelectSleepUnitWindow_Image1" source="{_swf_window}"/>
+	<mx:Canvas x="30" y="100" height="460">
+		<mx:Text id="listText" y="10" x="30" styleName="UnitSelectText" text="{Utils.i18n("localize236")}"/>
+		<mx:DataGrid id="unitList" width="650" rowHeight="24" y="30" x="20" rowCount="14" styleName="UnitListGrid" sortableColumns="false" columns="{[_SelectSleepUnitWindow_DataGridColumn1_i(), _SelectSleepUnitWindow_DataGridColumn2_i(), _SelectSleepUnitWindow_DataGridColumn3_c(), _SelectSleepUnitWindow_DataGridColumn4_i(), _SelectSleepUnitWindow_DataGridColumn5_i(), _SelectSleepUnitWindow_DataGridColumn6_i(), _SelectSleepUnitWindow_DataGridColumn7_c()]}" dataProvider='{_unitArray}'/>
+		<mx:VBox id="counterBox" y="395" horizontalCenter="0" horizontalGap="20">
+			<mx:HBox>
+				<mx:Image id="_SelectSleepUnitWindow_Image2" click="{onItemClick();}" source="{_swf_ok}"/>
+				<mx:Spacer width="120"/>
+				<mx:Image id="_SelectSleepUnitWindow_Image3" click="{onClose();}" source="{_swf_back}"/>
+			</mx:HBox>
+		</mx:VBox>
+	</mx:Canvas>
+	<mx:Image id="_SelectSleepUnitWindow_Image4" x="715" y="80" click="{onClose();}" source="{_swf_close_window}"/>
+
+</mx:PopupWindow>

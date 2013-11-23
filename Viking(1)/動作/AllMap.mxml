@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:CanvasWithPopUp xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.proxy.allMap.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.view.allMap.*;
+        import com.kbmj.viking.view.home.*;
+        import com.kbmj.viking.vo.*;
+        import com.kbmj.viking.vo.home.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.effects.*;
+        import mx.events.*;
+
+        public var  nowInfo:String;
+        public var  nowInfoId:int;
+        private var  _IncrementTasks:TaskVO;
+        private var  confirmFinishTaskWindow:ConfirmFinishTaskWindow;
+        public var  savedInfo:String;
+        public static var  fortRange:Class;
+        public static var  EmbedSwfWindowUnitSelectForColony:Class;
+        public static const  NAME:String = "AllMap";
+        public static var  EmbedSwfInfoChat:Class;
+        public static var  EmbedSwfWindowUnitSelectForInvasion:Class;
+        public static const  BACK_HOME:String = NAME + "/backHome";
+        public static var  EmbedSwfWindowUnitSelect:Class;
+        public static var  towerRange:Class;
+        public static var  EmbedSwfButtonCommonMap:Class;
+
+
+        public function getIncrementMaxTasksText() : String
+        {
+            if (isMaxTaskIncrement())
+            {
+                return Utils.i18n("localize0") + "<br/>&nbsp;&nbsp;" + player.incrementMaxTasksAtLabel + Utils.i18n("localize1");
+            }
+            return Utils.i18n("localize2") + "<br/>&nbsp;&nbsp;" + Utils.i18n("localize3");
+        }// end function
+
+        public function setFortRangeImage() : void
+        {
+            rangeImage = fortRange;
+            return;
+        }// end function
+
+        public function changeFaction(param1) : void
+        {
+            MovieClip(Loader(swf_faction.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(swf_faction.getChildAt(0)).content).gotoAndPlay(param1);
+            return;
+        }// end function
+
+        public function chatButtonsAnimation(param1:String) : void
+        {
+            MovieClip(Loader(_swf_info_chat.getChildAt(0)).content).gotoAndPlay(param1);
+            return;
+        }// end function
+
+        public function onClickCloseButton() : void
+        {
+            functionButtonClicked = false;
+            sendEvent(Viking.HOME_CLOSE_NOW_WINDOW);
+            return;
+        }// end function
+
+        public function finishTask(param1:TaskVO) : void
+        {
+            confirmFinishTaskWindow.task = param1;
+            confirmFinishTaskWindow.init();
+            popupWindow(confirmFinishTaskWindow, false);
+            return;
+        }// end function
+
+        public function _AllMap_Glow2_i() : Glow
+        {
+            var _loc_1:* = new Glow();
+            glowoff = _loc_1;
+            _loc_1.alphaFrom = 0.9;
+            _loc_1.alphaTo = 0;
+            _loc_1.blurXFrom = 10;
+            _loc_1.blurXTo = 2;
+            _loc_1.blurYFrom = 10;
+            _loc_1.blurYTo = 2;
+            _loc_1.color = 16766976;
+            _loc_1.inner = false;
+            _loc_1.knockout = false;
+            _loc_1.strength = 1;
+            return _loc_1;
+        }// end function
+
+        public function initApp() : void
+        {
+            return;
+        }// end function
+
+        public function _AllMap_ClassFactory1_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = TaskTextRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _AllMap_Glow1_i() : Glow
+        {
+            var _loc_1:* = new Glow();
+            glow = _loc_1;
+            _loc_1.alphaFrom = 0.1;
+            _loc_1.alphaTo = 0.9;
+            _loc_1.blurXFrom = 2;
+            _loc_1.blurXTo = 10;
+            _loc_1.blurYFrom = 2;
+            _loc_1.blurYTo = 10;
+            _loc_1.color = 16766976;
+            _loc_1.inner = false;
+            _loc_1.knockout = false;
+            _loc_1.strength = 1;
+            return _loc_1;
+        }// end function
+
+        public function init() : void
+        {
+            var x:int;
+            var image:Image;
+            confirmFinishTaskWindow.addEventListener(ConfirmFinishTaskWindow.CONFIRMED, function (event:PopupEvent) : void
+            {
+                dispatchEvent(new PopupEvent(Viking.FINISH_TASK_IMMEDIATELY, event.param));
+                return;
+            }// end function
+            );
+            width = AllMapProxy.BG_IMAGE_WIDTH * AllMapProxy.BG_IMAGE_COLUMN;
+            height = AllMapProxy.BG_IMAGE_HEIGHT * AllMapProxy.BG_IMAGE_ROW;
+            var cursor:* = bgCanvas.removeChildAt((bgCanvas.numChildren - 1));
+            var fort_range:* = bgCanvas.removeChildAt((bgCanvas.numChildren - 1));
+            var index:int;
+            var y:int;
+            while (y < AllMapProxy.BG_IMAGE_ROW)
+            {
+                
+                x;
+                while (x < AllMapProxy.BG_IMAGE_COLUMN)
+                {
+                    
+                    image = new Image();
+                    image.x = AllMapProxy.BG_IMAGE_WIDTH * x;
+                    image.y = AllMapProxy.BG_IMAGE_HEIGHT * y;
+                    bgCanvas.addChild(image);
+                    index = (index + 1);
+                    x = (x + 1);
+                }
+                y = (y + 1);
+            }
+            bgCanvas.addChild(fort_range);
+            bgCanvas.addChild(cursor);
+            MovieClip(Loader(_swf_info_chat.getChildAt(0)).content).gotoAndPlay("b_guild");
+            return;
+        }// end function
+
+        public function incrementMaxTasks() : void
+        {
+            sendEvent(Viking.INCREMENT_MAX_TASK_CONFIRM);
+            return;
+        }// end function
+
+        public function setTowerRangeImage() : void
+        {
+            rangeImage = towerRange;
+            return;
+        }// end function
+
+        public function isMaxTaskIncrement() : Boolean
+        {
+            return player && player.incrementMaxTasks;
+        }// end function
+
+        public function changeRank(param1) : void
+        {
+            MovieClip(Loader(swf_rank.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(swf_rank.getChildAt(0)).content).gotoAndPlay(param1);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="bgCanvas" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+		<mx:Image id="fort_range" source="{rangeImage}"/>
+		<mx:Image id="cursor" source="_embed_mxml__images_all_map_hex_cursor_png_1223338699"/>
+	</mx:Canvas>
+	<mx:HexInfoWindow id="hexInfoWindow"/>
+	<mx:MiniMapWindow id="miniMapWindow"/>
+	<mx:HexInputWindow id="hexInputWindow"/>
+	<mx:GuildMemberListWindow id="guildMemberListWindow"/>
+	<mx:Canvas id="infoCanbas"/>
+	<mx:Canvas id="infoButtonCanvas" x="68" visible="false"/>
+	<mx:Image id="infoChat" visible="false" source="{_swf_info_chat}"/>
+	<mx:Canvas>
+		<mx:Box id="taskBox" visible="false" x="225" y="392" height="150" width="450">
+			<mx:List id="taskList" itemRenderer="_AllMap_ClassFactory1_c()" styleName="InfoBoxTab" selectable="false" rowHeight="50" backgroundAlpha="0" dataProvider='{_tasks}'/>
+		</mx:Box>
+		<mx:Box id="infoBox" visible="false" x="225" y="382">
+			<mx:Box id="info_txt_box_news" styleName="InfoTxtBox" height="176" width="450" buttonMode="false" useHandCursor="false"/>
+		</mx:Box>
+		<mx:Box id="chatBox" visible="false" x="225" y="332">
+			<mx:GuildChatWindow id="guildChatWindow" width="455" height="178" location="home" y="5"/>
+		</mx:Box>
+	</mx:Canvas>
+	<mx:Image id="products" x="363" y="0" source="_embed_mxml__swf_window_info_products_swf_1304559433"/>
+	<mx:ProductionInfoWindow id="productionInfoWindow" x="380" y="14"/>
+	<mx:Image id="info" x="0" y="0" source="_embed_mxml__swf_window_info_home_swf_1388347787"/>
+	<mx:PlayerStatus id="playerStatus" x="10"/>
+	<mx:Image id="_AllMap_Image6" x="37" y="17" source="{swf_faction}"/>
+	<mx:Image id="_AllMap_Image7" x="58" y="17" source="{swf_rank}"/>
+	<mx:Canvas x="633" y="8">
+		<mx:Image source="_embed_mxml__swf_home_buttons_button_mail_50_swf_77670281" click="{sendEvent(Viking.ALL_MAP_MAIL_LIST);}"/>
+		<mx:Image id="_AllMap_Image9" source="_embed_mxml__swf_home_icon_button_50_new_swf_933026285" mouseEnabled="false" mouseChildren="false" visible="_unreadMail"/>
+	</mx:Canvas>
+	<mx:Image x="695" y="8" source="_embed_mxml__swf_home_buttons_button_report_50_swf_1031336821" click="{sendEvent(Viking.ALL_MAP_BATTLE_REPORT_LIST);}"/>
+	<mx:Image x="688" y="75" source="_embed_mxml__swf_all_map_button_back_swf_2104410221" click="{dispatchEvent(new Event(BACK_HOME));}"/>
+	<mx:AllMapCommandWindow id="allMapCommandWindow" visible="false"/>
+
+</mx:CanvasWithPopUp>

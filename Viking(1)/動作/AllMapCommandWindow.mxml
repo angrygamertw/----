@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="365" height="200" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.*;
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.geom.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  _enableFound:Boolean;
+        private var  _enablePurify:Boolean;
+        public var  reclaimActivity:Object;
+        private var  _enableChargeRemove:Boolean;
+        private var  selectedUnitId:int;
+        private var  eventName:String;
+        public var  propertiesCountFull:Boolean;
+        private var  _enableInvade:Boolean;
+        private var  title:String;
+        private var  chargeRemoveWindow:ChargeRemoveWindow;
+        private var  commandName:String;
+        private var  unitWindow:AllMapUnitWindow;
+        private var  _playerName:String;
+        private var  foundSelectWindow:FoundSelectWindow;
+        public var  foundActivity:Object;
+        public var  lowOnmyouRankLevelUp:Boolean;
+        private var  _enableRepair:Boolean;
+        private var  confirmWindow:AllMapConfirmWindow;
+        public var  lowOnmyouRankAttack:Boolean;
+        public var  noUnit:Boolean;
+        private var  _enableReclaim:Boolean;
+        private var  _enableGarrison:Boolean;
+        public var  homePos:Point;
+        private var  _enableSubdue:Boolean;
+        private var  _enableDestroy:Boolean;
+        private var  activity:Object;
+        public var  garrisonUnitWindow:GarrisonUnitWindow;
+        public var  noPossessionTicket:Boolean;
+        private var  _enablePlunder:Boolean;
+        private var  _enableSurrender:Boolean;
+        public var  notConnected:Boolean;
+        private var  _enableAttack:Boolean;
+        public var  selectedUnits:Array;
+        public var  propertiesCount:int;
+        public var  centerPos:Point;
+        public var  repairActivity:Object;
+        private var  _enableRemove:Boolean;
+        private var  foundType:int;
+        public static const  SURRENDER:String = NAME + "/surrender";
+        public static const  ATTACK:String = NAME + "/attack";
+        public static const  RECLAIM:String = NAME + "/reclaim";
+        public static const  LOAD_ANIMATION:String = NAME + "/loadAnimation";
+        public static const  REPAIR:String = NAME + "/repair";
+        public static const  NAME:String = "AllMapCommandWindow";
+        public static const  REMOVE:String = NAME + "/remove";
+        public static const  GARRISON_CANCEL:String = NAME + "/garrisonCancel";
+        public static const  GARRISON_UNIT_WINDOW_OPEN:String = NAME + "/garrisonUnitWindowOpen";
+        public static const  FOUND:String = NAME + "/found";
+        public static const  GARRISON_ALL_RECOVERY:String = NAME + "/garrisonAllRecovery";
+        public static const  DESTROY:String = NAME + "/destroy";
+        public static const  SHOW_LOADING_WINDOW:String = NAME + "/showLoadingWindow";
+        public static const  CHARGE_REMOVE:String = NAME + "/chargeRemove";
+        public static const  MAIL:String = NAME + "/mail";
+        public static const  PLUNDER:String = NAME + "/plunder";
+        public static const  GARRISON_OK:String = NAME + "/garrisonOK";
+
+
+        public function changeRank(param1) : void
+        {
+            MovieClip(Loader(_swf_rank.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_rank.getChildAt(0)).content).gotoAndPlay(param1);
+            return;
+        }// end function
+
+        public function onClickGarrison() : void
+        {
+            dispatchEvent(new PopupEvent(LOAD_ANIMATION, {waitingUnits:waitingUnits, selectedUnits:selectedUnits}));
+            return;
+        }// end function
+
+        public function chargeRemoveOK(event:PopupEvent) : void
+        {
+            dispatchEvent(new PopupEvent(CHARGE_REMOVE, {area:event.param.area}));
+            return;
+        }// end function
+
+        public function changeFaction(param1) : void
+        {
+            MovieClip(Loader(_swf_faction.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_faction.getChildAt(0)).content).gotoAndPlay(param1);
+            return;
+        }// end function
+
+        public function initButtons() : void
+        {
+            MovieClip(Loader(_buttonPurify.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_buttonAttack.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_buttonInvade.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_buttonSubdue.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_buttonPlunder.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_buttonMail.getChildAt(0)).content).gotoAndPlay("button_mail");
+            MovieClip(Loader(_buttonSurrender.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_buttonReclaim.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_buttonFound.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_buttonRepair.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_buttonGarrison.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_buttonDestroy.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_buttonRemove.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_buttonChargeRemove.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_buttonClose.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_buttonClose.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_buttonX.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_buttonX.getChildAt(0)).content).gotoAndPlay("button_close");
+            return;
+        }// end function
+
+        public function garrisonUnitSelectCancel(event:Event) : void
+        {
+            PopUpManager.removePopUp(garrisonUnitWindow);
+            sendEvent(GARRISON_CANCEL);
+            return;
+        }// end function
+
+        public function closeChargeRemoveWindow() : void
+        {
+            PopUpManager.removePopUp(chargeRemoveWindow);
+            return;
+        }// end function
+
+        public function confirmMail() : void
+        {
+            sendPopupEvent(MAIL, playerName);
+            return;
+        }// end function
+
+        public function confirmFound() : void
+        {
+            this.popupWindow(foundSelectWindow, false);
+            foundSelectWindow.addEventListener(FoundSelectWindow.SELECT_STRUCTURE, selectFound);
+            return;
+        }// end function
+
+        public function endUnitSelect(event:PopupEvent) : void
+        {
+            var _loc_3:Object = null;
+            PopUpManager.removePopUp(unitWindow);
+            confirmWindow.init();
+            var _loc_2:* = activity.money + Utils.i18n("generalMoneyUnit") + "\n";
+            for each (_loc_3 in activity.materials)
+            {
+                
+                _loc_2 = _loc_2 + (_loc_3.nameLabel + ":" + _loc_3.quantity + "\n");
+            }
+            confirmWindow.detail = {title:title, commandName:commandName, materials:_loc_2, unit:event.param.unit, terms:activity.terms};
+            selectedUnitId = event.param.unit.unitId;
+            this.popupWindow(confirmWindow, false);
+            return;
+        }// end function
+
+        public function chargeRemoveCancel(event:Event) : void
+        {
+            closeChargeRemoveWindow();
+            return;
+        }// end function
+
+        public function confirmSurrender() : void
+        {
+            confirmEvent(Utils.i18n("allMapCommandPropertyAbandonment"), SURRENDER);
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            initButtons();
+            unitWindow.addEventListener(AllMapUnitWindow.UNIT_SELECTED, endUnitSelect);
+            confirmWindow.addEventListener(AllMapConfirmWindow.CONFIRMED, confirmed);
+            garrisonUnitWindow.addEventListener(GarrisonUnitWindow.UNIT_SELECT_OK, garrisonUnitSelectOK);
+            garrisonUnitWindow.addEventListener(GarrisonUnitWindow.UNIT_SELECT_CANCEL, garrisonUnitSelectCancel);
+            garrisonUnitWindow.addEventListener(GarrisonUnitWindow.ALL_UNIT_RECOVERY, garrisonUnitAllRecovery);
+            chargeRemoveWindow.addEventListener(ChargeRemoveWindow.CHARGE_REMOVE_OK, chargeRemoveOK);
+            chargeRemoveWindow.addEventListener(ChargeRemoveWindow.CHARGE_REMOVE_CANCEL, chargeRemoveCancel);
+            return;
+        }// end function
+
+        public function confirmDestroy() : void
+        {
+            confirmEvent(Utils.i18n("allMapCommandFortBreak"), DESTROY);
+            return;
+        }// end function
+
+        public function _AllMapCommandWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _AllMapCommandWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "description";
+            BindingManager.executeBindings(this, "_AllMapCommandWindow_DataGridColumn3", _AllMapCommandWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function garrisonUnitSelectOK(event:PopupEvent) : void
+        {
+            var _loc_3:UnitVO = null;
+            var _loc_2:* = new Array();
+            for each (_loc_3 in event.param.units)
+            {
+                
+                if (_loc_3.name != "")
+                {
+                    _loc_2.push(_loc_3.unitId);
+                }
+            }
+            PopUpManager.removePopUp(garrisonUnitWindow);
+            dispatchEvent(new PopupEvent(GARRISON_OK, {unitIds:_loc_2}));
+            return;
+        }// end function
+
+        public function confirmAttack(param1:String) : void
+        {
+            var _loc_2:String = null;
+            var _loc_3:AlertWindow = null;
+            if (lowOnmyouRankAttack)
+            {
+                _loc_2 = Utils.i18n("localize16") + param1 + Utils.i18n("localize17");
+            }
+            else if (noPossessionTicket)
+            {
+                _loc_2 = Utils.i18n("allMapCommandTicketNoMore");
+            }
+            else if (propertiesCountFull)
+            {
+                _loc_2 = Utils.i18n("allMapCommandLandsMaxNum");
+            }
+            else if (notConnected)
+            {
+                _loc_2 = Utils.i18n("allMapCommandCanNotAction", param1);
+            }
+            else if (noUnit)
+            {
+                _loc_2 = Utils.i18n("allMapCommandUnitsCanNotBattle");
+            }
+            if (_loc_2)
+            {
+                _loc_3 = AlertWindow.show(_loc_2);
+                this.popupWindow(_loc_3, false);
+            }
+            else
+            {
+                sendEvent(ATTACK);
+            }
+            return;
+        }// end function
+
+        public function confirmed(event:Event) : void
+        {
+            PopUpManager.removePopUp(confirmWindow);
+            var _loc_2:Object = {unitId:selectedUnitId};
+            if (eventName == FOUND)
+            {
+                _loc_2.foundType = foundType;
+            }
+            dispatchEvent(new PopupEvent(eventName, _loc_2));
+            return;
+        }// end function
+
+        public function confirmRemove() : void
+        {
+            var _loc_1:String = "";
+            if (propertiesCount > 0)
+            {
+                if (propertiesCount > 1)
+                {
+                    _loc_1 = _loc_1 + Utils.i18n("localize18");
+                }
+                _loc_1 = _loc_1 + Utils.i18n("localize19");
+            }
+            _loc_1 = _loc_1 + Utils.i18n("allMapCommandMoveHomeConfirm");
+            confirmEvent(_loc_1, REMOVE);
+            return;
+        }// end function
+
+        public function confirmPlunder(param1:String) : void
+        {
+            var _loc_2:String = null;
+            var _loc_3:AlertWindow = null;
+            if (noUnit)
+            {
+                _loc_2 = Utils.i18n("allMapCommandUnitsCanNotBattle");
+            }
+            if (_loc_2)
+            {
+                _loc_3 = AlertWindow.show(_loc_2);
+                this.popupWindow(_loc_3, false);
+            }
+            else
+            {
+                sendEvent(PLUNDER);
+            }
+            return;
+        }// end function
+
+        public function _AllMapCommandWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _AllMapCommandWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "quantity";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_AllMapCommandWindow_DataGridColumn2", _AllMapCommandWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function garrisonUnitAllRecovery(event:Event) : void
+        {
+            sendEvent(GARRISON_ALL_RECOVERY);
+            return;
+        }// end function
+
+        public function startUnitSelect(param1:String, param2:String, param3:String, param4:Object) : void
+        {
+            var _loc_5:AlertWindow = null;
+            if (param1 == RECLAIM)
+            {
+                if (lowOnmyouRankLevelUp)
+                {
+                    _loc_5 = AlertWindow.show(Utils.i18n("localize16") + param2 + Utils.i18n("localize17"));
+                    this.popupWindow(_loc_5, false);
+                    return;
+                }
+            }
+            eventName = param1;
+            title = param2;
+            commandName = param3;
+            activity = param4;
+            unitWindow.init(title, commandName, waitingUnits);
+            this.popupWindow(unitWindow, false);
+            return;
+        }// end function
+
+        public function _AllMapCommandWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _AllMapCommandWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 95;
+            BindingManager.executeBindings(this, "_AllMapCommandWindow_DataGridColumn1", _AllMapCommandWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function confirmEvent(param1:String, param2:String) : void
+        {
+            var msg:* = param1;
+            var event:* = param2;
+            AlertWindow.show(msg, "", AlertWindow.YES | AlertWindow.NO, this, function (event:CloseEvent) : void
+            {
+                if (event.detail == AlertWindow.YES)
+                {
+                    sendEvent(event);
+                }
+                return;
+            }// end function
+            );
+            return;
+        }// end function
+
+        public function startChargeRemove() : void
+        {
+            var _loc_1:AlertWindow = null;
+            if (propertiesCount > 0)
+            {
+                _loc_1 = AlertWindow.show(Utils.i18n("allMapCommandCanNotMoveHome"));
+                this.popupWindow(_loc_1, false);
+            }
+            else
+            {
+                chargeRemoveWindow.setDefaultArea(homePos);
+                chargeRemoveWindow.updateMiniMapFrame(centerPos);
+                this.popupWindow(chargeRemoveWindow, false);
+            }
+            return;
+        }// end function
+
+        public function startUnitSelectGarrison() : void
+        {
+            garrisonUnitWindow.waitingUnits = waitingUnits;
+            garrisonUnitWindow.selectedUnits = selectedUnits;
+            garrisonUnitWindow.callLater(garrisonUnitWindow.init);
+            this.popupWindow(garrisonUnitWindow, false);
+            sendEvent(GARRISON_UNIT_WINDOW_OPEN);
+            return;
+        }// end function
+
+        public function selectFound(event:PopupEvent) : void
+        {
+            trace(event.param);
+            foundType = event.param as int;
+            if (foundType == 1)
+            {
+                startUnitSelect(FOUND, Utils.i18n("allMapCommandBuildFortTitle"), Utils.i18n("allMapCommandBuildFort"), foundActivity);
+            }
+            else
+            {
+                startUnitSelect(FOUND, Utils.i18n("allMapCommandBuildTowerTitle"), Utils.i18n("allMapCommandBuildTower"), foundActivity);
+            }
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image source="_embed_mxml__swf_all_map_window_info_ground_swf_1244145623"/>
+	<mx:Image id="hexImage" x="19" y="15"/>
+	<mx:Label id="topography" x="113" y="5" width="80" fontSize="14" textAlign="center" color="#00ffffff"/>
+	<mx:Label id="posX" x="255" y="5" width="35" fontSize="12" textAlign="right"/>
+	<mx:Label text="," x="285" y="5" fontSize="12" textAlign="left"/>
+	<mx:Label id="posY" x="295" y="5" width="35" fontSize="12" textAlign="right"/>
+	<mx:Image id="faction" x="173" y="78" source="{_swf_faction}"/>
+	<mx:Label id="guildName" x="194" y="76" width="160" fontSize="13"/>
+	<mx:Image id="rank" x="173" y="101" source="{_swf_rank}"/>
+	<mx:Label id="objectName" x="194" y="99" width="160" fontSize="13"/>
+	<mx:Label id="objectState" x="170" y="122" width="160" fontSize="13"/>
+	<mx:DataGrid id="outputsDataGrid" x="20" y="74" width="145" rowHeight="20" rowCount="4" styleName="UnitBuilding" horizontalScrollPolicy="off" verticalScrollPolicy="off" selectable="false" sortableColumns="false" columns="{[_AllMapCommandWindow_DataGridColumn1_i(), _AllMapCommandWindow_DataGridColumn2_i()]}" dataProvider='{_outputs}'/>
+	<mx:DataGrid id="descriptionDataGrid" x="20" y="74" width="145" rowHeight="80" rowCount="1" styleName="UnitBuilding" horizontalScrollPolicy="off" verticalScrollPolicy="off" selectable="false" sortableColumns="false" columns="{[_AllMapCommandWindow_DataGridColumn3_i()]}" dataProvider='{_descriptions}'/>
+	<mx:Image id="purify" y="42" click="{if (_enablePurify);confirmAttack(Utils.i18n('generalPurification'));// end if;}" source="{_buttonPurify}"/>
+	<mx:Image id="tutMarkPurify" source="_embed_mxml__swf_common_arrow_left_swf_534170583" visible="false" y="31" x="170"/>
+	<mx:Image id="attack" y="42" click="{if (_enableAttack);confirmAttack(Utils.i18n('generalAtack'));// end if;}" source="{_buttonAttack}"/>
+	<mx:Image id="invade" y="42" click="{if (_enableInvade);confirmAttack(Utils.i18n('generalInvasion'));// end if;}" source="{_buttonInvade}"/>
+	<mx:Image id="subdue" y="42" click="{if (_enableSubdue);confirmPlunder(Utils.i18n('generalSubjugation'));// end if;}" source="{_buttonSubdue}"/>
+	<mx:Image id="plunder" y="42" click="{if (_enablePlunder);confirmPlunder(Utils.i18n('generalRobbery'));// end if;}" source="{_buttonPlunder}"/>
+	<mx:Image id="mail" y="42" click="{confirmMail();}" source="{_buttonMail}"/>
+	<mx:Image id="surrender" y="42" click="{if (_enableSurrender);confirmSurrender();// end if;}" source="{_buttonSurrender}"/>
+	<mx:Image id="reclaim" y="42" click="{if (_enableReclaim);startUnitSelect(RECLAIM, Utils.i18n('generalDevelopment'), Utils.i18n('localize20'), reclaimActivity);// end if;}" source="{_buttonReclaim}"/>
+	<mx:Image id="found" y="42" click="{if (_enableFound);confirmFound();// end if;}" source="{_buttonFound}"/>
+	<mx:Image id="repair" y="42" click="{if (_enableRepair);startUnitSelect(REPAIR, Utils.i18n('generalRepair'), Utils.i18n('allMapCommandFortRepair'), repairActivity);// end if;}" source="{_buttonRepair}"/>
+	<mx:Image id="garrison" y="42" click="{if (_enableGarrison);onClickGarrison();// end if;}" source="{_buttonGarrison}"/>
+	<mx:Image id="destroy" y="42" click="{if (_enableDestroy);confirmDestroy();// end if;}" source="{_buttonDestroy}"/>
+	<mx:Image id="remove" y="42" click="{if (_enableRemove);confirmRemove();// end if;}" source="{_buttonRemove}"/>
+	<mx:Image id="chargeRemove" y="42" click="{if (_enableChargeRemove);startChargeRemove();// end if;}" source="{_buttonChargeRemove}"/>
+	<mx:Image id="_AllMapCommandWindow_Image20" x="210" y="150" click="{visible = false;}" source="{_buttonClose}"/>
+	<mx:Image id="_AllMapCommandWindow_Image21" x="339" y="2" click="{visible = false;}" source="{_buttonX}"/>
+
+</mx:PopupWindow>

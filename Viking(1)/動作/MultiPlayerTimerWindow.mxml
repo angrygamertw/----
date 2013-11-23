@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+
+        public function init() : void
+        {
+            _time = 0;
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image source="_embed_mxml__swf_battle_info_window_info_time_swf_965184187"/>
+	<mx:Label id="_MultiPlayerTimerWindow_Label1" x="102" y="68" width="80" textAlign="center" fontSize="22" color="#00000000" text="_time"/>
+	<mx:Label id="time_id" x="100" y="66" width="80" textAlign="center" fontSize="22" color="#00ffffff" text="_time"/>
+
+</mx:Canvas>

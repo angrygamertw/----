@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" height="600" width="760">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  trainingFlag:Boolean;
+        private var  unitStatus:UnitStatus;
+        private var  _defArray:Array;
+        private var  selectedIndex:int = 99;
+        public static const  CLOSE_UNIT_LIST:String = "CollectUnitWindow/closeUnitList";
+        public static const  SELECTED:String = "CollectUnitWindow/Selected";
+
+
+        public function init() : void
+        {
+            MovieClip(Loader(_swf_ok.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_ok.getChildAt(0)).content).gotoAndPlay("button_decide");
+            MovieClip(Loader(_swf_ok_training.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_ok_training.getChildAt(0)).content).gotoAndPlay("button_decide");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_close_training.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close_training.getChildAt(0)).content).gotoAndPlay("button_close");
+            return;
+        }// end function
+
+        public function _CollectUnitWindow_ClassFactory3_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = UnitDetailLabelRenderer;
+            return _loc_1;
+        }// end function
+
+        public function onItemClick() : void
+        {
+            var _loc_1:int = 0;
+            if (unitList.selectedItem)
+            {
+                selectedIndex = unitList.selectedIndex;
+                _loc_1 = trainingFlag ? (1) : (quantity.value);
+                this.dispatchEvent(new PopupEvent(SELECTED, {unitId:unitList.selectedItem.unitId, quantity:_loc_1}));
+            }
+            return;
+        }// end function
+
+        public function setUnits() : void
+        {
+            selectedIndex = 99;
+            if (_defArray)
+            {
+                _defArray = new Array();
+            }
+            var _loc_1:int = 0;
+            while (_loc_1 < _units.length)
+            {
+                
+                _defArray.push(_units[_loc_1]);
+                _loc_1++;
+            }
+            _unitArray = new ArrayCollection(_defArray);
+            return;
+        }// end function
+
+        public function calcuCount() : void
+        {
+            if (unitList.selectedItem)
+            {
+                actionCount = setAcitonCount(unitList.selectedItem.level);
+            }
+            return;
+        }// end function
+
+        public function _CollectUnitWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _CollectUnitWindow_DataGridColumn4 = _loc_1;
+            _loc_1.dataField = "exp";
+            _loc_1.width = 90;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_CollectUnitWindow_DataGridColumn4", _CollectUnitWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function setAcitonCount(param1:int) : int
+        {
+            if (param1 < 10)
+            {
+                return 60;
+            }
+            if (param1 < 20)
+            {
+                return 120;
+            }
+            return 180;
+        }// end function
+
+        public function _CollectUnitWindow_ClassFactory2_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            countLabel = _loc_1;
+            _loc_1.generator = CollectUnitWindow_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function onClose() : void
+        {
+            PopUpManager.removePopUp(this);
+            dispatchEvent(new Event(CLOSE_UNIT_LIST));
+            return;
+        }// end function
+
+        public function _CollectUnitWindow_DataGridColumn3_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "level";
+            _loc_1.headerText = "Lv";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _CollectUnitWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            expLabel = _loc_1;
+            _loc_1.generator = CollectUnitWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _CollectUnitWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _CollectUnitWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "jobMasterVO.nameLabel";
+            _loc_1.width = 115;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_CollectUnitWindow_DataGridColumn2", _CollectUnitWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _CollectUnitWindow_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _CollectUnitWindow_DataGridColumn6 = _loc_1;
+            _loc_1.dataField = "level";
+            _loc_1.width = 90;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_CollectUnitWindow_DataGridColumn6", _CollectUnitWindow_DataGridColumn6);
+            return _loc_1;
+        }// end function
+
+        public function training(param1:Boolean) : void
+        {
+            trainingFlag = param1;
+            if (param1)
+            {
+                counterBox.visible = false;
+                trainingBox.visible = true;
+            }
+            else
+            {
+                counterBox.visible = true;
+                trainingBox.visible = false;
+            }
+            return;
+        }// end function
+
+        public function _CollectUnitWindow_DataGridColumn5_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "maxHp";
+            _loc_1.headerText = "MAX HP";
+            _loc_1.width = 90;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _CollectUnitWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _CollectUnitWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "name";
+            _loc_1.itemRenderer = _CollectUnitWindow_ClassFactory3_c();
+            BindingManager.executeBindings(this, "_CollectUnitWindow_DataGridColumn1", _CollectUnitWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Canvas id="unitCanvas">
+		<mx:Label id="listTitle" text="" x="335" y="80" fontSize="14" fontWeight="bold" color="#00ffffff"/>
+		<mx:Text id="listText" styleName="UnitSelectText" top="108" left="35" text="{Utils.i18n("collectUnitSelectActionUnit")}"/>
+		<mx:Canvas x="35" y="50">
+			<mx:DataGrid id="unitList" width="640" rowCount="13" rowHeight="25" styleName="UnitListGrid" sortableColumns="false" columns="{[_CollectUnitWindow_DataGridColumn1_i(), _CollectUnitWindow_DataGridColumn2_i(), _CollectUnitWindow_DataGridColumn3_c(), _CollectUnitWindow_DataGridColumn4_i(), _CollectUnitWindow_DataGridColumn5_c(), _CollectUnitWindow_DataGridColumn6_i()]}" right="25" top="80" click="{calcuCount();}" dataProvider='{_unitArray}'/>
+		</mx:Canvas>
+		<mx:Canvas x="32" y="491" width="620">
+			<mx:VBox id="counterBox" horizontalCenter="0" horizontalGap="10">
+				<mx:HBox horizontalCenter="0" horizontalGap="20">
+					<mx:Text id="_CollectUnitWindow_Text2" styleName="UnitSelectText" text="{Utils.i18n("collectUnitSelectedUnit", unitList.selectedItem.name)}"/>
+					<mx:NumericStepper id="quantity" x="500" y="525" minimum="1" value="1" cornerRadius="0" borderColor="10058583" iconColor="5318420" color="#000b333c" themeColor="16737843" maximum="actionCount"/>
+					<mx:Text id="_CollectUnitWindow_Text3" styleName="UnitSelectText" text="{Utils.i18n("collectUnitSelectedActionCount")}"/>
+					<mx:Image id="_CollectUnitWindow_Image1" width="110" height="30" click="{onItemClick();}" source="{_swf_ok}"/>
+					<mx:Image id="_CollectUnitWindow_Image2" width="110" height="30" click="{onClose();}" source="{_swf_close}"/>
+				</mx:HBox>
+			</mx:VBox>
+			<mx:HBox id="trainingBox" visible="false" horizontalCenter="0" horizontalGap="15">
+				<mx:Text id="trainingText" styleName="UnitSelectText" text="{Utils.i18n("collectUnitTraining", unitList.selectedItem.name)}"/>
+				<mx:Image id="_CollectUnitWindow_Image3" width="110" height="30" click="{onItemClick();}" source="{_swf_ok_training}"/>
+				<mx:Image id="_CollectUnitWindow_Image4" width="110" height="30" click="{onClose();}" source="{_swf_close_training}"/>
+			</mx:HBox>
+		</mx:Canvas>
+		<mx:Canvas x="665" y="50">
+			<mx:Image source="_embed_mxml__swf_common_button_close_window_swf_1370265653" top="30" click="{onClose();}"/>
+		</mx:Canvas>
+	</mx:Canvas>
+
+</mx:Canvas>

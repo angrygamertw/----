@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" height="760" width="560">
+	<mx:Script><![CDATA[
+        import mx.containers.*;
+        import mx.core.*;
+    ]]></mx:Script>
+
+
+</mx:Canvas>

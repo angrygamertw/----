@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:UnitNumber xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  _unitCount:int = 15;
+        private var  createFlag:Boolean = false;
+        private var  herePage:int = 1;
+        private var  _selectAllUnitCommandWindow:SelectAllUnitCommandWindow;
+        private var  _confirmIncrementMaxUnitsCount:ConfirmIncrementMaxUnitsCount;
+        private var  _unitAlphaTimer:Timer;
+        public var  playerVO:PlayerVO;
+        private var  _unitDismissWindow:UnitDismissWindow;
+        private var  _createBool:Boolean = false;
+        private var  _allUnits:Array;
+        private var  _collectWindow:CollectWindow;
+        private var  hpBarRenderer:HpBarRenderer;
+        public static const  OPEN_UNIT_LIST:String = NAME + "/openUnitList";
+        public static const  NAME:String = "HomeAllUnit";
+        public static const  CLOSED_HOME_ALL_UNIT:String = NAME + "/closedHomeAllUnit";
+        public static const  PREVIOS_PAGE:String = NAME + "/previosPage";
+        public static const  HAVE_GOLD:String = NAME + "/havegold";
+        public static const  INIT_SAKURA_TMARK:String = NAME + "/initSakuraTmark";
+        public static const  NEXT_PAGE:String = NAME + "/nextPage";
+        public static const  OPEN_ALL_SLEEPING_UNIT:String = NAME + "/openAllSleepingUnit";
+        public static const  DISMISS:String = NAME + "/dismiss";
+        public static const  LOCK_UNIT_LIST:String = NAME + "/unitLockList";
+        public static const  IMAGE_CHANGE:String = NAME + "/imageChange";
+
+
+        public function commandWindowOpen(param1:UnitVO) : void
+        {
+            sakura.open(param1);
+            dispatchEvent(new PopupEvent(INIT_SAKURA_TMARK, {unit:param1, sakura:sakura}));
+            unitsCanvas.alpha = 1;
+            return;
+        }// end function
+
+        public function calcuNumber() : void
+        {
+            var _loc_1:* = _allUnits.length;
+            if (_loc_1 < 10)
+            {
+                unitNumber0.source = _numberArray[_loc_1];
+                unitNumber1.source = null;
+            }
+            else
+            {
+                unitNumber1.source = _numberArray[int(_loc_1 / 10)];
+                unitNumber0.source = _numberArray[_loc_1 % 10];
+            }
+            return;
+        }// end function
+
+        public function increaseMaxUnit(event:Event) : void
+        {
+            if (event.type == SelectAllUnitCommandWindow.SELECT_MAX_UNIT_INCREASE_5)
+            {
+                _confirmIncrementMaxUnitsCount.setViewData(5, 1000);
+            }
+            else
+            {
+                _confirmIncrementMaxUnitsCount.setViewData(1, 250);
+            }
+            popupWindow(_confirmIncrementMaxUnitsCount, false);
+            _confirmIncrementMaxUnitsCount.addEventListener(ConfirmIncrementMaxUnitsCount.CONFIRMED, confirmedIncrementMaxTasks);
+            return;
+        }// end function
+
+        public function onLeft() : void
+        {
+            var _loc_1:* = unitsViewStack;
+            var _loc_2:* = unitsViewStack.selectedIndex - 1;
+            _loc_1.selectedIndex = _loc_2;
+            setPaginate();
+            return;
+        }// end function
+
+        public function setUnitStatus(param1:UnitVO) : void
+        {
+            unitStatus.unit = param1;
+            return;
+        }// end function
+
+        public function showAllUnitCommandWindow() : void
+        {
+            dispatchEvent(new Event(Viking.HOME_ALL_SLEEP_UNIT_VIEW));
+            return;
+        }// end function
+
+        public function setPaginate() : void
+        {
+            leftButton.visible = unitsViewStack.selectedIndex == 0 ? (false) : (true);
+            rightButton.visible = unitsViewStack.selectedIndex == totalPage ? (false) : (true);
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            unitStatus.unit = new UnitVO();
+            sakura.mode = "list";
+            sakura.unitStatus = unitStatus;
+            sakura.addEventListener(Viking.HOME_GET_EQUIPABLE_RESOURCE, function (event:PopupEvent) : void
+            {
+                dispatchEvent(new PopupEvent(Viking.HOME_GET_EQUIPABLE_RESOURCE, event.param));
+                return;
+            }// end function
+            );
+            _selectAllUnitCommandWindow.addEventListener(SelectAllUnitCommandWindow.SELECT_ALL_SLEEP_UNIT, showAllSleepUnit);
+            _selectAllUnitCommandWindow.addEventListener(SelectAllUnitCommandWindow.SELECT_ALL_SLEEP_UNIT, showAllSleepUnit);
+            _selectAllUnitCommandWindow.addEventListener(SelectAllUnitCommandWindow.SELECT_MAX_UNIT_INCREASE_1, increaseMaxUnit);
+            _selectAllUnitCommandWindow.addEventListener(SelectAllUnitCommandWindow.SELECT_MAX_UNIT_INCREASE_5, increaseMaxUnit);
+            MovieClip(Loader(_swf_next.getChildAt(0)).content).gotoAndPlay("button_next");
+            MovieClip(Loader(_swf_prev.getChildAt(0)).content).gotoAndPlay("button_prev");
+            createFlag = true;
+            setPaginate();
+            return;
+        }// end function
+
+        public function showDismissWindow(param1:int) : void
+        {
+            PopUpManager.addPopUp(_unitDismissWindow, this, true);
+            PopUpManager.centerPopUp(_unitDismissWindow);
+            _unitDismissWindow.setdata(viewUnit, param1);
+            return;
+        }// end function
+
+        public function resetUnitStatus() : void
+        {
+            unitStatus.unit = new UnitVO();
+            return;
+        }// end function
+
+        public function handleEvent(event:Event) : void
+        {
+            var _loc_2:String = null;
+            var _loc_3:AlertWindow = null;
+            switch(event.type)
+            {
+                case UnitDismissWindow.UNIT_DISMISS:
+                {
+                    if (viewUnit.status != UnitVO.STATUS_WAITING || viewUnit.lordFlag == true)
+                    {
+                        _loc_2 = Utils.i18n("homeAllUnitCanNotExpulsionActive");
+                        if (viewUnit.status == UnitVO.STATUS_ACTIVITY)
+                        {
+                            _loc_2 = Utils.i18n("homeAllUnitCanNotExpulsionActive");
+                        }
+                        else if (viewUnit.status == UnitVO.STATUS_HOUSE)
+                        {
+                            _loc_2 = Utils.i18n("localize159");
+                        }
+                        else if (viewUnit.status == UnitVO.STATUS_FORT)
+                        {
+                            _loc_2 = Utils.i18n("homeAllUnitCanNotExpulsionProtect");
+                        }
+                        else if (viewUnit.lordFlag == true)
+                        {
+                            _loc_2 = Utils.i18n("localize160");
+                        }
+                        _loc_3 = AlertWindow.show(_loc_2);
+                        popupWindow(_loc_3, false);
+                    }
+                    else
+                    {
+                        sendEvent(DISMISS);
+                    }
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function confirmedIncrementMaxTasks(event:PopupEvent) : void
+        {
+            _confirmIncrementMaxUnitsCount.removeEventListener(ConfirmIncrementMaxUnitsCount.CONFIRMED, arguments.callee);
+            dispatchEvent(new PopupEvent(Viking.HOME_INCREASE_MAX_UNIT, event.param));
+            _selectAllUnitCommandWindow.close();
+            return;
+        }// end function
+
+        public function onRight() : void
+        {
+            var _loc_1:* = unitsViewStack;
+            var _loc_2:* = unitsViewStack.selectedIndex + 1;
+            _loc_1.selectedIndex = _loc_2;
+            setPaginate();
+            return;
+        }// end function
+
+        public function commandWindowClose() : void
+        {
+            sakura.clear();
+            return;
+        }// end function
+
+        public function removeTutMarks() : void
+        {
+            tutMarkClose.visible = false;
+            return;
+        }// end function
+
+        public function setUnitCount(param1:int) : void
+        {
+            _unitCount = param1;
+            setPaginate();
+            return;
+        }// end function
+
+        public function setUnitNumber() : void
+        {
+            if (createFlag)
+            {
+                calcuNumber();
+            }
+            return;
+        }// end function
+
+        public function showAllSleepUnit(event:Event) : void
+        {
+            dispatchEvent(new Event(Viking.HOME_ALL_SLEEP_UNIT_VIEW));
+            _selectAllUnitCommandWindow.close();
+            return;
+        }// end function
+
+        public function close() : void
+        {
+            removeTutMarks();
+            dispatchEvent(new PopupEvent(CLOSED_HOME_ALL_UNIT, {window:this}));
+            var _loc_1:* = new UnitVO();
+            viewUnit = new UnitVO();
+            unitStatus.unit = _loc_1;
+            return;
+        }// end function
+
+        public function showUnitLockWindow() : void
+        {
+            dispatchEvent(new Event(LOCK_UNIT_LIST));
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="unitNumber0" x="46" y="242"/>
+	<mx:Image id="unitNumber1" x="28" y="242"/>
+	<mx:Canvas id="listCanvas" y="9"/>
+	<mx:Canvas id="unitsCanvas" visible="false">
+		<mx:ViewStack id="unitsViewStack" width="700" height="500" borderStyle="none">
+			<mx:Canvas>
+				<mx:Canvas id="unitsCanvas1"/>
+				<mx:Canvas id="iconCanvas1"/>
+				<mx:Canvas id="hpBarCanvas1"/>
+			</mx:Canvas>
+			<mx:Canvas>
+				<mx:Canvas id="unitsCanvas2"/>
+				<mx:Canvas id="iconCanvas2"/>
+				<mx:Canvas id="hpBarCanvas2"/>
+			</mx:Canvas>
+			<mx:Canvas>
+				<mx:Canvas id="unitsCanvas3"/>
+				<mx:Canvas id="iconCanvas3"/>
+				<mx:Canvas id="hpBarCanvas3"/>
+			</mx:Canvas>
+			<mx:Canvas>
+				<mx:Canvas id="unitsCanvas4"/>
+				<mx:Canvas id="iconCanvas4"/>
+				<mx:Canvas id="hpBarCanvas4"/>
+			</mx:Canvas>
+			<mx:Canvas>
+				<mx:Canvas id="unitsCanvas5"/>
+				<mx:Canvas id="iconCanvas5"/>
+				<mx:Canvas id="hpBarCanvas5"/>
+			</mx:Canvas>
+			<mx:Canvas>
+				<mx:Canvas id="unitsCanvas6"/>
+				<mx:Canvas id="iconCanvas6"/>
+				<mx:Canvas id="hpBarCanvas6"/>
+			</mx:Canvas>
+			<mx:Canvas>
+				<mx:Canvas id="unitsCanvas7"/>
+				<mx:Canvas id="iconCanvas7"/>
+				<mx:Canvas id="hpBarCanvas7"/>
+			</mx:Canvas>
+			<mx:Canvas>
+				<mx:Canvas id="unitsCanvas8"/>
+				<mx:Canvas id="iconCanvas8"/>
+				<mx:Canvas id="hpBarCanvas8"/>
+			</mx:Canvas>
+			<mx:Canvas>
+				<mx:Canvas id="unitsCanvas9"/>
+				<mx:Canvas id="iconCanvas9"/>
+				<mx:Canvas id="hpBarCanvas9"/>
+			</mx:Canvas>
+			<mx:Canvas>
+				<mx:Canvas id="unitsCanvas10"/>
+				<mx:Canvas id="iconCanvas10"/>
+				<mx:Canvas id="hpBarCanvas10"/>
+			</mx:Canvas>
+		</mx:ViewStack>
+	</mx:Canvas>
+	<mx:Image id="rightButton" x="635" y="150" visible="false" click="{onRight();}" source="{_swf_next}"/>
+	<mx:Image id="leftButton" x="90" y="150" visible="false" click="{onLeft();}" source="{_swf_prev}"/>
+	<mx:Sakura id="sakura"/>
+	<mx:UnitStatus id="unitStatus" x="2" y="290"/>
+	<mx:Image id="allUnitCommandImage" x="670" y="35" source="_embed_mxml__swf_home_buttons_button_rest_swf_404362039" click="{showAllUnitCommandWindow();}"/>
+	<mx:Image id="closeButton" x="670" y="100" width="50" height="50" source="_embed_mxml__swf_home_buttons_button_close_swf_1270316553" click="{close();}"/>
+	<mx:Image id="gatheringImage" x="670" y="165" source="_embed_mxml__swf_home_buttons_button_action_mine_swf_1132131721" click="{dispatchEvent(new Event(Viking.HOME_SHOW_GATHERING_WINDOW));}"/>
+	<mx:Image id="trainImage" x="670" y="235" source="_embed_mxml__swf_home_buttons_button_action_train_swf_1951263799" click="{dispatchEvent(new Event(OPEN_UNIT_LIST));}"/>
+	<mx:Image id="tutMarkUnit" source="_embed_mxml__swf_common_arrow_top_swf_788233961" visible="false" y="115" x="145" width="75" height="75"/>
+	<mx:Image id="tutMarkClose" source="_embed_mxml__swf_common_arrow_top_swf_788233961" visible="false" y="155" x="685" width="75" height="75"/>
+
+</mx:UnitNumber>

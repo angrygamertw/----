@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.vo.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  _playerVO:PlayerVO;
+        private var  _quantity:int = 0;
+        public static const  BUY_FOOD:String = "buyFood";
+
+
+        public function closeWindow() : void
+        {
+            numStepper.value = 0;
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function onBuy() : void
+        {
+            _quantity = numStepper.value;
+            dispatchEvent(new Event(BUY_FOOD));
+            return;
+        }// end function
+
+        public function setData(param1:PlayerVO, param2:CityVO) : void
+        {
+            _playerVO = param1;
+            pocketMoney = _playerVO.gold;
+            pocketFood = _playerVO.food;
+            foodPrice = param2.foodPrice;
+            maxCount = _playerVO.gold / param2.foodPrice;
+            if (maxCount > 999)
+            {
+                maxCount = 999;
+            }
+            return;
+        }// end function
+
+        public function calcSumGold() : void
+        {
+            sumGold = numStepper.value * foodPrice;
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Text id="_FoodDeal_Text1" styleName="DealText" x="83" y="53" width="100" text="pocketMoney + "Gold""/>
+	<mx:Text id="_FoodDeal_Text2" styleName="DealText" x="235" y="53" width="100" text="pocketFood + "個""/>
+	<mx:Text styleName="DealText2" text="食料" x="22" y="116" width="100" textAlign="center"/>
+	<mx:Text id="_FoodDeal_Text4" styleName="DealText2" x="107" y="116" width="100" text="foodPrice"/>
+	<mx:NumericStepper id="numStepper" x="258" y="113" minimum="0" value="0" cornerRadius="0" borderColor="10058583" iconColor="5318420" color="#000b333c" themeColor="16737843" change="{calcSumGold();}" maximum="maxCount"/>
+	<mx:Text id="_FoodDeal_Text5" styleName="DealText2" x="338" y="116" width="110" text="sumGold + "Gold""/>
+	<mx:HBox y="150" x="150" horizontalGap="15">
+		<mx:Button label="" styleName="CancelCanaButton" buttonMode="true" click="{closeWindow();}"/>
+		<mx:Button label="" styleName="BuyButton" buttonMode="true" click="{onBuy();}"/>
+	</mx:HBox>
+	<mx:Button width="26" height="26" styleName="closeBtn" buttonMode="true" fontSize="30" top="10" right="10" click="{closeWindow();}"/>
+
+</mx:Canvas>

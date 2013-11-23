@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  descriptionWindow:ExpeditionDescriptionWindow;
+        public static const  MINIMUM_RANK:int = 9;
+        public static const  CLOSE_EXPEDITION_WINDOW:String = NAME + "closeExpeditionWindow";
+        public static var  EmbedSwfExpedition:Class;
+        public static const  NAME:String = "ExpeditionWindow";
+        public static const  DESCRIPTION_COMPLETE:String = "descriptionComplete";
+        public static var  EmbedSwfLantern:Class;
+
+
+        public function init() : void
+        {
+            var _loc_1:int = 1;
+            while (_loc_1 <= descriptionWindow.evilPoints.length)
+            {
+                
+                _loc_1++;
+            }
+            Loader(_swf_expedition.getChildAt(0)).content.addEventListener("BUTTON_BACK", backButtonsClicked);
+            return;
+        }// end function
+
+        public function backButtonsClicked(event:Event) : void
+        {
+            dispatchEvent(new Event(CLOSE_EXPEDITION_WINDOW));
+            return;
+        }// end function
+
+        public function buttonsClicked(param1:int) : void
+        {
+            var level:* = param1;
+            if (_rankId < descriptionWindow.evilPoints[(level - 1)].minimum_rank_id || descriptionWindow.evilPoints[(level - 1)].max_rank_id < _rankId)
+            {
+                return;
+            }
+            descriptionWindow.init(String(level));
+            this.popupWindow(descriptionWindow, false);
+            if (!descriptionWindow.hasEventListener(ExpeditionDescriptionWindow.DESCRIPTION_COMPLETE))
+            {
+                descriptionWindow.addEventListener(ExpeditionDescriptionWindow.DESCRIPTION_COMPLETE, function (event:PopupEvent) : void
+            {
+                dispatchEvent(new PopupEvent(DESCRIPTION_COMPLETE, {topographyId:event.param.topographyId, level:event.param.level, evilPointId:event.param.evilPointId, forbiddenJobIds:event.param.forbiddenJobIds}));
+                return;
+            }// end function
+            );
+            }
+            return;
+        }// end function
+
+        public function setExpeditionRank(param1:int) : void
+        {
+            _rankId = param1;
+            if (param1 < MINIMUM_RANK)
+            {
+                return;
+            }
+            if (param1 < descriptionWindow.evilPoints[0].minimum_rank_id || descriptionWindow.evilPoints[0].max_rank_id < param1)
+            {
+                MovieClip(Loader(_swf_lantern_0.getChildAt(0)).content).gotoAndPlay("off");
+            }
+            if (param1 < descriptionWindow.evilPoints[1].minimum_rank_id || descriptionWindow.evilPoints[1].max_rank_id < param1)
+            {
+                MovieClip(Loader(_swf_lantern_1.getChildAt(0)).content).gotoAndPlay("off");
+            }
+            if (param1 < descriptionWindow.evilPoints[2].minimum_rank_id || descriptionWindow.evilPoints[2].max_rank_id < param1)
+            {
+                MovieClip(Loader(_swf_lantern_2.getChildAt(0)).content).gotoAndPlay("off");
+            }
+            if (param1 < descriptionWindow.evilPoints[3].minimum_rank_id || descriptionWindow.evilPoints[3].max_rank_id < param1)
+            {
+                MovieClip(Loader(_swf_lantern_3.getChildAt(0)).content).gotoAndPlay("off");
+            }
+            if (param1 < descriptionWindow.evilPoints[4].minimum_rank_id || descriptionWindow.evilPoints[4].max_rank_id < param1)
+            {
+                MovieClip(Loader(_swf_lantern_4.getChildAt(0)).content).gotoAndPlay("off");
+            }
+            if (param1 < descriptionWindow.evilPoints[5].minimum_rank_id || descriptionWindow.evilPoints[5].max_rank_id < param1)
+            {
+                MovieClip(Loader(_swf_lantern_5.getChildAt(0)).content).gotoAndPlay("off");
+            }
+            if (param1 < descriptionWindow.evilPoints[6].minimum_rank_id || descriptionWindow.evilPoints[6].max_rank_id < param1)
+            {
+                MovieClip(Loader(_swf_lantern_6.getChildAt(0)).content).gotoAndPlay("off");
+            }
+            if (param1 < descriptionWindow.evilPoints[7].minimum_rank_id || descriptionWindow.evilPoints[7].max_rank_id < param1)
+            {
+                MovieClip(Loader(_swf_lantern_7.getChildAt(0)).content).gotoAndPlay("off");
+            }
+            if (param1 < descriptionWindow.evilPoints[8].minimum_rank_id || descriptionWindow.evilPoints[8].max_rank_id < param1)
+            {
+                MovieClip(Loader(_swf_lantern_8.getChildAt(0)).content).gotoAndPlay("off");
+            }
+            if (param1 < descriptionWindow.evilPoints[9].minimum_rank_id || descriptionWindow.evilPoints[9].max_rank_id < param1)
+            {
+                MovieClip(Loader(_swf_lantern_9.getChildAt(0)).content).gotoAndPlay("off");
+            }
+            if (param1 < descriptionWindow.evilPoints[10].minimum_rank_id || descriptionWindow.evilPoints[10].max_rank_id < param1)
+            {
+                MovieClip(Loader(_swf_lantern_10.getChildAt(0)).content).gotoAndPlay("off");
+            }
+            if (param1 < descriptionWindow.evilPoints[11].minimum_rank_id || descriptionWindow.evilPoints[11].max_rank_id < param1)
+            {
+                MovieClip(Loader(_swf_lantern_11.getChildAt(0)).content).gotoAndPlay("off");
+            }
+            if (param1 < descriptionWindow.evilPoints[12].minimum_rank_id || descriptionWindow.evilPoints[12].max_rank_id < param1)
+            {
+                MovieClip(Loader(_swf_lantern_12.getChildAt(0)).content).gotoAndPlay("off");
+            }
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_ExpeditionWindow_Image1" source="{_swf_expedition}"/>
+	<mx:Image id="products" source="_embed_mxml__swf_window_info_products_swf_1304559433" x="363" y="0"/>
+	<mx:Image id="info" source="_embed_mxml__swf_window_info_home_swf_1388347787" x="0" y="0"/>
+	<mx:Image id="lantern_0" x="360" y="505" click="{buttonsClicked(1);}" source="{_swf_lantern_0}"/>
+	<mx:Image id="lantern_1" x="245" y="500" click="{buttonsClicked(2);}" source="{_swf_lantern_1}"/>
+	<mx:Image id="lantern_2" x="125" y="485" click="{buttonsClicked(3);}" source="{_swf_lantern_2}"/>
+	<mx:Image id="lantern_3" x="20" y="415" click="{buttonsClicked(4);}" source="{_swf_lantern_3}"/>
+	<mx:Image id="lantern_4" x="150" y="350" click="{buttonsClicked(5);}" source="{_swf_lantern_4}"/>
+	<mx:Image id="lantern_5" x="315" y="333" click="{buttonsClicked(6);}" source="{_swf_lantern_5}"/>
+	<mx:Image id="lantern_6" x="450" y="339" click="{buttonsClicked(7);}" source="{_swf_lantern_6}"/>
+	<mx:Image id="lantern_7" x="575" y="342" click="{buttonsClicked(8);}" source="{_swf_lantern_7}"/>
+	<mx:Image id="lantern_8" x="669" y="275" click="{buttonsClicked(9);}" source="{_swf_lantern_8}"/>
+	<mx:Image id="lantern_9" x="562" y="227" click="{buttonsClicked(10);}" source="{_swf_lantern_9}"/>
+	<mx:Image id="lantern_10" x="437" y="155" click="{buttonsClicked(11);}" source="{_swf_lantern_10}"/>
+	<mx:Image id="lantern_11" x="347" y="85" click="{buttonsClicked(12);}" source="{_swf_lantern_11}"/>
+	<mx:Image id="lantern_12" x="337" y="225" click="{buttonsClicked(13);}" source="{_swf_lantern_12}"/>
+	<mx:Canvas id="factionLayer" x="37" y="17"/>
+	<mx:Canvas id="rankLayer" x="58" y="17"/>
+	<mx:PlayerStatus id="playerStatus" x="10"/>
+	<mx:ProductionInfoWindow id="productionInfoWindow" x="380" y="14"/>
+
+</mx:PopupWindow>

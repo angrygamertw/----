@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="439" height="244">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.vo.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _skills:ArrayCollection;
+        private var  _unit:UnitVO;
+        private var  selectedSkill:SkillVO;
+
+
+        public function levelUpWithDiscardedSkill(event:PopupEvent) : void
+        {
+            levelUp(SkillVO(event.param));
+            return;
+        }// end function
+
+        public function _LevelUpWindow_DataGridColumn1_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "nameLabel";
+            _loc_1.headerText = "名前";
+            _loc_1.width = 100;
+            return _loc_1;
+        }// end function
+
+        public function checkSkillCount() : void
+        {
+            var _loc_1:Boolean = false;
+            var _loc_2:SkillVO = null;
+            if (unit.skills.length > 1)
+            {
+                _loc_1 = false;
+                for each (_loc_2 in unit.ownSkills)
+                {
+                    
+                    selectedSkill = SkillVO(skillDataGrid.selectedItem);
+                    if (_loc_2.code.slice(0, -2) == selectedSkill.code.slice(0, -2))
+                    {
+                        _loc_1 = true;
+                    }
+                }
+                if (!_loc_1)
+                {
+                    showDiscardWindow();
+                }
+                else
+                {
+                    levelUp();
+                }
+            }
+            else
+            {
+                levelUp();
+            }
+            return;
+        }// end function
+
+        public function _LevelUpWindow_DataGridColumn2_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "description";
+            _loc_1.headerText = "効果";
+            return _loc_1;
+        }// end function
+
+        public function showDiscardWindow() : void
+        {
+            var _loc_1:* = new SkillDiscardWindow();
+            var _loc_2:* = unit.ownSkills.concat([selectedSkill]);
+            _loc_1.skills = new ArrayCollection(_loc_2);
+            _loc_1.addEventListener(Viking.DISCARD_SKILL, levelUpWithDiscardedSkill);
+            this.popupWindow(_loc_1);
+            return;
+        }// end function
+
+        public function levelUp(param1:SkillVO = null) : void
+        {
+            var _loc_2:Object = {newSkill:SkillVO(skillDataGrid.selectedItem)};
+            if (param1)
+            {
+                _loc_2.oldSkill = param1;
+            }
+            sendPopupEvent(Viking.LEVELUP_WITH_SELECTED_SKILL, _loc_2);
+            onClose();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Label styleName="DialogText" text="習得するスキルを選択して下さい" x="15" y="5"/>
+	<mx:DataGrid id="skillDataGrid" styleName="UnitBuilding" width="400" rowCount="3" x="20" y="30" height="97" sortableColumns="false" columns="{[_LevelUpWindow_DataGridColumn1_c(), _LevelUpWindow_DataGridColumn2_c()]}" dataProvider='{skills}'/>
+	<mx:HBox y="150" x="128" horizontalGap="20">
+		<mx:Button label="" styleName="CancelCanaButton" buttonMode="true" click="{onClose();}"/>
+		<mx:Button id="okButton" label="" styleName="OkButton" buttonMode="true" click="{checkSkillCount();}" enabled="{skillDataGrid.selectedItem}"/>
+	</mx:HBox>
+
+</mx:PopupWindow>

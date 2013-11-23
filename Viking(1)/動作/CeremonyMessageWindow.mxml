@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{addSwf();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public static const  NORMAL_SUMMON_MESSAGE:String = NAME + "normalSummonMessage";
+        public static const  SUMMON_MESSAGE:String = NAME + "summonMessage";
+        public static const  NAME:String = "ceremonyMessageWindow";
+        public static const  MESSAGE_OK:String = NAME + "messageOk";
+        public static const  UNION_MESSAGE:String = NAME + "unionMessage";
+        public static const  AWAKE_UNION_MESSAGE:String = NAME + "awakeUnionMessage";
+
+
+        public function init(param1:String) : void
+        {
+            massageCanvas.visible = false;
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_bg.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_bg.getChildAt(0)).content).gotoAndPlay(param1);
+            return;
+        }// end function
+
+        public function messageEnd() : void
+        {
+            sendEvent(MESSAGE_OK);
+            return;
+        }// end function
+
+        public function addSwf() : void
+        {
+            Loader(_swf_close.getChildAt(0)).content.addEventListener("BUTTON_CLOSE", function (event:Event) : void
+            {
+                messageEnd();
+                return;
+            }// end function
+            );
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            Loader(_swf_bg.getChildAt(0)).content.addEventListener("ENLARGE_END", function (event:Event) : void
+            {
+                massageCanvas.visible = true;
+                return;
+            }// end function
+            );
+            MovieClip(Loader(_swf_bg.getChildAt(0)).content).gotoAndPlay("top_240x80");
+            return;
+        }// end function
+
+        public function closed() : void
+        {
+            this.onClose();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_CeremonyMessageWindow_Image1" source="{_swf_bg}"/>
+	<mx:Canvas id="massageCanvas" visible="false">
+		<mx:Box x="260" y="96" width="200">
+			<mx:Text id="_CeremonyMessageWindow_Text1" textAlign="center" text="{_newUnit.name + "" + _messageText}"/>
+		</mx:Box>
+		<mx:Image id="_CeremonyMessageWindow_Image2" x="324" y="126" source="{_swf_close}"/>
+	</mx:Canvas>
+
+</mx:PopupWindow>

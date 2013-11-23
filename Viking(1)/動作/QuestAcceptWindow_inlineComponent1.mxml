@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Grid xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.styles.*;
+
+        public var  _QuestAcceptWindow_inlineComponent1_Label1:Label;
+        public var  _QuestAcceptWindow_inlineComponent1_Label2:Label;
+        public var  _QuestAcceptWindow_inlineComponent1_Label3:Label;
+        public var  _QuestAcceptWindow_inlineComponent1_Text1:Text;
+
+    ]]></mx:Script>
+
+	<mx:GridRow id="row1">
+		<mx:GridItem borderStyle="solid" borderColor="13021835" borderSides="bottom right">
+			<mx:Label id="_QuestAcceptWindow_inlineComponent1_Label1" width="45" fontSize="14" text="{outerDocument.componrntToolTip(0)}"/>
+		</mx:GridItem>
+		<mx:GridItem borderStyle="solid" borderColor="13021835" borderSides="bottom">
+			<mx:Box>
+				<mx:Label id="_QuestAcceptWindow_inlineComponent1_Label2" buttonMode="true" mouseChildren="false" width="285" fontSize="14" color="#00bc403a" textDecoration="underline" click="{outerDocument.changeChara(data);}" text="{outerDocument.getQuestName(data)}" toolTip="{outerDocument.componrntToolTip(1)}"/>
+			</mx:Box>
+		</mx:GridItem>
+	</mx:GridRow>
+	<mx:GridRow>
+		<mx:GridItem borderStyle="solid" borderColor="13021835" borderSides="right">
+			<mx:Label id="_QuestAcceptWindow_inlineComponent1_Label3" width="45" fontSize="14" text="{outerDocument.componrntToolTip(2)}"/>
+		</mx:GridItem>
+		<mx:GridItem>
+			<mx:Text id="_QuestAcceptWindow_inlineComponent1_Text1" width="285" fontSize="14" text="{outerDocument.getClient(data)}"/>
+		</mx:GridItem>
+	</mx:GridRow>
+
+</mx:Grid>

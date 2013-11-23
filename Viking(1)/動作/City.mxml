@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:CanvasWithPopUp xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.view.city.*;
+        import com.kbmj.viking.vo.*;
+        import com.kbmj.viking.vo.city.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  rankUpCheckWindow:RankUpCheckWindow;
+        private var  EmbedSwfBase:Class;
+        public static var  EmbedSwfSeimei:Class;
+
+
+        public function announcementWindow() : void
+        {
+            popupWindow(rankUpCheckWindow);
+            rankUpCheckWindow.rank = _playerRank;
+            rankUpCheckWindow.check.visible = false;
+            rankUpCheckWindow.announcement.visible = true;
+            return;
+        }// end function
+
+        public function loadingMaskOff() : void
+        {
+            loadingMask1.visible = false;
+            loadingMask2.visible = false;
+            return;
+        }// end function
+
+        public function buildGuild() : void
+        {
+            sendEvent(Viking.CITY_ACTION_SHOW_TEMPLE);
+            MovieClip(Loader(_swf_base.getChildAt(0)).content).gotoAndPlay("guild_nonmember");
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("ENLARGE_END", function (event:Event) : void
+            {
+                arguments = new activation;
+                var e:* = event;
+                var arguments:* = arguments;
+                Loader(_swf_base.getChildAt(0)).content.removeEventListener("ENLARGE_END", callee);
+                Guild.visible = true;
+                Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_BACK", function (event:Event) : void
+                {
+                    Loader(_swf_base.getChildAt(0)).content.removeEventListener("BUTTON_BACK", arguments.callee);
+                    Guild.visible = false;
+                    guildMenuFlag = false;
+                    loadingMaskOn();
+                    sendEvent(Viking.CITY_ACTION_BACK_HOME);
+                    return;
+                }// end function
+                );
+                return;
+            }// end function
+            );
+            guildMenuFlag = true;
+            return;
+        }// end function
+
+        public function changeGuildMenu() : void
+        {
+            if (guildMenuFlag == false)
+            {
+                return;
+            }
+            loadingMaskOff();
+            if (playerVO && playerVO.guild)
+            {
+                guild_name.text = guildDetailVO.guildName;
+                guild_member.text = "" + guildDetailVO.membershipCount;
+                guild_area.text = "" + guildDetailVO.allTerritoriesCount + "(" + guildDetailVO.levelMaxPropertiesCount + ")";
+                MovieClip(Loader(_swf_base.getChildAt(0)).content).gotoAndPlay("guild_member");
+            }
+            else
+            {
+                guild_name.text = Utils.i18n("cityIndependent");
+                guild_member.text = "---";
+                guild_area.text = "----(----)";
+                MovieClip(Loader(_swf_base.getChildAt(0)).content).gotoAndPlay("guild_nonmember");
+            }
+            return;
+        }// end function
+
+        public function setLocation(param1:String, param2:int, param3:ConfigVO = null) : void
+        {
+            if (param3)
+            {
+                setConfig(param3);
+            }
+            if (param1 == "market")
+            {
+                buildMarket();
+            }
+            else if (param1 == "quest")
+            {
+                buildQuest(param2);
+            }
+            else
+            {
+                buildGuild();
+            }
+            return;
+        }// end function
+
+        public function setConfig(param1:ConfigVO) : void
+        {
+            buyPaymentItem = param1.buyPaymentItemsEnabled;
+            return;
+        }// end function
+
+        public function loadingMaskOn() : void
+        {
+            loadingMask1.visible = true;
+            loadingMask2.visible = true;
+            return;
+        }// end function
+
+        public function buildMarket() : void
+        {
+            var marketLabel:* = buyPaymentItem ? ("market") : ("market_nojunction");
+            MovieClip(Loader(_swf_base.getChildAt(0)).content).gotoAndPlay(marketLabel);
+            sendEvent(Viking.CITY_ACTION_SHOW_MARKET);
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("ENLARGE_END", function (event:Event) : void
+            {
+                arguments = new activation;
+                var e:* = event;
+                var arguments:* = arguments;
+                Loader(_swf_base.getChildAt(0)).content.removeEventListener("ENLARGE_END", callee);
+                Market.visible = true;
+                Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_BACK", function (event:Event) : void
+                {
+                    Loader(_swf_base.getChildAt(0)).content.removeEventListener("BUTTON_BACK", arguments.callee);
+                    Market.visible = false;
+                    sendEvent(Viking.CITY_ACTION_BACK_HOME);
+                    return;
+                }// end function
+                );
+                return;
+            }// end function
+            );
+            return;
+        }// end function
+
+        public function changeFaction(param1) : void
+        {
+            MovieClip(Loader(_swf_faction.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_faction.getChildAt(0)).content).gotoAndPlay(param1);
+            return;
+        }// end function
+
+        public function setButtonEnabled(param1:String) : void
+        {
+            switch(param1)
+            {
+                case "Accept":
+                {
+                    acceptBtnOff.visible = false;
+                    var _loc_2:Boolean = true;
+                    completeBtnOff.visible = true;
+                    var _loc_2:* = _loc_2;
+                    cancelBtnOff.visible = _loc_2;
+                    confirmBtnOff.visible = _loc_2;
+                    break;
+                }
+                case "Excuting":
+                {
+                    var _loc_2:Boolean = true;
+                    completeBtnOff.visible = true;
+                    acceptBtnOff.visible = _loc_2;
+                    var _loc_2:Boolean = false;
+                    cancelBtnOff.visible = false;
+                    confirmBtnOff.visible = _loc_2;
+                    break;
+                }
+                case "Complete":
+                {
+                    var _loc_2:Boolean = true;
+                    cancelBtnOff.visible = true;
+                    acceptBtnOff.visible = _loc_2;
+                    var _loc_2:Boolean = false;
+                    completeBtnOff.visible = false;
+                    confirmBtnOff.visible = _loc_2;
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function openWindow(event:Event) : void
+        {
+            dispatchEvent(new Event(Viking.CITY_ACTION_SHOW_PAYMENT_COMMODITY_WINDOW));
+            return;
+        }// end function
+
+        public function buildQuest(param1:int) : void
+        {
+            var factionId:* = param1;
+            MovieClip(Loader(_swf_base.getChildAt(0)).content).gotoAndPlay("quest_faction_0" + factionId);
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("ENLARGE_END", function (event:Event) : void
+            {
+                arguments = new activation;
+                var e:* = event;
+                var arguments:* = arguments;
+                Loader(_swf_base.getChildAt(0)).content.removeEventListener("ENLARGE_END", callee);
+                Quest.visible = true;
+                onmyouRankUpMask.visible = !canRankUp();
+                MovieClip(Loader(_swf_npc.getChildAt(0)).content).gotoAndPlay(0);
+                MovieClip(Loader(_swf_npc.getChildAt(0)).content).gotoAndPlay("faction_0" + factionId);
+                Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_BACK", function (event:Event) : void
+                {
+                    Loader(_swf_base.getChildAt(0)).content.removeEventListener("BUTTON_BACK", arguments.callee);
+                    Quest.visible = false;
+                    sendEvent(Viking.CITY_ACTION_BACK_HOME);
+                    return;
+                }// end function
+                );
+                return;
+            }// end function
+            );
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_HOME", function (event:Event) : void
+            {
+                sendEvent(Viking.CITY_ACTION_BACK_HOME);
+                return;
+            }// end function
+            );
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("MARKET", function (event:Event) : void
+            {
+                var e:* = event;
+                sendEvent(Viking.CITY_ACTION_SHOW_MARKET);
+                Loader(_swf_base.getChildAt(0)).content.addEventListener("ENLARGE_END", function (event:Event) : void
+                {
+                    arguments = new activation;
+                    var e:* = event;
+                    var arguments:* = arguments;
+                    Loader(_swf_base.getChildAt(0)).content.removeEventListener("ENLARGE_END", callee);
+                    Market.visible = true;
+                    Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_BACK", function (event:Event) : void
+                    {
+                        Loader(_swf_base.getChildAt(0)).content.removeEventListener("BUTTON_BACK", arguments.callee);
+                        Market.visible = false;
+                        sendEvent(Viking.CITY_ACTION_BACK_HOME);
+                        return;
+                    }// end function
+                    );
+                    return;
+                }// end function
+                );
+                return;
+            }// end function
+            );
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_SELL_SILVER", function (event:Event) : void
+            {
+                sendEvent(Viking.CITY_ACTION_SILVER_DEAL);
+                return;
+            }// end function
+            );
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_SELL_GOLD", function (event:Event) : void
+            {
+                sendEvent(Viking.CITY_ACTION_GOLD_DEAL);
+                return;
+            }// end function
+            );
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_BUY_ITEM", function (event:Event) : void
+            {
+                sendEvent(Viking.CITY_ACTION_SHOW_BUY_GOODS);
+                return;
+            }// end function
+            );
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_SELL_ITEM", function (event:Event) : void
+            {
+                sendEvent(Viking.CITY_ACTION_SHOW_SELL_GOODS);
+                return;
+            }// end function
+            );
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_BUY_JUNCTION", openWindow);
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("QUEST", function (event:Event) : void
+            {
+                var e:* = event;
+                Loader(_swf_base.getChildAt(0)).content.addEventListener("ENLARGE_END", function (event:Event) : void
+                {
+                    arguments = new activation;
+                    var e:* = event;
+                    var arguments:* = arguments;
+                    Loader(_swf_base.getChildAt(0)).content.removeEventListener("ENLARGE_END", callee);
+                    Quest.visible = true;
+                    onmyouRankUpMask.visible = !canRankUp();
+                    Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_BACK", function (event:Event) : void
+                    {
+                        Loader(_swf_base.getChildAt(0)).content.removeEventListener("BUTTON_BACK", arguments.callee);
+                        Quest.visible = false;
+                        sendEvent(Viking.CITY_ACTION_BACK_HOME);
+                        return;
+                    }// end function
+                    );
+                    return;
+                }// end function
+                );
+                return;
+            }// end function
+            );
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_TAKE_QUEST", function (event:Event) : void
+            {
+                sendEvent(Bar.BAR_ACCEPT_QUEST);
+                return;
+            }// end function
+            );
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_CHECK_QUEST", function (event:Event) : void
+            {
+                sendEvent(Bar.BAR_CONFIRM_QUEST);
+                return;
+            }// end function
+            );
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_STOP_QUEST", function (event:Event) : void
+            {
+                sendEvent(Bar.BAR_CANCEL_QUEST);
+                return;
+            }// end function
+            );
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_FINISH_QUEST", function (event:Event) : void
+            {
+                sendEvent(Bar.BAR_QUEST_CLEAR);
+                return;
+            }// end function
+            );
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_BE_PROMOTED", function (event:Event) : void
+            {
+                onRankUpButton();
+                return;
+            }// end function
+            );
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_GUILD_DELIVER", function (event:Event) : void
+            {
+                deliveryGift();
+                return;
+            }// end function
+            );
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("GUILD", function (event:Event) : void
+            {
+                var e:* = event;
+                sendEvent(Viking.CITY_ACTION_SHOW_TEMPLE);
+                Loader(_swf_base.getChildAt(0)).content.addEventListener("ENLARGE_END", function (event:Event) : void
+                {
+                    arguments = new activation;
+                    var e:* = event;
+                    var arguments:* = arguments;
+                    Loader(_swf_base.getChildAt(0)).content.removeEventListener("ENLARGE_END", callee);
+                    Guild.visible = true;
+                    Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_BACK", function (event:Event) : void
+                    {
+                        Loader(_swf_base.getChildAt(0)).content.removeEventListener("BUTTON_BACK", arguments.callee);
+                        Guild.visible = false;
+                        guildMenuFlag = false;
+                        loadingMaskOn();
+                        sendEvent(Viking.CITY_ACTION_BACK_HOME);
+                        return;
+                    }// end function
+                    );
+                    return;
+                }// end function
+                );
+                return;
+            }// end function
+            );
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_FOUND_GUILD", function (event:Event) : void
+            {
+                sendEvent(Viking.CITY_ACTION_CREATE_GUILD);
+                return;
+            }// end function
+            );
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_JOIN_GUILD", function (event:Event) : void
+            {
+                sendEvent(Viking.CITY_ACTION_SEARCH_GUILD);
+                return;
+            }// end function
+            );
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_GUILD_INFO", function (event:Event) : void
+            {
+                sendEvent(Viking.HOME_REPORT);
+                return;
+            }// end function
+            );
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_ADMINISTER_GUILD", function (event:Event) : void
+            {
+                sendEvent(Viking.CITY_ACTION_MANAGE_GUILD);
+                return;
+            }// end function
+            );
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_GUILD_LIST", function (event:Event) : void
+            {
+                sendEvent(Viking.CITY_ACTION_SEARCH_GUILD);
+                return;
+            }// end function
+            );
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_LEAVE_GUILD", function (event:Event) : void
+            {
+                sendEvent(Viking.CITY_ACTION_QUIT_GUILD);
+                return;
+            }// end function
+            );
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("BUTTON_CANCEL", function (event:Event) : void
+            {
+                sendEvent(Viking.CITY_ACTION_APPLICATION_CANCEL);
+                return;
+            }// end function
+            );
+            Loader(_swf_base.getChildAt(0)).content.addEventListener("SELECT_GUILD", function (event:Event) : void
+            {
+                guildMenuFlag = true;
+                changeGuildMenu();
+                return;
+            }// end function
+            );
+            loadingMaskOn();
+            return;
+        }// end function
+
+        public function deliveryGift() : void
+        {
+            dispatchEvent(new Event(Viking.CITY_ACTION_DELIVERY_FACTION_GIFT));
+            return;
+        }// end function
+
+        public function onRankUpButton() : void
+        {
+            popupWindow(rankUpCheckWindow);
+            rankUpCheckWindow.check.visible = true;
+            rankUpCheckWindow.announcement.visible = false;
+            rankUpCheckWindow.addEventListener(RankUpCheckWindow.RANK_UP, rankUp);
+            return;
+        }// end function
+
+        public function canRankUp() : Boolean
+        {
+            if (_playerExp < _nextRankExp)
+            {
+                return false;
+            }
+            if (_playerRank >= PlayerVO.ONMYOU_RANK_ID_ZENITH)
+            {
+                return false;
+            }
+            return true;
+        }// end function
+
+        public function rankUp(event:Event) : void
+        {
+            rankUpCheckWindow.removeEventListener(RankUpCheckWindow.RANK_UP, rankUp);
+            sendEvent(Bar.PLAYER_RANK_UP);
+            onmyouRankUpMask.visible = !canRankUp();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:ViewStack id="cityViewStack">
+		<mx:Canvas label="Base">
+			<mx:Image id="base" source="{_swf_base}"/>
+		</mx:Canvas>
+		<mx:Market id="market"/>
+		<mx:Temple id="temple"/>
+		<mx:Bar id="bar"/>
+	</mx:ViewStack>
+	<mx:Canvas>
+		<mx:Image id="products" source="_embed_mxml__swf_window_info_products_swf_1304559433" x="363" y="0"/>
+		<mx:Image id="info" source="_embed_mxml__swf_window_info_home_swf_1388347787" x="0" y="0"/>
+		<mx:Image id="_City_Image4" x="37" y="17" source="{_swf_faction}"/>
+		<mx:Image id="_City_Image5" x="58" y="17" source="{_swf_rank2}"/>
+		<mx:ProductionInfoWindow id="productionInfoWindow" x="380" y="14"/>
+		<mx:PlayerStatus id="playerStatus" x="10"/>
+	</mx:Canvas>
+	<mx:Canvas id="Market" visible="false" fontSize="14" color="#00433530" textAlign="right">
+		<mx:Label id="_City_Label1" x="610" y="109" width="125" text="{playerVO.gold}"/>
+		<mx:Label id="_City_Label2" x="610" y="129" width="125" text="silver"/>
+		<mx:Label id="_City_Label3" x="610" y="149" width="125" text="pureGold"/>
+	</mx:Canvas>
+	<mx:Canvas id="Quest" visible="false" fontSize="14" color="#00433530">
+		<mx:Image id="_City_Image6" x="612" y="92" source="{_swf_rank}"/>
+		<mx:Label id="_City_Label4" x="610" y="109" width="125" textAlign="center" text="{playerVO.playerName}"/>
+		<mx:Label id="_City_Label5" x="610" y="129" width="125" textAlign="right" text="_playerExp + "/" + _nextRankExp"/>
+		<mx:Image id="_City_Image7" y="75" source="{_swf_npc}"/>
+		<mx:Image id="onmyouRankUpMask" x="648" y="150" source="_embed_mxml__swf_home_city_button_be_promoted_off_swf_162402921" visible="false"/>
+		<mx:Image id="acceptBtnOff" x="610" y="211" visible="false" source="{EmbedSwfOnmyouOff}"/>
+		<mx:Image id="confirmBtnOff" x="610" y="241" visible="false" source="{EmbedSwfOnmyouOff}"/>
+		<mx:Image id="cancelBtnOff" x="610" y="271" visible="false" source="{EmbedSwfOnmyouOff}"/>
+		<mx:Image id="completeBtnOff" x="610" y="301" visible="false" source="{EmbedSwfOnmyouOff}"/>
+	</mx:Canvas>
+	<mx:Canvas id="Guild" visible="false" fontSize="14" color="#00433530">
+		<mx:Label id="guild_name" x="610" y="90" width="125" textAlign="center" fontWeight="bold"/>
+		<mx:Label id="guild_member" x="610" y="115" width="125" textAlign="right"/>
+		<mx:Label id="guild_area" x="610" y="155" width="125" textAlign="right"/>
+		<mx:Image id="loadingMask1" x="610" y="211" visible="true" source="{EmbedSwfOnmyouOff}"/>
+		<mx:Image id="loadingMask2" x="610" y="241" visible="true" source="{EmbedSwfOnmyouOff}"/>
+	</mx:Canvas>
+	<mx:QuestAcceptWindow id="questAcceptWindow" visible="false"/>
+	<mx:QuestConfirmWindow id="questConfirmWindow" visible="false"/>
+
+</mx:CanvasWithPopUp>

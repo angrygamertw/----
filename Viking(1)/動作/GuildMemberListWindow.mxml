@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{comp();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.geom.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public static const  CLICK_GUILD_MEMBER_POS:String = "clickGuildMemberPos";
+        public static var  ListSwf:Class;
+
+
+        public function openList(event:Event) : void
+        {
+            playerList.visible = true;
+            return;
+        }// end function
+
+        public function comp() : void
+        {
+            Loader(_listWindow.getChildAt(0)).content.addEventListener("ENLARGE_END", openList);
+            Loader(_listWindow.getChildAt(0)).content.addEventListener("CLOSE", closeList);
+            MovieClip(Loader(_listWindow.getChildAt(0)).content).gotoAndPlay("w_null");
+            return;
+        }// end function
+
+        public function getPositionStr(param1:Object) : String
+        {
+            return " (" + AllMapMediator.hexXtoGameX(param1.homeAllMapPos.x).toString() + "," + AllMapMediator.hexYtoGameY(param1.homeAllMapPos.y).toString() + ")";
+        }// end function
+
+        public function _GuildMemberListWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildMemberListWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "";
+            _loc_1.width = 80;
+            BindingManager.executeBindings(this, "_GuildMemberListWindow_DataGridColumn2", _GuildMemberListWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _GuildMemberListWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            positionRenderer = _loc_1;
+            _loc_1.generator = GuildMemberListWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function closeList(event:Event) : void
+        {
+            playerList.visible = false;
+            return;
+        }// end function
+
+        public function chengeViewPosition(param1:Object) : void
+        {
+            dispatchEvent(new PopupEvent(CLICK_GUILD_MEMBER_POS, new Point(param1.homeAllMapPos.x, param1.homeAllMapPos.y)));
+            return;
+        }// end function
+
+        public function init(param1:Array) : void
+        {
+            _players = param1;
+            if (!param1.length)
+            {
+                MovieClip(Loader(_listWindow.getChildAt(0)).content).gotoAndPlay("w_null");
+                playerList.visible = false;
+            }
+            else if (!playerList.visible)
+            {
+                MovieClip(Loader(_listWindow.getChildAt(0)).content).gotoAndPlay("w_minimization");
+            }
+            return;
+        }// end function
+
+        public function _GuildMemberListWindow_ClassFactory2_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            nameRenderer = _loc_1;
+            _loc_1.generator = GuildMemberListWindow_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _GuildMemberListWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildMemberListWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "playerName";
+            _loc_1.width = 100;
+            BindingManager.executeBindings(this, "_GuildMemberListWindow_DataGridColumn1", _GuildMemberListWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_GuildMemberListWindow_Image1" source="{_listWindow}"/>
+	<mx:Canvas id="playerList" visible="false" label="{Utils.i18n("guildMemberListMemberList")}">
+		<mx:Box x="21" y="97">
+			<mx:DataGrid id="weaponDataGrid" showHeaders="false" width="180" height="422" rowCount="21" rowHeight="21" styleName="DataGridBase" sortableColumns="false" selectable="false" columns="{[_GuildMemberListWindow_DataGridColumn1_i(), _GuildMemberListWindow_DataGridColumn2_i()]}" dataProvider='{_players}'/>
+		</mx:Box>
+	</mx:Canvas>
+
+</mx:Canvas>

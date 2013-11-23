@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="750" height="506" creationComplete="{createComp();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  forgetSkill:Object;
+        public var  new_skill:SkillVO;
+        public static const  SKILL_SELECT:String = NAME + "skillLearn";
+        public static const  NAME:String = "skillSelectWindow";
+        public static const  SKILL_SELECT_WINDOW_CLOSE:String = NAME + "skillLearnWindowClose";
+
+
+        public function init(param1:SkillVO, param2:UnitVO) : void
+        {
+            var _loc_3:Object = null;
+            selectUnit = new UnitVO();
+            selectUnit = param2;
+            skills = new Array();
+            for each (_loc_3 in param2.ownSkills)
+            {
+                
+                skills.push(_loc_3);
+            }
+            new_skill = param1;
+            skill_data_list.height = 112;
+            skill_data_list.rowHeight = 28;
+            skill_data_list.headerHeight = 25;
+            return;
+        }// end function
+
+        public function checkWindow(param1:Object) : void
+        {
+            forgetSkill = new Object();
+            forgetSkill = param1;
+            checkForgetSkill.text = Utils.i18n("skillSelectForgetConf", param1.nameLabel);
+            checkCanvas.visible = true;
+            return;
+        }// end function
+
+        public function createComp() : void
+        {
+            Loader(_swf_close.getChildAt(0)).content.addEventListener("BUTTON_CLOSE", function (event:Event) : void
+            {
+                close();
+                return;
+            }// end function
+            );
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("top_720x285");
+            MovieClip(Loader(_swf_change.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_cancel.getChildAt(0)).content).gotoAndPlay("button_no");
+            MovieClip(Loader(_swf_check_window.getChildAt(0)).content).gotoAndPlay("center_400x270");
+            return;
+        }// end function
+
+        public function _SkillSelectWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRenderer = _loc_1;
+            _loc_1.generator = SkillSelectWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _SkillSelectWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SkillSelectWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "description";
+            _loc_1.width = 405;
+            _loc_1.setStyle("textAlign", "center");
+            _loc_1.setStyle("fontSize", 11);
+            BindingManager.executeBindings(this, "_SkillSelectWindow_DataGridColumn3", _SkillSelectWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function learnSkill() : void
+        {
+            dispatchEvent(new PopupEvent(SKILL_SELECT, {unit:selectUnit, oldSkill:forgetSkill, newSkill:new_skill}));
+            close();
+            return;
+        }// end function
+
+        public function canLearnSkill(param1:Object) : Class
+        {
+            return decide;
+        }// end function
+
+        public function _SkillSelectWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SkillSelectWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 150;
+            _loc_1.setStyle("textAlign", "center");
+            _loc_1.setStyle("fontSize", 11);
+            BindingManager.executeBindings(this, "_SkillSelectWindow_DataGridColumn2", _SkillSelectWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function forgetCancel() : void
+        {
+            forgetSkill = new Object();
+            checkForgetSkill.text = "";
+            checkCanvas.visible = false;
+            return;
+        }// end function
+
+        public function _SkillSelectWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SkillSelectWindow_DataGridColumn1 = _loc_1;
+            _loc_1.width = 55;
+            _loc_1.setStyle("fontSize", 11);
+            BindingManager.executeBindings(this, "_SkillSelectWindow_DataGridColumn1", _SkillSelectWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function close() : void
+        {
+            checkCanvas.visible = false;
+            onClose();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_SkillSelectWindow_Image1" source="{_swf_window}"/>
+	<mx:Canvas id="skillCanvas" x="30">
+		<mx:Image id="_SkillSelectWindow_Image2" x="685" y="20" click="{close();}" source="{_swf_close_window}"/>
+		<mx:Text id="_SkillSelectWindow_Text1" x="315" y="22" styleName="PanelBaseTitle" color="#00eeeeee" text="{Utils.i18n("skillSelectTitle")}"/>
+		<mx:Text id="_SkillSelectWindow_Text2" x="40" y="60" fontSize="13" text="{Utils.i18n("skillSelectDescription")}"/>
+		<mx:VBox id="_SkillSelectWindow_VBox1" x="40" y="110" label="{Utils.i18n("generalSkill")}">
+			<mx:DataGrid id="skill_data_list" height="112" styleName="DataGridBase" selectable="false" sortableColumns="false" rowHeight="28" headerHeight="25" columns="{[_SkillSelectWindow_DataGridColumn1_i(), _SkillSelectWindow_DataGridColumn2_i(), _SkillSelectWindow_DataGridColumn3_i()]}" dataProvider='{skills}'/>
+		</mx:VBox>
+		<mx:Image id="_SkillSelectWindow_Image3" x="295" y="247" source="{_swf_close}"/>
+	</mx:Canvas>
+	<mx:Canvas id="checkCanvas" visible="false">
+		<mx:Image id="_SkillSelectWindow_Image4" source="{_swf_check_window}"/>
+		<mx:Text id="checkForgetSkill" x="280" y="210" fontSize="13"/>
+		<mx:Image id="_SkillSelectWindow_Image5" x="265" y="350" click="{learnSkill();}" source="{_swf_change}"/>
+		<mx:Image id="_SkillSelectWindow_Image6" x="390" y="350" click="{forgetCancel();}" source="{_swf_cancel}"/>
+	</mx:Canvas>
+
+</mx:PopupWindow>

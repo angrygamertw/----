@@ -1,0 +1,674 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{setup();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  _commoditySummary:Object;
+        private var  _playerRank:int = 0;
+        private var  _buyCode:int;
+        public var  clickBool:Boolean = false;
+        private var  selectId:int;
+        private var  equipmentDetail:EquipmentDetail;
+        public var  weaponDetail:WeaponDetail;
+        public static const  SEARCH_GOODS:String = NAME + "searchGoods";
+        private static const  WINDOW_X:int = 20;
+        private static const  WINDOW_Y:int = 20;
+        private static const  BUTTON_X:int = 325;
+        private static const  BUTTON_Y:int = 490;
+        public static const  CLOSE_SEARCH_GOODS:String = "closesearchGoods";
+        public static const  NAME:String = "BuyTradeGoodsSearchWindow";
+        private static const  WINDOW_HT:int = 520;
+        private static const  WINDOW_WD:int = 720;
+
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn19_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuyTradeGoodsSearchWindow_DataGridColumn19 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 170;
+            BindingManager.executeBindings(this, "_BuyTradeGoodsSearchWindow_DataGridColumn19", _BuyTradeGoodsSearchWindow_DataGridColumn19);
+            return _loc_1;
+        }// end function
+
+        public function closeWindow() : void
+        {
+            dispatchEvent(new Event(CLOSE_SEARCH_GOODS));
+            PopUpManager.removePopUp(this);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_close_window.getChildAt(0)).content).gotoAndPlay(1);
+            return;
+        }// end function
+
+        public function setAccessoryMasterData(param1:Object) : void
+        {
+            var obj:Object;
+            var arr:Array;
+            var accessoryData:* = param1;
+            var defArray:* = new Array();
+            var _loc_3:int = 0;
+            var _loc_4:* = accessoryData;
+            while (_loc_4 in _loc_3)
+            {
+                
+                obj = _loc_4[_loc_3];
+                defArray.push(obj);
+            }
+            arr = defArray.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                return param1.sellable == 0;
+            }// end function
+            );
+            accessoryArray = new ArrayCollection(arr);
+            return;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn22_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuyTradeGoodsSearchWindow_DataGridColumn22 = _loc_1;
+            _loc_1.dataField = "description";
+            BindingManager.executeBindings(this, "_BuyTradeGoodsSearchWindow_DataGridColumn22", _BuyTradeGoodsSearchWindow_DataGridColumn22);
+            return _loc_1;
+        }// end function
+
+        public function componentToolTip() : String
+        {
+            return Utils.i18n("generalShowDetail");
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_ClassFactory6_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = SearchButtonRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn10_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuyTradeGoodsSearchWindow_DataGridColumn10 = _loc_1;
+            _loc_1.dataField = "magicalDefense";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_BuyTradeGoodsSearchWindow_DataGridColumn10", _BuyTradeGoodsSearchWindow_DataGridColumn10);
+            return _loc_1;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn18_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.itemRenderer = _BuyTradeGoodsSearchWindow_ClassFactory6_c();
+            _loc_1.width = 50;
+            return _loc_1;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuyTradeGoodsSearchWindow_DataGridColumn6 = _loc_1;
+            _loc_1.dataField = "description";
+            BindingManager.executeBindings(this, "_BuyTradeGoodsSearchWindow_DataGridColumn6", _BuyTradeGoodsSearchWindow_DataGridColumn6);
+            return _loc_1;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn21_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuyTradeGoodsSearchWindow_DataGridColumn21 = _loc_1;
+            _loc_1.dataField = "effect";
+            _loc_1.width = 180;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_BuyTradeGoodsSearchWindow_DataGridColumn21", _BuyTradeGoodsSearchWindow_DataGridColumn21);
+            return _loc_1;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn5_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuyTradeGoodsSearchWindow_DataGridColumn5 = _loc_1;
+            _loc_1.dataField = "endurance";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_BuyTradeGoodsSearchWindow_DataGridColumn5", _BuyTradeGoodsSearchWindow_DataGridColumn5);
+            return _loc_1;
+        }// end function
+
+        public function getNameLabel(param1:Object) : String
+        {
+            return param1.nameLabel;
+        }// end function
+
+        public function setup() : void
+        {
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_tab.getChildAt(0)).content).gotoAndPlay("tab_item_arms");
+            Loader(_swf_tab.getChildAt(0)).content.addEventListener("TAB_ITEM_ARMS", function (event:Event) : void
+            {
+                itemList.selectedIndex = 0;
+                return;
+            }// end function
+            );
+            Loader(_swf_tab.getChildAt(0)).content.addEventListener("TAB_ITEM_GUARDS", function (event:Event) : void
+            {
+                itemList.selectedIndex = 1;
+                return;
+            }// end function
+            );
+            Loader(_swf_tab.getChildAt(0)).content.addEventListener("TAB_ITEM_ACCESSORIES", function (event:Event) : void
+            {
+                itemList.selectedIndex = 2;
+                return;
+            }// end function
+            );
+            Loader(_swf_tab.getChildAt(0)).content.addEventListener("TAB_ITEM_ITEMS", function (event:Event) : void
+            {
+                itemList.selectedIndex = 3;
+                return;
+            }// end function
+            );
+            Loader(_swf_tab.getChildAt(0)).content.addEventListener("TAB_ITEM_MATERIALS", function (event:Event) : void
+            {
+                itemList.selectedIndex = 4;
+                return;
+            }// end function
+            );
+            return;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn17_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuyTradeGoodsSearchWindow_DataGridColumn17 = _loc_1;
+            _loc_1.dataField = "description";
+            BindingManager.executeBindings(this, "_BuyTradeGoodsSearchWindow_DataGridColumn17", _BuyTradeGoodsSearchWindow_DataGridColumn17);
+            return _loc_1;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_ClassFactory5_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = SearchButtonRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn20_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuyTradeGoodsSearchWindow_DataGridColumn20 = _loc_1;
+            _loc_1.dataField = "endurance";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_BuyTradeGoodsSearchWindow_DataGridColumn20", _BuyTradeGoodsSearchWindow_DataGridColumn20);
+            return _loc_1;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuyTradeGoodsSearchWindow_DataGridColumn4 = _loc_1;
+            _loc_1.dataField = "hit";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_BuyTradeGoodsSearchWindow_DataGridColumn4", _BuyTradeGoodsSearchWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_ClassFactory4_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = SearchButtonRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn16_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuyTradeGoodsSearchWindow_DataGridColumn16 = _loc_1;
+            _loc_1.dataField = "effectLabelAll";
+            _loc_1.width = 180;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_BuyTradeGoodsSearchWindow_DataGridColumn16", _BuyTradeGoodsSearchWindow_DataGridColumn16);
+            return _loc_1;
+        }// end function
+
+        public function setWeaponMasterData(param1:Object) : void
+        {
+            var obj:Object;
+            var arr:Array;
+            var weaponData:* = param1;
+            var defArray:* = new Array();
+            var _loc_3:int = 0;
+            var _loc_4:* = weaponData;
+            while (_loc_4 in _loc_3)
+            {
+                
+                obj = _loc_4[_loc_3];
+                defArray.push(obj);
+            }
+            arr = defArray.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                return param1.sellable == 0;
+            }// end function
+            );
+            weaponArray = new ArrayCollection(arr);
+            return;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_ClassFactory3_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = SearchButtonRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuyTradeGoodsSearchWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "damage";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_BuyTradeGoodsSearchWindow_DataGridColumn3", _BuyTradeGoodsSearchWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn15_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuyTradeGoodsSearchWindow_DataGridColumn15 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 170;
+            BindingManager.executeBindings(this, "_BuyTradeGoodsSearchWindow_DataGridColumn15", _BuyTradeGoodsSearchWindow_DataGridColumn15);
+            return _loc_1;
+        }// end function
+
+        public function setArmorMasterData(param1:Object) : void
+        {
+            var obj:Object;
+            var arr:Array;
+            var armorData:* = param1;
+            var defArray:* = new Array();
+            var _loc_3:int = 0;
+            var _loc_4:* = armorData;
+            while (_loc_4 in _loc_3)
+            {
+                
+                obj = _loc_4[_loc_3];
+                defArray.push(obj);
+            }
+            arr = defArray.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                return param1.sellable == 0;
+            }// end function
+            );
+            armorArray = new ArrayCollection(arr);
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            weaponArray.filterFunction = null;
+            weaponArray.refresh();
+            armorArray.filterFunction = null;
+            armorArray.refresh();
+            return;
+        }// end function
+
+        public function onDetail(param1:Object) : void
+        {
+            if (param1.masterType == "WeaponMaster" || param1.masterType == "ArmorMaster" || param1.masterType == "AccessoryMaster")
+            {
+                weaponDetail.viewData = param1;
+                if (weaponDetail.viewData)
+                {
+                    popupWindow(weaponDetail);
+                }
+            }
+            else
+            {
+                equipmentDetail.viewData = param1;
+                if (equipmentDetail.viewData)
+                {
+                    popupWindow(equipmentDetail);
+                }
+            }
+            return;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn14_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.itemRenderer = _BuyTradeGoodsSearchWindow_ClassFactory5_c();
+            _loc_1.width = 50;
+            return _loc_1;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_ClassFactory2_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRenderer = _loc_1;
+            _loc_1.generator = BuyTradeGoodsSearchWindow_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuyTradeGoodsSearchWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 170;
+            BindingManager.executeBindings(this, "_BuyTradeGoodsSearchWindow_DataGridColumn2", _BuyTradeGoodsSearchWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function buttonDisable(param1:Object) : Boolean
+        {
+            var _loc_2:* = _commoditySummary[param1.code];
+            if (_loc_2 > 0)
+            {
+                return true;
+            }
+            return false;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn1_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.itemRenderer = _BuyTradeGoodsSearchWindow_ClassFactory3_c();
+            _loc_1.width = 50;
+            return _loc_1;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn9_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuyTradeGoodsSearchWindow_DataGridColumn9 = _loc_1;
+            _loc_1.dataField = "physicalDefense";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_BuyTradeGoodsSearchWindow_DataGridColumn9", _BuyTradeGoodsSearchWindow_DataGridColumn9);
+            return _loc_1;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn25_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuyTradeGoodsSearchWindow_DataGridColumn25 = _loc_1;
+            _loc_1.dataField = "description";
+            BindingManager.executeBindings(this, "_BuyTradeGoodsSearchWindow_DataGridColumn25", _BuyTradeGoodsSearchWindow_DataGridColumn25);
+            return _loc_1;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            buttonRenderer = _loc_1;
+            _loc_1.generator = BuyTradeGoodsSearchWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function setJobMasterData(param1:Object) : void
+        {
+            var _loc_3:Object = null;
+            var _loc_2:int = 1;
+            selectJobData = new Array();
+            selectJobData.push({label:Utils.i18n("generalAllView"), id:0});
+            for each (_loc_3 in param1)
+            {
+                
+                if (_loc_3.disabled == false && _loc_3.code && Number(_loc_3.code) < 1000)
+                {
+                    selectJobData.push({label:_loc_3.nameLabel, id:_loc_3.masterId});
+                }
+            }
+            return;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn13_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuyTradeGoodsSearchWindow_DataGridColumn13 = _loc_1;
+            _loc_1.dataField = "description";
+            BindingManager.executeBindings(this, "_BuyTradeGoodsSearchWindow_DataGridColumn13", _BuyTradeGoodsSearchWindow_DataGridColumn13);
+            return _loc_1;
+        }// end function
+
+        public function jobFilter(event:Event) : void
+        {
+            selectId = event.currentTarget.selectedItem.id;
+            var _loc_2:* = new ArrayCollection();
+            switch(itemList.selectedIndex)
+            {
+                case 0:
+                {
+                    _loc_2 = weaponArray;
+                    break;
+                }
+                case 1:
+                {
+                    _loc_2 = armorArray;
+                    break;
+                }
+                case 2:
+                {
+                    _loc_2 = accessoryArray;
+                    break;
+                }
+                case 3:
+                {
+                    _loc_2 = itemArray;
+                    break;
+                }
+                case 4:
+                {
+                    _loc_2 = materialArray;
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            if (selectId == 0)
+            {
+                _loc_2.filterFunction = null;
+            }
+            else
+            {
+                _loc_2.filterFunction = changeJobFilter;
+            }
+            _loc_2.refresh();
+            return;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn24_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuyTradeGoodsSearchWindow_DataGridColumn24 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 170;
+            BindingManager.executeBindings(this, "_BuyTradeGoodsSearchWindow_DataGridColumn24", _BuyTradeGoodsSearchWindow_DataGridColumn24);
+            return _loc_1;
+        }// end function
+
+        public function setItemMasterData(param1:Object) : void
+        {
+            var obj:Object;
+            var arr:Array;
+            var itemData:* = param1;
+            var defArray:* = new Array();
+            var _loc_3:int = 0;
+            var _loc_4:* = itemData;
+            while (_loc_4 in _loc_3)
+            {
+                
+                obj = _loc_4[_loc_3];
+                defArray.push(obj);
+            }
+            arr = defArray.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                return param1.sellable == 0;
+            }// end function
+            );
+            itemArray = new ArrayCollection(arr);
+            return;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn8_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuyTradeGoodsSearchWindow_DataGridColumn8 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 120;
+            BindingManager.executeBindings(this, "_BuyTradeGoodsSearchWindow_DataGridColumn8", _BuyTradeGoodsSearchWindow_DataGridColumn8);
+            return _loc_1;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn12_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuyTradeGoodsSearchWindow_DataGridColumn12 = _loc_1;
+            _loc_1.dataField = "endurance";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_BuyTradeGoodsSearchWindow_DataGridColumn12", _BuyTradeGoodsSearchWindow_DataGridColumn12);
+            return _loc_1;
+        }// end function
+
+        public function setMaterialMasterData(param1:Object) : void
+        {
+            var obj:Object;
+            var arr:Array;
+            var materialData:* = param1;
+            var defArray:* = new Array();
+            var _loc_3:int = 0;
+            var _loc_4:* = materialData;
+            while (_loc_4 in _loc_3)
+            {
+                
+                obj = _loc_4[_loc_3];
+                defArray.push(obj);
+            }
+            arr = defArray.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                return param1.sellable == 0;
+            }// end function
+            );
+            materialArray = new ArrayCollection(arr);
+            return;
+        }// end function
+
+        public function changeJobFilter(param1:Object) : Boolean
+        {
+            var _loc_2:int = 0;
+            while (_loc_2 < param1.equipabilities.length)
+            {
+                
+                if (param1.equipabilities[_loc_2].job_id == selectId)
+                {
+                    return true;
+                }
+                _loc_2++;
+            }
+            return false;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn23_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.itemRenderer = _BuyTradeGoodsSearchWindow_ClassFactory7_c();
+            _loc_1.width = 50;
+            return _loc_1;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn7_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.itemRenderer = _BuyTradeGoodsSearchWindow_ClassFactory4_c();
+            _loc_1.width = 50;
+            return _loc_1;
+        }// end function
+
+        public function onClickSearch(param1:Object) : void
+        {
+            _buyCode = param1.code;
+            dispatchEvent(new Event(SEARCH_GOODS));
+            return;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_ClassFactory7_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = SearchButtonRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _BuyTradeGoodsSearchWindow_DataGridColumn11_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuyTradeGoodsSearchWindow_DataGridColumn11 = _loc_1;
+            _loc_1.dataField = "avoidance";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_BuyTradeGoodsSearchWindow_DataGridColumn11", _BuyTradeGoodsSearchWindow_DataGridColumn11);
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Canvas id="goodsSearchCanvas">
+		<mx:Text id="_BuyTradeGoodsSearchWindow_Text1" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("buyTradeGoodsSearchBuy")}"/>
+		<mx:ViewStack id="itemList" x="0" y="0" width="760" height="560">
+			<mx:Canvas id="_BuyTradeGoodsSearchWindow_Canvas3" label="{Utils.i18n("generalWeapon")}">
+				<mx:Text id="_BuyTradeGoodsSearchWindow_Text2" x="570" fontSize="12" y="WINDOW_Y + 35" text="{Utils.i18n("generalCanEquipJob") + ":"}"/>
+				<mx:ComboBox id="_BuyTradeGoodsSearchWindow_ComboBox1" x="570" y="82" width="150" styleName="GuildComboBox" change="{jobFilter(event);}" dataProvider='{selectJobData}'/>
+				<mx:Box id="_BuyTradeGoodsSearchWindow_Box1" y="108" x="WINDOW_X + 20">
+					<mx:DataGrid id="weapon_data_list" rowCount="13" rowHeight="26" styleName="DataGridBase" sortableColumns="false" columns="{[_BuyTradeGoodsSearchWindow_DataGridColumn1_c(), _BuyTradeGoodsSearchWindow_DataGridColumn2_i(), _BuyTradeGoodsSearchWindow_DataGridColumn3_i(), _BuyTradeGoodsSearchWindow_DataGridColumn4_i(), _BuyTradeGoodsSearchWindow_DataGridColumn5_i(), _BuyTradeGoodsSearchWindow_DataGridColumn6_i()]}" dataProvider='{weaponArray}' width="WINDOW_WD - 40"/>
+				</mx:Box>
+			</mx:Canvas>
+			<mx:Canvas id="_BuyTradeGoodsSearchWindow_Canvas4" label="{Utils.i18n("generalEquipArmor")}">
+				<mx:Text id="_BuyTradeGoodsSearchWindow_Text3" x="570" fontSize="12" y="WINDOW_Y + 35" text="{Utils.i18n("generalCanEquipJob") + ":"}"/>
+				<mx:ComboBox id="_BuyTradeGoodsSearchWindow_ComboBox2" x="570" y="82" width="150" styleName="GuildComboBox" change="{jobFilter(event);}" dataProvider='{selectJobData}'/>
+				<mx:Box id="_BuyTradeGoodsSearchWindow_Box2" y="108" x="WINDOW_X + 20">
+					<mx:DataGrid id="armor_data_list" rowCount="13" rowHeight="26" styleName="DataGridBase" sortableColumns="false" columns="{[_BuyTradeGoodsSearchWindow_DataGridColumn7_c(), _BuyTradeGoodsSearchWindow_DataGridColumn8_i(), _BuyTradeGoodsSearchWindow_DataGridColumn9_i(), _BuyTradeGoodsSearchWindow_DataGridColumn10_i(), _BuyTradeGoodsSearchWindow_DataGridColumn11_i(), _BuyTradeGoodsSearchWindow_DataGridColumn12_i(), _BuyTradeGoodsSearchWindow_DataGridColumn13_i()]}" dataProvider='{armorArray}' width="WINDOW_WD - 40"/>
+				</mx:Box>
+			</mx:Canvas>
+			<mx:Canvas id="_BuyTradeGoodsSearchWindow_Canvas5" label="{Utils.i18n("generalEquipAccessory")}">
+				<mx:Box id="_BuyTradeGoodsSearchWindow_Box3" y="108" x="WINDOW_X + 20">
+					<mx:DataGrid id="accessory_data_list" rowCount="13" rowHeight="26" styleName="DataGridBase" sortableColumns="false" columns="{[_BuyTradeGoodsSearchWindow_DataGridColumn14_c(), _BuyTradeGoodsSearchWindow_DataGridColumn15_i(), _BuyTradeGoodsSearchWindow_DataGridColumn16_i(), _BuyTradeGoodsSearchWindow_DataGridColumn17_i()]}" dataProvider='{accessoryArray}' width="WINDOW_WD - 40"/>
+				</mx:Box>
+			</mx:Canvas>
+			<mx:Canvas id="_BuyTradeGoodsSearchWindow_Canvas6" label="{Utils.i18n("generalMaterial")}">
+				<mx:Box id="_BuyTradeGoodsSearchWindow_Box4" y="108" x="WINDOW_X + 20">
+					<mx:DataGrid id="item_data_list" rowCount="13" rowHeight="26" styleName="DataGridBase" sortableColumns="false" columns="{[_BuyTradeGoodsSearchWindow_DataGridColumn18_c(), _BuyTradeGoodsSearchWindow_DataGridColumn19_i(), _BuyTradeGoodsSearchWindow_DataGridColumn20_i(), _BuyTradeGoodsSearchWindow_DataGridColumn21_i(), _BuyTradeGoodsSearchWindow_DataGridColumn22_i()]}" dataProvider='{itemArray}' width="WINDOW_WD - 40"/>
+				</mx:Box>
+			</mx:Canvas>
+			<mx:Canvas id="_BuyTradeGoodsSearchWindow_Canvas7" label="{Utils.i18n("confirmBuildMaterial")}">
+				<mx:Box id="_BuyTradeGoodsSearchWindow_Box5" y="108" x="WINDOW_X + 20">
+					<mx:DataGrid id="material_data_list" rowCount="13" rowHeight="26" styleName="DataGridBase" sortableColumns="false" columns="{[_BuyTradeGoodsSearchWindow_DataGridColumn23_c(), _BuyTradeGoodsSearchWindow_DataGridColumn24_i(), _BuyTradeGoodsSearchWindow_DataGridColumn25_i()]}" dataProvider='{materialArray}' width="WINDOW_WD - 40"/>
+				</mx:Box>
+			</mx:Canvas>
+		</mx:ViewStack>
+		<mx:Text id="_BuyTradeGoodsSearchWindow_Text4" fontSize="14" text="{Utils.i18n("generalPossessionMoney") + ":" + _gold}" x="WINDOW_X + 20" y="WINDOW_Y + 35"/>
+		<mx:Image id="_BuyTradeGoodsSearchWindow_Image1" y="80" x="WINDOW_X + 20" source="{_swf_tab}"/>
+		<mx:Image id="_BuyTradeGoodsSearchWindow_Image2" click="{closeWindow();}" x="BUTTON_X" y="BUTTON_Y" source="{_swf_close}"/>
+		<mx:Image id="_BuyTradeGoodsSearchWindow_Image3" click="{closeWindow();}" x="WINDOW_X + WINDOW_WD - 25" y="WINDOW_Y" source="{_swf_close_window}"/>
+	</mx:Canvas>
+
+</mx:PopupWindow>

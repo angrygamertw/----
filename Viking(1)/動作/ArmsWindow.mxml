@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{setup();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private static const  WINDOW_X:int = 180;
+        private static const  WINDOW_Y:int = 145;
+        private static const  BUTTON_X:int = 325;
+        private static const  BUTTON_Y:int = 365;
+        private static const  WINDOW_HT:int = 270;
+        private static const  WINDOW_WD:int = 400;
+
+
+        public function onNo() : void
+        {
+            closeWindow();
+            MovieClip(Loader(_swf_no.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_no.getChildAt(0)).content).gotoAndPlay("button_no");
+            return;
+        }// end function
+
+        public function onYes() : void
+        {
+            sendPopupEvent(Viking.ARM_EQUIPPED, [_unit, _unit.subWeapon]);
+            closeWindow();
+            MovieClip(Loader(_swf_yes.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_yes.getChildAt(0)).content).gotoAndPlay("button_yes");
+            return;
+        }// end function
+
+        public function closeWindow() : void
+        {
+            onClose();
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_close_window.getChildAt(0)).content).gotoAndPlay(1);
+            return;
+        }// end function
+
+        public function setArms() : void
+        {
+            var _loc_1:* = new Array();
+            if (_unit.subWeapon)
+            {
+                _loc_1.push(_unit.subWeapon);
+            }
+            eqpData = new ArrayCollection(_loc_1);
+            return;
+        }// end function
+
+        public function _ArmsWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ArmsWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            BindingManager.executeBindings(this, "_ArmsWindow_DataGridColumn1", _ArmsWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _ArmsWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ArmsWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "hit";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ArmsWindow_DataGridColumn3", _ArmsWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _ArmsWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ArmsWindow_DataGridColumn4 = _loc_1;
+            _loc_1.dataField = "endurance";
+            _loc_1.width = 70;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ArmsWindow_DataGridColumn4", _ArmsWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function onClick() : void
+        {
+            if (_unit.subWeapon == null)
+            {
+                return;
+            }
+            return;
+        }// end function
+
+        public function _ArmsWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ArmsWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "damage";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ArmsWindow_DataGridColumn2", _ArmsWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function setup() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_400x270");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_yes.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_no.getChildAt(0)).content).gotoAndPlay("button_no");
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_ArmsWindow_Image1" source="{_swf_window}"/>
+	<mx:Text id="_ArmsWindow_Text1" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("armsTitle")}"/>
+	<mx:Image id="_ArmsWindow_Image2" click="{closeWindow();}" x="WINDOW_X + WINDOW_WD - 25" y="WINDOW_Y" source="{_swf_close_window}"/>
+	<mx:DataGrid id="weapon_data" rowCount="1" sortableColumns="false" styleName="DataGridBase" columns="{[_ArmsWindow_DataGridColumn1_i(), _ArmsWindow_DataGridColumn2_i(), _ArmsWindow_DataGridColumn3_i(), _ArmsWindow_DataGridColumn4_i()]}" click="{onYes();}" dataProvider='{eqpData}' x="WINDOW_X + 20" y="WINDOW_Y + 35 + 20" width="WINDOW_WD - 40"/>
+	<mx:ViewStack id="windowViewStack" width="760" height="560" selectedIndex="1">
+		<mx:Canvas>
+			<mx:Image id="_ArmsWindow_Image3" click="{closeWindow();}" x="BUTTON_X" y="BUTTON_Y" source="{_swf_close}"/>
+		</mx:Canvas>
+		<mx:Canvas>
+			<mx:Text id="_ArmsWindow_Text2" styleName="CenterText" x="WINDOW_X" y="WINDOW_Y + 35 + 120" width="WINDOW_WD" text="{Utils.i18n("armsChengeEquipConf")}"/>
+			<mx:Image id="_ArmsWindow_Image4" click="{onYes();}" x="BUTTON_X - 65" y="BUTTON_Y" source="{_swf_yes}"/>
+			<mx:Image id="_ArmsWindow_Image5" click="{onNo();}" x="BUTTON_X + 65" y="BUTTON_Y" source="{_swf_no}"/>
+		</mx:Canvas>
+	</mx:ViewStack>
+
+</mx:PopupWindow>

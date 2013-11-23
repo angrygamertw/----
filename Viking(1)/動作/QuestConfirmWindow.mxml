@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{_init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  primaryRemarkConfirm:Object;
+        private var  i:int = 0;
+        private var  _defArray:Array;
+        private var  _factionId:int = 0;
+        private var  primaryRemarkCancel:Object;
+        private var  primaryRemarkClear:Object;
+        private var  primaryRemarkOrders:Object;
+        private var  questData:Object;
+        private static const  WINDOW_HT:int = 310;
+        private static const  BUTTON2_X:int = 325;
+        private static const  WINDOW_X:int = 350;
+        private static const  BUTTON_X:int = 490;
+        private static const  BUTTON_Y:int = 490;
+        private static const  WINDOW_Y:int = 230;
+        public static const  QUEST_ACCEPT_CANCEL:String = "questAcceptCancel";
+        public static const  QUEST_COMPLETE_FINISH:String = "questCompleteFinish";
+        private static const  BUTTON2_Y:int = 330;
+        private static const  WINDOW2_Y:int = 180;
+        public static const  QUEST_ACCEPT:String = "questAccept";
+        public static const  REMOVE_SWF:String = "questConfirmWindow/removeSWF";
+        private static const  WINDOW2_HT:int = 200;
+        public static const  QUEST_ACCEPT_FINISH:String = "questAcceptFinish";
+        public static const  BUTTON_ENABLE:String = "buttonEnable";
+        private static const  WINDOW2_WD:int = 300;
+        private static const  WINDOW2_X:int = 230;
+        public static const  QUEST_ACCEPT_CANCEL_CASE_BY_MARIA_QUEST:String = "questAcceptCancelCaseByMariaQuest";
+        public static const  QUEST_DECLINE_FINISH:String = "questDeclineFinish";
+        public static const  QUEST_CANCEL_FINISH:String = "questCancelFinish";
+        private static const  WINDOW_WD:int = 390;
+
+
+        public function onDecline() : void
+        {
+            dispatchEvent(new Event(QUEST_DECLINE_FINISH));
+            dispatchEvent(new Event(QUEST_CANCEL_FINISH));
+            onAcceptFinish();
+            return;
+        }// end function
+
+        public function onDeclineConfirm() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_300x200");
+            closeWindow.x = WINDOW2_X + WINDOW2_WD - 25;
+            closeWindow.y = WINDOW2_Y;
+            windowViewStack.selectedIndex = 3;
+            grid0.visible = false;
+            grid2.visible = false;
+            grid3.visible = false;
+            grid4.visible = false;
+            setCommentStatus("");
+            return;
+        }// end function
+
+        public function setQuestContent(param1:Object, param2:int = 100, param3:int = 200, param4:int = 300, param5:int = 400, param6:Boolean = true, param7:Boolean = true, param8:Boolean = true, param9:Boolean = true) : void
+        {
+            var _loc_10:int = 0;
+            if (windowViewStack.selectedIndex == 5 && param1.kills && param1.kills > 0)
+            {
+                _loc_10 = 0;
+                while (_loc_10 < param1.reward.length)
+                {
+                    
+                    if (param1.reward[_loc_10])
+                    {
+                    }
+                    _loc_10++;
+                }
+            }
+            return;
+        }// end function
+
+        public function onCompleteFinish() : void
+        {
+            this.visible = false;
+            dispatchEvent(new Event(QUEST_COMPLETE_FINISH));
+            dispatchEvent(new Event(REMOVE_SWF));
+            return;
+        }// end function
+
+        public function onAcceptConfirm(param1:int) : void
+        {
+            windowViewStack.selectedIndex = 1;
+            grid0.visible = true;
+            grid0_tab.text = Utils.i18n("generalRequest");
+            grid0_mes.text = questData.questName;
+            grid2.visible = true;
+            grid2_tab.text = Utils.i18n("checkQuestCompensation");
+            grid2_mes.text = makeRewardText(484, 331);
+            grid3.visible = true;
+            grid3_tab.text = Utils.i18n("checkQuestConditions");
+            grid3_mes.text = questData.condition;
+            grid4.visible = false;
+            setCommentStatus(primaryRemarkOrders[param1]);
+            return;
+        }// end function
+
+        public function init(param1:String, param2:Object) : void
+        {
+            questData = param2;
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("right_390x310");
+            closeWindow.x = WINDOW_X + WINDOW_WD - 25;
+            closeWindow.y = WINDOW_Y;
+            acceptBtnOff.visible = false;
+            money.visible = false;
+            switch(param1)
+            {
+                case "questAccept":
+                {
+                    windowViewStack.selectedIndex = 0;
+                    grid0.visible = true;
+                    grid0_tab.text = Utils.i18n("generalRequest");
+                    grid0_mes.text = questData.questName;
+                    grid2.visible = true;
+                    grid2_tab.text = Utils.i18n("checkQuestConditions");
+                    grid2_mes.text = questData.condition;
+                    grid3.visible = false;
+                    grid4.visible = false;
+                    setCommentStatus(questData.description);
+                    acceptBtnOff.visible = true;
+                    break;
+                }
+                case "questConfirm":
+                {
+                    windowViewStack.selectedIndex = 5;
+                    grid0.visible = true;
+                    grid0_tab.text = Utils.i18n("generalRequest");
+                    grid0_mes.text = questData.questName;
+                    grid2.visible = true;
+                    grid2_tab.text = Utils.i18n("checkQuestCompensation");
+                    grid2_mes.text = makeRewardText(484, 331);
+                    grid3.visible = true;
+                    grid3_tab.text = Utils.i18n("checkQuestConditions");
+                    grid3_mes.text = questData.condition;
+                    if (questData.kills < 0)
+                    {
+                        grid4.visible = false;
+                    }
+                    else
+                    {
+                        grid4.visible = true;
+                        grid4_tab.text = Utils.i18n("generalLillsCount");
+                        grid4_mes.text = Utils.i18n("checkQuestKillsCount", questData.kills);
+                    }
+                    setCommentStatus(primaryRemarkConfirm[_factionId]);
+                    break;
+                }
+                case "questDecline":
+                {
+                    windowViewStack.selectedIndex = 2;
+                    grid0.visible = true;
+                    grid0_tab.text = Utils.i18n("generalRequest");
+                    grid0_mes.text = questData.questName;
+                    grid2.visible = true;
+                    grid2_tab.text = Utils.i18n("checkQuestCompensation");
+                    grid2_mes.text = makeRewardText(484, 331);
+                    grid3.visible = true;
+                    grid3_tab.text = Utils.i18n("checkQuestConditions");
+                    grid3_mes.text = questData.condition;
+                    grid4.visible = false;
+                    setCommentStatus(primaryRemarkCancel[_factionId]);
+                    break;
+                }
+                case "questClear":
+                {
+                    windowViewStack.selectedIndex = 4;
+                    grid0.visible = false;
+                    grid2.visible = false;
+                    grid3.visible = false;
+                    grid4.visible = false;
+                    setCommentStatus(primaryRemarkClear[_factionId]);
+                    questComment.text = Utils.i18n("questConfirmQuestComplete", questData.questName);
+                    questReward.text = makeRewardText(371, 296);
+                    break;
+                }
+                case "questConfirmOther":
+                {
+                    windowViewStack.selectedIndex = 5;
+                    setQuestContent(questData, 57, 89, 122, 152);
+                    topComment = "";
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function onCancel() : void
+        {
+            this.visible = false;
+            if (questData.clientType != "npc_01.png")
+            {
+                dispatchEvent(new Event(QUEST_ACCEPT_CANCEL));
+            }
+            else
+            {
+                dispatchEvent(new Event(QUEST_ACCEPT_CANCEL_CASE_BY_MARIA_QUEST));
+            }
+            return;
+        }// end function
+
+        public function onAcceptFinish() : void
+        {
+            this.visible = false;
+            dispatchEvent(new Event(QUEST_ACCEPT_FINISH));
+            return;
+        }// end function
+
+        public function onClose() : void
+        {
+            this.visible = false;
+            dispatchEvent(new Event(BUTTON_ENABLE));
+            dispatchEvent(new Event(REMOVE_SWF));
+            return;
+        }// end function
+
+        public function makeRewardText(param1:int, param2:int) : String
+        {
+            var _loc_4:RegExp = null;
+            var _loc_3:* = new String();
+            i = 0;
+            while (i < questData.reward.length)
+            {
+                
+                if (questData.reward[i])
+                {
+                    _loc_3 = _loc_3 + questData.reward[i];
+                }
+                var _loc_6:* = i + 1;
+                i = _loc_6;
+            }
+            if (_loc_3.charAt(0) == "$")
+            {
+                _loc_4 = /\$""\$/;
+                _loc_3 = _loc_3.replace(_loc_4, "　 ");
+                money.x = param1;
+                money.y = param2;
+                money.visible = true;
+                return _loc_3;
+            }
+            money.visible = false;
+            return _loc_3;
+        }// end function
+
+        public function onAccept() : void
+        {
+            dispatchEvent(new Event(QUEST_ACCEPT));
+            return;
+        }// end function
+
+        public function _init() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("right_390x310");
+            MovieClip(Loader(_swf_stack0_yes.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_stack0_no.getChildAt(0)).content).gotoAndPlay("button_no");
+            MovieClip(Loader(_swf_stack1_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_stack2_yes.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_stack2_no.getChildAt(0)).content).gotoAndPlay("button_no");
+            MovieClip(Loader(_swf_stack3_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_stack4_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_stack5_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            return;
+        }// end function
+
+        public function setCommentStatus(param1:String, param2:int = 370, param3:int = 80, param4:int = 370, param5:int = 130) : void
+        {
+            topComment = param1;
+            Top.x = param2;
+            Top.y = param3;
+            Top.width = param4;
+            Top.height = param5;
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Image id="acceptBtnOff" x="610" y="211" source="_embed_mxml__swf_home_city_button_onmyou_off_swf_1992088147" visible="true"/>
+	<mx:Image id="_QuestConfirmWindow_Image2" source="{_swf_window}"/>
+	<mx:Canvas id="confirmCanvas">
+		<mx:Box id="Top" verticalAlign="middle">
+			<mx:Text id="_QuestConfirmWindow_Text1" fontSize="14" leading="0" text="topComment"/>
+		</mx:Box>
+		<mx:Grid x="370" y="300" horizontalGap="-1" verticalGap="-1">
+			<mx:GridRow id="grid0">
+				<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00204631">
+					<mx:Label id="grid0_tab" width="100" fontSize="14" textAlign="center" color="#00eeeeee"/>
+				</mx:GridItem>
+				<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00e1e2c2">
+					<mx:Label id="grid0_mes" width="245" fontSize="14" textIndent="8" color="#00000000"/>
+				</mx:GridItem>
+			</mx:GridRow>
+			<mx:GridRow id="grid2">
+				<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00204631">
+					<mx:Label id="grid2_tab" width="100" fontSize="14" textAlign="center" color="#00eeeeee"/>
+				</mx:GridItem>
+				<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00e1e2c2">
+					<mx:Label id="grid2_mes" width="245" fontSize="14" textIndent="8" color="#00000000"/>
+				</mx:GridItem>
+			</mx:GridRow>
+			<mx:GridRow id="grid3">
+				<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00204631">
+					<mx:Label id="grid3_tab" width="100" fontSize="14" textAlign="center" color="#00eeeeee"/>
+				</mx:GridItem>
+				<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00f5f4dd">
+					<mx:Label id="grid3_mes" width="245" fontSize="14" textIndent="8" color="#00000000"/>
+				</mx:GridItem>
+			</mx:GridRow>
+			<mx:GridRow id="grid4">
+				<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00204631">
+					<mx:Label id="grid4_tab" width="100" fontSize="14" textAlign="center" color="#00eeeeee"/>
+				</mx:GridItem>
+				<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00e1e2c2">
+					<mx:Label id="grid4_mes" width="245" fontSize="14" textIndent="8" color="#00000000"/>
+				</mx:GridItem>
+			</mx:GridRow>
+		</mx:Grid>
+		<mx:ViewStack id="windowViewStack" selectedIndex="0">
+			<mx:Canvas>
+				<mx:Text id="_QuestConfirmWindow_Text2" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("generalShowDetail")}"/>
+				<mx:Text id="_QuestConfirmWindow_Text3" x="473" y="455" fontSize="14" text="{Utils.i18n("questConfirmOrderConf")}"/>
+				<mx:Image id="_QuestConfirmWindow_Image3" click="{onAccept();}" x="BUTTON_X - 65" y="BUTTON_Y" source="{_swf_stack0_yes}"/>
+				<mx:Image id="_QuestConfirmWindow_Image4" click="{onCancel();}" x="BUTTON_X + 65" y="BUTTON_Y" source="{_swf_stack0_no}"/>
+			</mx:Canvas>
+			<mx:Canvas>
+				<mx:Text id="_QuestConfirmWindow_Text4" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("generalConfirmation")}"/>
+				<mx:Image id="_QuestConfirmWindow_Image5" click="{onAcceptFinish();}" x="BUTTON_X" y="BUTTON_Y" source="{_swf_stack1_close}"/>
+			</mx:Canvas>
+			<mx:Canvas>
+				<mx:Text id="_QuestConfirmWindow_Text5" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("questConfirmQuestCancelTitle")}"/>
+				<mx:Text id="_QuestConfirmWindow_Text6" x="473" y="455" fontSize="14" text="{Utils.i18n("questConfirmQuestCancelConf")}"/>
+				<mx:Image id="_QuestConfirmWindow_Image6" click="{onDecline();}" x="BUTTON_X - 65" y="BUTTON_Y" source="{_swf_stack2_yes}"/>
+				<mx:Image id="_QuestConfirmWindow_Image7" click="{onClose();}" x="BUTTON_X + 65" y="BUTTON_Y" source="{_swf_stack2_no}"/>
+			</mx:Canvas>
+			<mx:Canvas>
+				<mx:Text id="_QuestConfirmWindow_Text7" styleName="DealTitle" x="WINDOW2_X" y="WINDOW2_Y" width="WINDOW2_WD" text="{Utils.i18n("generalConfirmation")}"/>
+				<mx:Text id="_QuestConfirmWindow_Text8" fontSize="14" x="WINDOW2_X + 60" y="WINDOW2_Y + WINDOW2_HT / 2 - 16" text="{Utils.i18n("questConfirmOrderCancelComplete")}"/>
+				<mx:Image id="_QuestConfirmWindow_Image8" click="{onAcceptFinish();}" x="BUTTON2_X" y="BUTTON2_Y" source="{_swf_stack3_close}"/>
+			</mx:Canvas>
+			<mx:Canvas>
+				<mx:VBox id="_QuestConfirmWindow_VBox1" x="WINDOW_X + 20" y="WINDOW_Y + 35">
+					<mx:Text id="questComment" fontSize="14"/>
+					<mx:Text id="questReward" fontSize="14"/>
+					<mx:Text id="_QuestConfirmWindow_Text11" fontSize="14" text="{Utils.i18n("questConfirmGetCompensation")}"/>
+				</mx:VBox>
+				<mx:Text id="_QuestConfirmWindow_Text12" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("questConfirmQuestCOmplete")}"/>
+				<mx:Image id="_QuestConfirmWindow_Image9" click="{onCompleteFinish();}" x="BUTTON_X" y="BUTTON_Y" source="{_swf_stack4_close}"/>
+			</mx:Canvas>
+			<mx:Canvas>
+				<mx:Text id="_QuestConfirmWindow_Text13" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("questConfirmQuestConf")}"/>
+				<mx:Image id="_QuestConfirmWindow_Image10" x="490" y="490" click="{onClose();}" source="{_swf_stack5_close}"/>
+			</mx:Canvas>
+		</mx:ViewStack>
+		<mx:Image id="closeWindow" click="{onCancel();}" x="WINDOW_X + WINDOW_WD - 25" y="WINDOW_Y" source="{_swf_close_window}"/>
+		<mx:Image id="money" source="_embed_mxml__swf_home_unit_status_icon_icon_money_swf_196506313"/>
+	</mx:Canvas>
+
+</mx:Canvas>

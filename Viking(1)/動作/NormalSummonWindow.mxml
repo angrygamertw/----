@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{createComp();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  leyLine:Boolean = false;
+        private var  resourceVO:ResourceVO;
+        private var  playerVO:PlayerVO;
+        private var  _tutMarkNormalSummonVisible:Boolean = false;
+        public static var  selectOffButton:Class;
+        public static const  NAME:String = "normalSummonWindow";
+        public static const  NORMAL_SUMMON_RUN:String = NAME + "normalSummon";
+        public static var  selectButton:Class;
+        public static const  NORMAL_SUMMON_END:String = NAME + "normalSummonEnd";
+
+
+        public function _NormalSummonWindow_ClassFactory2_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailTutorialRenderer = _loc_1;
+            _loc_1.generator = NormalSummonWindow_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function createComp() : void
+        {
+            MovieClip(Loader(_swf_cancel.getChildAt(0)).content).gotoAndPlay("button_back");
+            MovieClip(Loader(_swf_summon.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_back.getChildAt(0)).content).gotoAndPlay("button_no");
+            return;
+        }// end function
+
+        public function _NormalSummonWindow_DataGridColumn8_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalSummonWindow_DataGridColumn8 = _loc_1;
+            _loc_1.width = 78;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalSummonWindow_DataGridColumn8", _NormalSummonWindow_DataGridColumn8);
+            return _loc_1;
+        }// end function
+
+        public function getSoulCrystalSize(param1:int) : int
+        {
+            if (leyLine)
+            {
+                return addLeyLineEffect(param1);
+            }
+            return param1;
+        }// end function
+
+        public function init(param1:PlayerVO, param2:ResourceVO, param3:Array, param4:Boolean) : void
+        {
+            var p:* = param1;
+            var r:* = param2;
+            var summonArray:* = param3;
+            var flg:* = param4;
+            leyLine = flg;
+            playerVO = p;
+            resourceVO = r;
+            summonArray = summonArray.filter(function (param1:Object, param2:int, param3:Array) : Boolean
+            {
+                if (param1.leyLine)
+                {
+                    return playerVO.hasLeyLine(param1.leyLine);
+                }
+                return true;
+            }// end function
+            );
+            summonArray = summonArray.filter(function (param1:Object, param2:int, param3:Array) : Boolean
+            {
+                if (param1.items.length > 1)
+                {
+                    return true;
+                }
+                if (isLack(param1.items.getItemAt(0)))
+                {
+                    return false;
+                }
+                return true;
+            }// end function
+            );
+            summonType = summonArray.filter(function (param1:Object, param2:int, param3:Array) : Boolean
+            {
+                return param1.level <= playerVO.playerRankId ? (true) : (false);
+            }// end function
+            );
+            return;
+        }// end function
+
+        public function _NormalSummonWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalSummonWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "rank";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalSummonWindow_DataGridColumn3", _NormalSummonWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _NormalSummonWindow_DataGridColumn12_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalSummonWindow_DataGridColumn12 = _loc_1;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalSummonWindow_DataGridColumn12", _NormalSummonWindow_DataGridColumn12);
+            return _loc_1;
+        }// end function
+
+        public function _NormalSummonWindow_DataGridColumn7_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalSummonWindow_DataGridColumn7 = _loc_1;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalSummonWindow_DataGridColumn7", _NormalSummonWindow_DataGridColumn7);
+            return _loc_1;
+        }// end function
+
+        public function _NormalSummonWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRenderer = _loc_1;
+            _loc_1.generator = NormalSummonWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _NormalSummonWindow_ClassFactory5_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            itemRenderer1 = _loc_1;
+            _loc_1.generator = NormalSummonWindow_inlineComponent5;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _NormalSummonWindow_ClassFactory6_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            itemRenderer2 = _loc_1;
+            _loc_1.generator = NormalSummonWindow_inlineComponent6;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _NormalSummonWindow_DataGridColumn13_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalSummonWindow_DataGridColumn13 = _loc_1;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalSummonWindow_DataGridColumn13", _NormalSummonWindow_DataGridColumn13);
+            return _loc_1;
+        }// end function
+
+        public function isLackSoulCrystal(param1:Object) : Boolean
+        {
+            return getSoulCrystalSize(param1.soulCrystal) > playerVO.soulCrystal;
+        }// end function
+
+        public function getItemColor(param1:Object, param2:int) : uint
+        {
+            return isLack(param1.items.getItemAt(param2)) ? (15073298) : (0);
+        }// end function
+
+        public function getItemNamePlus(param1:Object) : String
+        {
+            var _loc_4:Object = null;
+            var _loc_2:String = "";
+            var _loc_3:String = "";
+            for each (_loc_4 in param1.items)
+            {
+                
+                _loc_2 = getItemName(_loc_4);
+                if (_loc_2.length > 0)
+                {
+                    _loc_2 = "、" + _loc_2;
+                }
+                _loc_3 = _loc_3 + _loc_2;
+            }
+            return _loc_3;
+        }// end function
+
+        public function _NormalSummonWindow_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalSummonWindow_DataGridColumn6 = _loc_1;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalSummonWindow_DataGridColumn6", _NormalSummonWindow_DataGridColumn6);
+            return _loc_1;
+        }// end function
+
+        public function _NormalSummonWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalSummonWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "name";
+            _loc_1.width = 105;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalSummonWindow_DataGridColumn2", _NormalSummonWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _NormalSummonWindow_DataGridColumn11_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalSummonWindow_DataGridColumn11 = _loc_1;
+            _loc_1.width = 35;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalSummonWindow_DataGridColumn11", _NormalSummonWindow_DataGridColumn11);
+            return _loc_1;
+        }// end function
+
+        public function summonCeremony() : void
+        {
+            viewStack.selectedIndex = 0;
+            sendPopupEvent(NORMAL_SUMMON_RUN, {summon:summonUnit});
+            return;
+        }// end function
+
+        public function _NormalSummonWindow_ClassFactory4_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            itemRenderer0 = _loc_1;
+            _loc_1.generator = NormalSummonWindow_inlineComponent4;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function getMaterial(param1:int) : MaterialVO
+        {
+            var _loc_2:MaterialVO = null;
+            for each (_loc_2 in resourceVO.materials)
+            {
+                
+                if (_loc_2.masterVO.masterId == param1)
+                {
+                    break;
+                }
+            }
+            return _loc_2;
+        }// end function
+
+        public function _NormalSummonWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalSummonWindow_DataGridColumn1 = _loc_1;
+            _loc_1.width = 52;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalSummonWindow_DataGridColumn1", _NormalSummonWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _NormalSummonWindow_DataGridColumn5_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalSummonWindow_DataGridColumn5 = _loc_1;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalSummonWindow_DataGridColumn5", _NormalSummonWindow_DataGridColumn5);
+            return _loc_1;
+        }// end function
+
+        public function getItemName(param1:Object, param2:int = 99) : String
+        {
+            if (param2 == 99)
+            {
+                return param1 ? (param1.nameLabel + "×" + param1.quantity.toString()) : ("");
+            }
+            return param1.items.getItemAt(param2) ? (param1.items.getItemAt(param2).nameLabel + "×" + param1.items.getItemAt(param2).quantity.toString()) : ("");
+        }// end function
+
+        public function _NormalSummonWindow_DataGridColumn9_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalSummonWindow_DataGridColumn9 = _loc_1;
+            _loc_1.dataField = "name";
+            _loc_1.width = 77;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalSummonWindow_DataGridColumn9", _NormalSummonWindow_DataGridColumn9);
+            return _loc_1;
+        }// end function
+
+        public function _NormalSummonWindow_DataGridColumn10_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalSummonWindow_DataGridColumn10 = _loc_1;
+            _loc_1.dataField = "rank";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalSummonWindow_DataGridColumn10", _NormalSummonWindow_DataGridColumn10);
+            return _loc_1;
+        }// end function
+
+        public function _NormalSummonWindow_DataGridColumn14_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalSummonWindow_DataGridColumn14 = _loc_1;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalSummonWindow_DataGridColumn14", _NormalSummonWindow_DataGridColumn14);
+            return _loc_1;
+        }// end function
+
+        public function showTutMark(param1:Object) : Boolean
+        {
+            var _loc_2:* = summon_data_list_tutorial.dataProvider.getItemIndex(param1);
+            if (_loc_2 == 0 && _tutMarkNormalSummonVisible)
+            {
+                return visible;
+            }
+            return false;
+        }// end function
+
+        public function addLeyLineEffect(param1:int) : int
+        {
+            return param1 - Math.ceil(param1 * 0.1);
+        }// end function
+
+        public function closeNormalSummon() : void
+        {
+            viewStack.selectedIndex = 0;
+            sendEvent(NORMAL_SUMMON_END);
+            return;
+        }// end function
+
+        public function _NormalSummonWindow_ClassFactory3_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            sphereRenderer = _loc_1;
+            _loc_1.generator = NormalSummonWindow_inlineComponent3;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function setSelectButton(param1:Object) : Class
+        {
+            var _loc_2:int = 0;
+            if (param1.items.length < 3)
+            {
+                _loc_2 = 0;
+                while (_loc_2 < param1.items.length)
+                {
+                    
+                    if (isLack(param1.items.getItemAt(_loc_2)))
+                    {
+                        return selectOffButton;
+                    }
+                    _loc_2++;
+                }
+                if (isLackSoulCrystal(param1))
+                {
+                    return selectOffButton;
+                }
+                return selectButton;
+            }
+            return isLackSoulCrystal(param1) || isLack(param1.items.getItemAt(0)) || isLack(param1.items.getItemAt(1)) || isLack(param1.items.getItemAt(2)) ? (selectOffButton) : (selectButton);
+        }// end function
+
+        public function setTutMarkVisible(param1:Boolean) : void
+        {
+            if (!param1)
+            {
+                tutVisible = true;
+                nonTutVisible = false;
+                _tutMarkNormalSummonVisible = true;
+            }
+            else
+            {
+                _tutMarkNormalSummonVisible = false;
+                tutVisible = false;
+                nonTutVisible = true;
+            }
+            return;
+        }// end function
+
+        public function subSelectIndex() : void
+        {
+            viewStack.selectedIndex = 0;
+            return;
+        }// end function
+
+        public function addSelectIndex(param1:Object) : void
+        {
+            var _loc_2:Object = null;
+            if (isLackSoulCrystal(param1))
+            {
+                return;
+            }
+            for each (_loc_2 in param1.items)
+            {
+                
+                if (isLack(_loc_2))
+                {
+                    return;
+                }
+            }
+            viewStack.selectedIndex = 1;
+            summonUnit = new Object();
+            summonUnit = param1;
+            return;
+        }// end function
+
+        public function getSoulCrystalColor(param1:Object) : uint
+        {
+            return isLackSoulCrystal(param1) ? (15073298) : (0);
+        }// end function
+
+        public function isLack(param1:Object) : Boolean
+        {
+            return param1 && param1.quantity > getMaterial(param1.itemId).quantity;
+        }// end function
+
+        public function _NormalSummonWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalSummonWindow_DataGridColumn4 = _loc_1;
+            _loc_1.width = 35;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalSummonWindow_DataGridColumn4", _NormalSummonWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Text id="_NormalSummonWindow_Text1" x="350" y="302" styleName="PanelBaseTitle" text="{Utils.i18n("normalSummonWindowNormalSummon")}"/>
+	<mx:ViewStack id="viewStack" width="570" x="100" y="335">
+		<mx:VBox>
+			<mx:Text id="_NormalSummonWindow_Text2" fontSize="11" text="{Utils.i18n("normalSummonWindowTitle")}"/>
+			<mx:DataGrid id="summon_data_list" rowCount="4" width="560" styleName="DataGridBase" selectable="false" sortableColumns="false" includeInLayout="false" columns="{[_NormalSummonWindow_DataGridColumn1_i(), _NormalSummonWindow_DataGridColumn2_i(), _NormalSummonWindow_DataGridColumn3_i(), _NormalSummonWindow_DataGridColumn4_i(), _NormalSummonWindow_DataGridColumn5_i(), _NormalSummonWindow_DataGridColumn6_i(), _NormalSummonWindow_DataGridColumn7_i()]}" dataProvider='{summonType}' visible="nonTutVisible"/>
+			<mx:DataGrid id="summon_data_list_tutorial" rowCount="4" width="560" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_NormalSummonWindow_DataGridColumn8_i(), _NormalSummonWindow_DataGridColumn9_i(), _NormalSummonWindow_DataGridColumn10_i(), _NormalSummonWindow_DataGridColumn11_i(), _NormalSummonWindow_DataGridColumn12_i(), _NormalSummonWindow_DataGridColumn13_i(), _NormalSummonWindow_DataGridColumn14_i()]}" dataProvider='{summonType}' visible="tutVisible"/>
+			<mx:HBox>
+				<mx:Spacer width="210"/>
+				<mx:Image id="_NormalSummonWindow_Image1" click="{closeNormalSummon();}" source="{_swf_cancel}"/>
+			</mx:HBox>
+		</mx:VBox>
+		<mx:VBox>
+			<mx:Spacer height="20"/>
+			<mx:HBox>
+				<mx:Spacer width="160"/>
+				<mx:Text id="_NormalSummonWindow_Text3" fontSize="14" text="{Utils.i18n("normalSummonCreateConfirm1", summonUnit.name)}"/>
+			</mx:HBox>
+			<mx:HBox>
+				<mx:Spacer width="110"/>
+				<mx:Text id="_NormalSummonWindow_Text4" fontSize="14" text="{Utils.i18n("normalSummonCreateConfirm2", getSoulCrystalSize(summonUnit.soulCrystal), getItemNamePlus(summonUnit))}"/>
+			</mx:HBox>
+			<mx:HBox>
+				<mx:Spacer width="205"/>
+				<mx:Text id="_NormalSummonWindow_Text5" fontSize="14" text="{Utils.i18n("normalSummonCreateConfirm3")}"/>
+			</mx:HBox>
+			<mx:Spacer height="20"/>
+			<mx:HBox horizontalGap="120">
+				<mx:Spacer width="30"/>
+				<mx:Image id="_NormalSummonWindow_Image2" click="{summonCeremony();}" source="{_swf_summon}"/>
+				<mx:Image id="_NormalSummonWindow_Image3" click="{subSelectIndex();}" source="{_swf_back}"/>
+			</mx:HBox>
+		</mx:VBox>
+	</mx:ViewStack>
+
+</mx:PopupWindow>

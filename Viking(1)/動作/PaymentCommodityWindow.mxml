@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{onComp();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.view.home.*;
+        import com.kbmj.viking.vo.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _type:int;
+        private var  equipmentDetail:EquipmentDetail;
+        public var  weaponDetail:WeaponDetail;
+        private var  checkBuyPaymentCommodityWindow:CheckBuyPaymentCommodityWindow;
+        private var  detailWindow:ItemDetail;
+        private static const  WINDOW_X:int = 20;
+        private static const  WINDOW_Y:int = 20;
+        private static const  BUTTON_X:int = 325;
+        private static const  BUTTON_Y:int = 490;
+        public static const  BUY_PAYMENT_COMMODITY:String = NAME + "/buyPaymentCommodity";
+        public static const  NAME:String = "BuyTradeGoodsWindow";
+        private static const  WINDOW_HT:int = 520;
+        private static const  WINDOW_WD:int = 720;
+
+
+        public function _PaymentCommodityWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _PaymentCommodityWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "quantity";
+            _loc_1.width = 100;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_PaymentCommodityWindow_DataGridColumn2", _PaymentCommodityWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function closeWindow() : void
+        {
+            onClose();
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_close_window.getChildAt(0)).content).gotoAndPlay(1);
+            return;
+        }// end function
+
+        public function onDetail(param1:Object) : void
+        {
+            if (!param1.commodity)
+            {
+                return;
+            }
+            if (param1.masterType == "WeaponMaster" || param1.masterType == "ArmorMaster" || param1.masterType == "AccessoryMaster")
+            {
+                weaponDetail.viewData = param1.commodity;
+                popupWindow(weaponDetail);
+            }
+            else
+            {
+                equipmentDetail.viewData = param1.commodity;
+                popupWindow(equipmentDetail);
+            }
+            return;
+        }// end function
+
+        public function _PaymentCommodityWindow_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _PaymentCommodityWindow_DataGridColumn6 = _loc_1;
+            _loc_1.itemRenderer = _PaymentCommodityWindow_ClassFactory3_c();
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_PaymentCommodityWindow_DataGridColumn6", _PaymentCommodityWindow_DataGridColumn6);
+            return _loc_1;
+        }// end function
+
+        public function _PaymentCommodityWindow_ClassFactory3_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = PaymentCommodityButtonRenderer;
+            return _loc_1;
+        }// end function
+
+        public function onBuy(param1:Object) : void
+        {
+            checkBuyPaymentCommodityWindow.setbuyData(param1, _type);
+            popupWindow(checkBuyPaymentCommodityWindow, false);
+            checkBuyPaymentCommodityWindow.addEventListener(CheckBuyPaymentCommodityWindow.BUY_PAYMENT_COMMODITY, buyPaymentCommodity);
+            return;
+        }// end function
+
+        public function getLabel(param1:Object, param2:String) : String
+        {
+            return param1[param2] ? (param1[param2]) : ("-");
+        }// end function
+
+        public function _PaymentCommodityWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _PaymentCommodityWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            BindingManager.executeBindings(this, "_PaymentCommodityWindow_DataGridColumn1", _PaymentCommodityWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _PaymentCommodityWindow_DataGridColumn5_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            pointColumn = _loc_1;
+            _loc_1.dataField = "pointLabel";
+            _loc_1.width = 100;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "pointColumn", pointColumn);
+            return _loc_1;
+        }// end function
+
+        public function _PaymentCommodityWindow_ClassFactory2_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            powerRenderer = _loc_1;
+            _loc_1.generator = PaymentCommodityWindow_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function buyPaymentCommodity(event:PopupEvent) : void
+        {
+            var _loc_2:Object = {master_id:int(event.param), type:_type};
+            checkBuyPaymentCommodityWindow.removeEventListener(CheckBuyPaymentCommodityWindow.BUY_PAYMENT_COMMODITY, buyPaymentCommodity);
+            this.dispatchEvent(new PopupEvent(BUY_PAYMENT_COMMODITY, _loc_2));
+            closeWindow();
+            return;
+        }// end function
+
+        public function getNameLabel(param1:Object) : String
+        {
+            return param1.nameLabel;
+        }// end function
+
+        public function onComp() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_720x520");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            return;
+        }// end function
+
+        public function _PaymentCommodityWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            goldColumn = _loc_1;
+            _loc_1.dataField = "goldLabel";
+            _loc_1.width = 100;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "goldColumn", goldColumn);
+            return _loc_1;
+        }// end function
+
+        public function _PaymentCommodityWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRenderer = _loc_1;
+            _loc_1.generator = PaymentCommodityWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function setCommodities(param1:Array, param2:int, param3:PlayerVO) : void
+        {
+            var commodities:* = param1;
+            var type:* = param2;
+            var player:* = param3;
+            _type = type;
+            powerColumn.setStyle("color", 16711680);
+            goldColumn.setStyle("color", 16711680);
+            pointColumn.setStyle("color", 16711680);
+            switch(type)
+            {
+                case 1:
+                {
+                    paymentCommodities = commodities.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                return param1.power;
+            }// end function
+            );
+                    powerColumn.setStyle("color", 0);
+                    _balanceLabel = player.power + Utils.i18n("generalPower");
+                    break;
+                }
+                case 2:
+                {
+                    paymentCommodities = commodities.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                return param1.gold;
+            }// end function
+            );
+                    goldColumn.setStyle("color", 0);
+                    _balanceLabel = player.gold + Utils.i18n("generalMoneyUnit");
+                    break;
+                }
+                case 3:
+                {
+                    paymentCommodities = commodities.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                return param1.point;
+            }// end function
+            );
+                    pointColumn.setStyle("color", 0);
+                    _balanceLabel = player.prizePoint + Utils.i18n("rewardPoint");
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function _PaymentCommodityWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            powerColumn = _loc_1;
+            _loc_1.width = 110;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "powerColumn", powerColumn);
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_PaymentCommodityWindow_Image1" source="{_swf_window}"/>
+	<mx:Text id="_PaymentCommodityWindow_Text1" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("marketConfirmBuy")}"/>
+	<mx:HBox id="_PaymentCommodityWindow_HBox1" verticalAlign="middle" horizontalGap="3" x="WINDOW_X + 20" y="WINDOW_Y + 30">
+		<mx:Text id="_PaymentCommodityWindow_Text2" fontSize="14" textAlign="left" text="{Utils.i18n("purchasePayentCommodity")}"/>
+		<mx:Text id="_PaymentCommodityWindow_Text3" fontSize="14" textAlign="left" text="{Utils.i18n("generalRemaining") + "：" + _balanceLabel}"/>
+	</mx:HBox>
+	<mx:Canvas id="_PaymentCommodityWindow_Canvas1" width="100%" height="100%" label="{Utils.i18n("paymentCommodity")}">
+		<mx:Box id="_PaymentCommodityWindow_Box1" x="WINDOW_X + 20" y="WINDOW_Y + 60">
+			<mx:DataGrid id="commodity_data_list" rowCount="14" rowHeight="26" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_PaymentCommodityWindow_DataGridColumn1_i(), _PaymentCommodityWindow_DataGridColumn2_i(), _PaymentCommodityWindow_DataGridColumn3_i(), _PaymentCommodityWindow_DataGridColumn4_i(), _PaymentCommodityWindow_DataGridColumn5_i(), _PaymentCommodityWindow_DataGridColumn6_i()]}" dataProvider='{_paymentCommodities}' width="WINDOW_WD - 40"/>
+		</mx:Box>
+	</mx:Canvas>
+	<mx:Image id="_PaymentCommodityWindow_Image2" click="{closeWindow();}" x="BUTTON_X" y="BUTTON_Y" source="{_swf_close}"/>
+	<mx:Image id="_PaymentCommodityWindow_Image3" click="{closeWindow();}" x="WINDOW_X + WINDOW_WD - 25" y="WINDOW_Y" source="{_swf_close_window}"/>
+
+</mx:PopupWindow>

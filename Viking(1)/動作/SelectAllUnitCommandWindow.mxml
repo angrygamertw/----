@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{addSwf();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  EmbedSwfMaxUnitNormal:Class;
+        private var  EmbedSwfSleepUnit:Class;
+        private var  EmbedSwfMaxUnitSpecial:Class;
+        public static const  SELECT_MAX_UNIT_INCREASE_1:String = NAME + "selectMaxUnitIncrease1";
+        public static const  SELECT_MAX_UNIT_INCREASE_5:String = NAME + "selectMaxUnitIncrease5";
+        public static const  NAME:String = "paymentTypeSelectWindow";
+        public static const  SELECT_ALL_SLEEP_UNIT:String = NAME + "selectAllSleepUnit";
+
+
+        public function addSwf() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_400x270");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_back");
+            return;
+        }// end function
+
+        public function close() : void
+        {
+            onClose();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas>
+		<mx:Image id="_SelectAllUnitCommandWindow_Image1" source="{_swf_window}"/>
+		<mx:Text text="式姫一覧" x="335" y="147" styleName="PanelBaseTitle"/>
+		<mx:HBox x="190" y="185" width="400">
+			<mx:Canvas height="240" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+				<mx:Image id="_SelectAllUnitCommandWindow_Image2" x="30" y="10" click="{sendEvent(SELECT_MAX_UNIT_INCREASE_1);}" source="{_swf_max_unit_1}"/>
+				<mx:Text text="式姫枠追加" x="16" y="70" styleName="BuildingName"/>
+				<mx:Image source="_embed_mxml__images_icon_power_png_227571469" x="0" y="90"/>
+				<mx:TextArea id="_SelectAllUnitCommandWindow_TextArea1" x="15" y="90" width="110" height="100" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text="250神力を消費" + "\r" + "して式姫枠を１枠" + "\r" + "増やします。" + "\r" + "（上限150枠）"/>
+			</mx:Canvas>
+			<mx:Canvas height="240" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+				<mx:Image id="_SelectAllUnitCommandWindow_Image4" x="30" y="10" click="{sendEvent(SELECT_MAX_UNIT_INCREASE_5);}" source="{_swf_max_unit_2}"/>
+				<mx:Text text="式姫枠追加" x="16" y="70" styleName="BuildingName"/>
+				<mx:Image source="_embed_mxml__images_icon_power_png_227571469" x="0" y="90"/>
+				<mx:TextArea id="_SelectAllUnitCommandWindow_TextArea2" x="15" y="90" width="110" height="100" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text="1000神力を消費" + "\r" + "して式姫枠を５枠" + "\r" + "増やします。" + "\r" + "（上限150枠）"/>
+			</mx:Canvas>
+			<mx:Canvas height="240" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+				<mx:Image id="_SelectAllUnitCommandWindow_Image6" x="20" y="10" click="{sendEvent(SELECT_ALL_SLEEP_UNIT);}" source="{_swf_sleep}"/>
+				<mx:Text text="おやすみ部屋" x="6" y="70" styleName="BuildingName"/>
+				<mx:TextArea id="_SelectAllUnitCommandWindow_TextArea3" x="0" y="90" width="120" height="100" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text="おやすみ部屋へ" + "\r" + "移動します。"/>
+			</mx:Canvas>
+		</mx:HBox>
+		<mx:Image id="_SelectAllUnitCommandWindow_Image7" x="325" y="370" click="{close();}" source="{_swf_close}"/>
+	</mx:Canvas>
+
+</mx:PopupWindow>

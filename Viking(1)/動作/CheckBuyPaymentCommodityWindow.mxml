@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private const  TYPE_LABELS:Array;
+        private const  PROPERTIES:Array;
+        public static const  BUY_PAYMENT_COMMODITY:String = "CheckUnionWindow/buyPaymentCommodity";
+
+
+        public function setbuyData(param1:Object, param2:int) : void
+        {
+            _buyData = param1;
+            _typeLabel = TYPE_LABELS[(param2 - 1)];
+            _property = PROPERTIES[(param2 - 1)];
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_300x200");
+            MovieClip(Loader(_swf_buy.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_back.getChildAt(0)).content).gotoAndPlay("button_no");
+            return;
+        }// end function
+
+        public function throwEvent(param1:String) : void
+        {
+            sendPopupEvent(param1, _buyData.masterId);
+            onClose();
+            return;
+        }// end function
+
+        public function getBuyDataLabel(param1:String) : String
+        {
+            return buyData && buyData[param1] ? (buyData[param1]) : ("");
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_CheckBuyPaymentCommodityWindow_Image1" source="{_swf_window}"/>
+	<mx:VBox x="247" y="225" verticalGap="3">
+		<mx:HBox>
+			<mx:Label id="_CheckBuyPaymentCommodityWindow_Label1" width="260" height="25" fontSize="14" textAlign="center" text="{getBuyDataLabel("nameLabel") + "" + getBuyDataLabel("quantity") + "" + Utils.i18n("localize37") + "、"}"/>
+		</mx:HBox>
+		<mx:HBox>
+			<mx:Label id="_CheckBuyPaymentCommodityWindow_Label2" width="260" height="30" fontSize="14" textAlign="center" text="{Utils.i18n("buyPaymentCommodityConfirm", getBuyDataLabel(_property), _typeLabel)}"/>
+		</mx:HBox>
+		<mx:HBox>
+			<mx:Label id="_CheckBuyPaymentCommodityWindow_Label3" width="260" height="30" fontSize="14" textAlign="center" text="{Utils.i18n("normalSummonCreateConfirm3")}"/>
+		</mx:HBox>
+		<mx:Spacer height="10"/>
+		<mx:HBox>
+			<mx:Spacer width="5"/>
+			<mx:Image id="_CheckBuyPaymentCommodityWindow_Image2" click="{throwEvent(BUY_PAYMENT_COMMODITY);}" source="{_swf_buy}"/>
+			<mx:Spacer width="120"/>
+			<mx:Image id="_CheckBuyPaymentCommodityWindow_Image3" click="{onClose();}" source="{_swf_back}"/>
+		</mx:HBox>
+	</mx:VBox>
+
+</mx:PopupWindow>

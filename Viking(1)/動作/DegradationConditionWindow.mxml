@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 99030nameLabels="new ArrayCollection()">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.vo.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  _production:ProductionVO;
+
+
+        public function _DegradationConditionWindow_ClassFactory1_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = QuantityLabelRenderer;
+            return _loc_1;
+        }// end function
+
+        public function adjustLayout(param1:Boolean) : void
+        {
+            if (param1)
+            {
+                bigbox.styleName = "CrystalQtyBg";
+                closeButton.y = 240;
+                dataList.height = 144;
+            }
+            else
+            {
+                bigbox.styleName = "ProcuctionConditionsBg";
+                closeButton.y = 210;
+                dataList.height = 116;
+            }
+            return;
+        }// end function
+
+        public function _DegradationConditionWindow_DataGridColumn1_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "vo.nameLabel";
+            _loc_1.headerText = "材料";
+            _loc_1.width = 160;
+            return _loc_1;
+        }// end function
+
+        public function onClose() : void
+        {
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function _DegradationConditionWindow_DataGridColumn2_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "quantity";
+            _loc_1.headerText = "所持数/入手個数";
+            _loc_1.width = 115;
+            _loc_1.itemRenderer = _DegradationConditionWindow_ClassFactory1_c();
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Box id="bigbox" width="330" height="270" styleName="ProcuctionConditionsBg">
+		<mx:Canvas>
+			<mx:Label id="_DegradationConditionWindow_Label1" styleName="ItemName" x="30" y="5" text="{production.masterVO.product.nameLabel}"/>
+			<mx:Label text="分解するアイテムを持っていません" x="100" y="25" color="#00e60012" fontWeight="bold"/>
+			<mx:DataGrid id="dataList" styleName="ProductionGrid" x="30" y="45" height="130" headerHeight="29" rowHeight="28" sortableColumns="false" columns="{[_DegradationConditionWindow_DataGridColumn1_c(), _DegradationConditionWindow_DataGridColumn2_c()]}" verticalAlign="middle" dataProvider='{requirements}'/>
+			<mx:Label id="_DegradationConditionWindow_Label3" styleName="ProductionQtyText" x="45" y="200" text="{合成成功確率 " + production.successRate + "%}" visible="{production.isCrystal}"/>
+			<mx:Button id="closeButton" label="" styleName="CancelCanaButton" y="210" x="122" buttonMode="true" click="{onClose();}"/>
+		</mx:Canvas>
+	</mx:Box>
+
+</mx:Canvas>

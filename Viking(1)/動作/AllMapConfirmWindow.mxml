@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  _detail:Object;
+        public static const  CONFIRMED:String = "AllMapComfirmWindow/confirmed";
+
+
+        public function init() : void
+        {
+            MovieClip(Loader(_windowBg.getChildAt(0)).content).gotoAndPlay("center_300x200");
+            MovieClip(Loader(_buttonConfirm.getChildAt(0)).content).gotoAndStop(0);
+            MovieClip(Loader(_buttonConfirm.getChildAt(0)).content).gotoAndPlay("button_decide");
+            MovieClip(Loader(_buttonCancel.getChildAt(0)).content).gotoAndStop(0);
+            MovieClip(Loader(_buttonCancel.getChildAt(0)).content).gotoAndPlay("button_cancel");
+            return;
+        }// end function
+
+        public function _AllMapConfirmWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _AllMapConfirmWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "materials";
+            BindingManager.executeBindings(this, "_AllMapConfirmWindow_DataGridColumn1", _AllMapConfirmWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _AllMapConfirmWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _AllMapConfirmWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "terms";
+            BindingManager.executeBindings(this, "_AllMapConfirmWindow_DataGridColumn3", _AllMapConfirmWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function onCancel() : void
+        {
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function onConfirm() : void
+        {
+            dispatchEvent(new Event(CONFIRMED));
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function _AllMapConfirmWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _AllMapConfirmWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "unit.name";
+            _loc_1.itemRenderer = _AllMapConfirmWindow_ClassFactory1_c();
+            BindingManager.executeBindings(this, "_AllMapConfirmWindow_DataGridColumn2", _AllMapConfirmWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _AllMapConfirmWindow_ClassFactory1_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = AllMapUnitNameRenderer;
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_AllMapConfirmWindow_Image1" source="{_windowBg}"/>
+	<mx:Text id="_AllMapConfirmWindow_Text1" styleName="PanelBaseTitle" x="0" y="182" width="760" text="_title"/>
+	<mx:Text id="_AllMapConfirmWindow_Text2" styleName="DialogText" x="255" y="206" text="{Utils.i18n("allMapConfirmConf", _commandName)}"/>
+	<mx:DataGrid id="unit_building" styleName="UnitBuilding" x="255" y="228" width="250" rowHeight="75" rowCount="1" selectable="false" sortableColumns="false" columns="{[_AllMapConfirmWindow_DataGridColumn1_i(), _AllMapConfirmWindow_DataGridColumn2_i(), _AllMapConfirmWindow_DataGridColumn3_i()]}" dataProvider='{details}'/>
+	<mx:HBox y="334" horizontalCenter="0" horizontalGap="0">
+		<mx:Image id="_AllMapConfirmWindow_Image2" width="110" click="{onConfirm();}" source="{_buttonConfirm}"/>
+		<mx:Image id="_AllMapConfirmWindow_Image3" width="110" click="{onCancel();}" source="{_buttonCancel}"/>
+	</mx:HBox>
+
+</mx:Canvas>

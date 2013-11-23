@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  factionId:int = 0;
+        public static const  SELECT_FACTION:String = "factionCheckWindow/selectFaction";
+
+
+        public function closeWindow() : void
+        {
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function setdata() : void
+        {
+            return;
+        }// end function
+
+        public function getFactionName() : String
+        {
+            return FACTION_LABELS[factionId];
+        }// end function
+
+        public function init(param1:int) : void
+        {
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_no");
+            MovieClip(Loader(_swf_dismiss.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_dismiss.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_bg.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_bg.getChildAt(0)).content).gotoAndPlay("center_300x200");
+            factionId = param1;
+            return;
+        }// end function
+
+        public function sendEvent(param1:String) : void
+        {
+            closeWindow();
+            this.dispatchEvent(new Event(param1));
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas/>
+	<mx:Image id="_FactionCheckWindow_Image1" source="{_swf_bg}"/>
+	<mx:Box id="dismissBox" width="100%" height="100%" visible="true">
+		<mx:Canvas>
+			<mx:Text id="_FactionCheckWindow_Text1" width="200" x="340" y="180" fontSize="16" fontWeight="bold" color="#00eeeeee" text="{Utils.i18n("factionCheckTitle")}"/>
+			<mx:Text id="_FactionCheckWindow_Text2" width="200" x="280" y="220" fontSize="14" text="{Utils.i18n("factionCheckConfirmation", getFactionName())}"/>
+			<mx:Image id="_FactionCheckWindow_Image2" x="380" y="315" click="{closeWindow();}" source="{_swf_close}"/>
+			<mx:Image id="_FactionCheckWindow_Image3" x="260" y="315" click="{sendEvent(SELECT_FACTION);}" source="{_swf_dismiss}"/>
+		</mx:Canvas>
+	</mx:Box>
+
+</mx:Canvas>

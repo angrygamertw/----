@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="560" height="351" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public var  raidSelectTargetWindow:RaidSelectTargetWindow;
+        private var  _expiredAt:String = "";
+        private var  confirmRaidProtectionWindow:ConfirmRaidProtectionWindow;
+        public var  raidReportDitail:RaidReportDitail;
+        public var  raidReportWindow:RaidReportWindow;
+        public static const  START_RAID:String = "startRaid";
+        public static const  LOAD_TARGET:String = "loadTarget";
+        public static const  LOAD_REPORT:String = "loadReport";
+
+
+        public function closeWindow() : void
+        {
+            onClose();
+            return;
+        }// end function
+
+        public function startRaid(event:Event) : void
+        {
+            sendEvent(START_RAID);
+            onClose();
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            confirmRaidProtectionWindow.addEventListener(ConfirmRaidProtectionWindow.CONFIRMED, function (event:Event) : void
+            {
+                sendEvent(Viking.PROTECT_FROM_RAID);
+                return;
+            }// end function
+            );
+            return;
+        }// end function
+
+        public function loadReport() : void
+        {
+            sendEvent(LOAD_REPORT);
+            return;
+        }// end function
+
+        public function selectTarget() : void
+        {
+            if (!raidLimitation)
+            {
+                sendEvent(LOAD_TARGET);
+                raidSelectTargetWindow.init();
+            }
+            return;
+        }// end function
+
+        public function setRaidTarget() : void
+        {
+            if (raidSelectTargetWindow.loadCount == 2)
+            {
+                this.popupWindow(raidSelectTargetWindow, false);
+                raidSelectTargetWindow.addEventListener(RaidSelectTargetWindow.TARGET_SELECT, startRaid);
+            }
+            return;
+        }// end function
+
+        public function showConfirmWindow() : void
+        {
+            popupWindow(confirmRaidProtectionWindow);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Text id="protectionExpirationLabel" x="200" y="70" width="300" height="30" fontSize="13" color="#00ff0000" visible="{!_player.raidProtectionExpired}" text="{Utils.i18n("localize193") + ":" + _player.raidProtectionExpiredAtLabel + "" + Utils.i18n("localize194")}"/>
+	<mx:Text id="_RaidCommandWindow_Text2" x="137" y="105" width="400" height="100" fontSize="13" color="#00000000" text="{Utils.i18n("localize195") + "" + "\n" + "" + Utils.i18n("localize196") + "" + "\n" + "{Utils.i18n(\'localize197\')"}"/>
+	<mx:Text id="raidLimitationExpirationLabel" x="137" y="153" width="400" height="30" fontSize="13" color="#00ff0000" visible="{!_player.raidLimitationExpired}" text="{Utils.i18n("localize198") + ":" + _player.raidLimitationExpiredAtLabel}"/>
+	<mx:Text id="_RaidCommandWindow_Text4" x="137" y="230" width="400" height="100" fontSize="13" color="#00000000" text="{Utils.i18n("localize199") + "" + "\n" + "" + Utils.i18n("localize200")}"/>
+	<mx:HBox width="100%" y="300">
+		<mx:Spacer width="100%"/>
+		<mx:Button id="cancel_button" styleName="CancelCanaButton" buttonMode="true" click="{onClose();}"/>
+		<mx:Spacer width="100%"/>
+	</mx:HBox>
+
+</mx:PopupWindow>

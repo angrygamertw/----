@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="920" height="560" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  questConfirmWindow:QuestConfirmWindow;
+        private var  primaryRemark:Object;
+        private var  _questData:Object;
+        private var  _playerRank:Object;
+        private var  primaryRemarkQuestNon:Object;
+        private var  _factionId:int = 0;
+        public static const  CASE_BY_CLIENT_MARIA:String = "caseByClientMaria";
+        private static const  WINDOW_X:int = 350;
+        private static const  BUTTON_X:int = 490;
+        private static const  BUTTON_Y:int = 490;
+        public static const  ACCEPT_INTO_MARIA:String = "acceptIntoMaria";
+        private static const  WINDOW_Y:int = 160;
+        public static const  ACCEPT_CANCEL_INTO_MARIA:String = "acceptCancelIntoMaria";
+        public static const  REMOVE_SWF:String = "removeSWF";
+        public static const  QUEST_ACCEPT_FINISH:String = "questAcceptFinish";
+        public static const  BUTTON_ENABLE:String = "buttonEnable";
+        public static const  CHANGE_CHARACTER:String = "changeCharacter";
+        private static const  WINDOW_HT:int = 380;
+        private static const  WINDOW_WD:int = 390;
+
+
+        public function onAcceptConfirm(param1:int) : void
+        {
+            questConfirmWindow.onAcceptConfirm(param1);
+            return;
+        }// end function
+
+        public function changeChara(param1:Object) : void
+        {
+            windowStage.visible = false;
+            _questData = param1;
+            if (param1.clientType != "npc_01.png")
+            {
+                dispatchEvent(new Event(CHANGE_CHARACTER));
+            }
+            else
+            {
+                questConfirmWindow.init("questAccept", _questData);
+                questConfirmWindow.visible = true;
+            }
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            questConfirmWindow.visible = false;
+            ConfirmCanvas.addChild(questConfirmWindow);
+            questConfirmWindow.addEventListener(QuestConfirmWindow.QUEST_ACCEPT, handleEvent);
+            questConfirmWindow.addEventListener(QuestConfirmWindow.QUEST_ACCEPT_CANCEL, handleEvent);
+            questConfirmWindow.addEventListener(QuestConfirmWindow.QUEST_ACCEPT_FINISH, handleEvent);
+            questConfirmWindow.addEventListener(QuestConfirmWindow.QUEST_ACCEPT_CANCEL_CASE_BY_MARIA_QUEST, handleEvent);
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("right_390x380");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            Loader(_swf_tab.getChildAt(0)).content.addEventListener("TAB_QUEST_BE_PROMOTED", function (event:Event) : void
+            {
+                questListStack.selectedIndex = 0;
+                return;
+            }// end function
+            );
+            Loader(_swf_tab.getChildAt(0)).content.addEventListener("TAB_QUEST_SUBJUGATION", function (event:Event) : void
+            {
+                questListStack.selectedIndex = 1;
+                return;
+            }// end function
+            );
+            Loader(_swf_tab.getChildAt(0)).content.addEventListener("TAB_QUEST_DELIVER", function (event:Event) : void
+            {
+                questListStack.selectedIndex = 2;
+                return;
+            }// end function
+            );
+            Loader(_swf_tab.getChildAt(0)).content.addEventListener("TAB_QUEST_DAILY", function (event:Event) : void
+            {
+                questListStack.selectedIndex = 3;
+                return;
+            }// end function
+            );
+            MovieClip(Loader(_swf_tab.getChildAt(0)).content).gotoAndPlay("tab_quest_be_promoted");
+            return;
+        }// end function
+
+        public function _QuestAcceptWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _QuestAcceptWindow_DataGridColumn3 = _loc_1;
+            BindingManager.executeBindings(this, "_QuestAcceptWindow_DataGridColumn3", _QuestAcceptWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _QuestAcceptWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            questItemRenderer = _loc_1;
+            _loc_1.generator = QuestAcceptWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function handleEvent(event:Event) : void
+        {
+            switch(event.type)
+            {
+                case QuestConfirmWindow.QUEST_ACCEPT:
+                {
+                    dispatchEvent(new Event(ACCEPT_INTO_MARIA));
+                    break;
+                }
+                case QuestConfirmWindow.QUEST_ACCEPT_CANCEL:
+                {
+                    dispatchEvent(new Event(ACCEPT_CANCEL_INTO_MARIA));
+                    break;
+                }
+                case QuestConfirmWindow.QUEST_ACCEPT_FINISH:
+                {
+                    dispatchEvent(new Event(REMOVE_SWF));
+                    dispatchEvent(new Event(QUEST_ACCEPT_FINISH));
+                    onClose();
+                    break;
+                }
+                case QuestConfirmWindow.QUEST_ACCEPT_CANCEL_CASE_BY_MARIA_QUEST:
+                {
+                    windowStage.visible = true;
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function onClose() : void
+        {
+            this.visible = false;
+            dispatchEvent(new Event(BUTTON_ENABLE));
+            dispatchEvent(new Event(REMOVE_SWF));
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_close_window.getChildAt(0)).content).gotoAndPlay(1);
+            return;
+        }// end function
+
+        public function _QuestAcceptWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _QuestAcceptWindow_DataGridColumn2 = _loc_1;
+            BindingManager.executeBindings(this, "_QuestAcceptWindow_DataGridColumn2", _QuestAcceptWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function onVisible() : void
+        {
+            windowStage.visible = true;
+            return;
+        }// end function
+
+        public function setQuest(param1:Array, param2:Array) : void
+        {
+            var obj:Object;
+            var questList:* = param1;
+            var completeQuests:* = param2;
+            var quests:* = questList.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                if (param1.upperLimitRank && param1.upperLimitRank <= _playerRank)
+                {
+                    return false;
+                }
+                if (param1.rank <= _playerRank)
+                {
+                    if (param1.parentId == 0 || completeQuests.indexOf(param1.parentId) >= 0)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }// end function
+            );
+            var _loc_4:int = 0;
+            var _loc_5:* = completeQuests;
+            while (_loc_5 in _loc_4)
+            {
+                
+                obj = _loc_5[_loc_4];
+                quests = quests.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                if (param1.repeatable == 1)
+                {
+                    return true;
+                }
+                return param1.questId != obj;
+            }// end function
+            );
+            }
+            quests = quests.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                return param1.description != null;
+            }// end function
+            );
+            if (quests.length > 0)
+            {
+                mariaComment = primaryRemark[_factionId];
+            }
+            else
+            {
+                mariaComment = primaryRemarkQuestNon[_factionId];
+            }
+            _subjugationQuests = new ArrayCollection(quests.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                return param1.questType == 1;
+            }// end function
+            ));
+            _deliveryQuests = new ArrayCollection(quests.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                return param1.questType == 2;
+            }// end function
+            ));
+            _purificationQuests = new ArrayCollection(quests.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                return param1.questType == 3;
+            }// end function
+            ));
+            _dailyQuests = new ArrayCollection(quests.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                return param1.questType == 4;
+            }// end function
+            ));
+            return;
+        }// end function
+
+        public function _QuestAcceptWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _QuestAcceptWindow_DataGridColumn1 = _loc_1;
+            BindingManager.executeBindings(this, "_QuestAcceptWindow_DataGridColumn1", _QuestAcceptWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function componrntToolTip(param1:int) : String
+        {
+            if (param1 == 0)
+            {
+                return Utils.i18n("generalRequest");
+            }
+            if (param1 == 1)
+            {
+                return Utils.i18n("generalShowDetail");
+            }
+            return Utils.i18n("checkQuestCompensation");
+        }// end function
+
+        public function getClient(param1:Object) : String
+        {
+            var _loc_4:RegExp = null;
+            var _loc_2:* = new String();
+            var _loc_3:int = 0;
+            while (_loc_3 < param1.reward.length)
+            {
+                
+                if (param1.reward[_loc_3])
+                {
+                    _loc_2 = _loc_2 + param1.reward[_loc_3];
+                }
+                _loc_3++;
+            }
+            if (_loc_2.charAt(0) == "$")
+            {
+                _loc_4 = /\$""\$/;
+                _loc_2 = _loc_2.replace(_loc_4, "");
+                _loc_2 = Utils.i18n("generalMoney") + ":" + _loc_2;
+                return _loc_2;
+            }
+            return _loc_2;
+        }// end function
+
+        public function questDetail() : void
+        {
+            questConfirmWindow.init("questAccept", _questData);
+            questConfirmWindow.visible = true;
+            return;
+        }// end function
+
+        public function getQuestName(param1:Object) : String
+        {
+            return param1.questName;
+        }// end function
+
+        public function _QuestAcceptWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _QuestAcceptWindow_DataGridColumn4 = _loc_1;
+            BindingManager.executeBindings(this, "_QuestAcceptWindow_DataGridColumn4", _QuestAcceptWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Canvas id="windowStage">
+		<mx:Image id="_QuestAcceptWindow_Image1" source="{_swf_window}"/>
+		<mx:Text id="_QuestAcceptWindow_Text1" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("questAcceptQuestList")}"/>
+		<mx:Image id="_QuestAcceptWindow_Image2" click="{onClose();}" x="WINDOW_X + WINDOW_WD - 25" y="WINDOW_Y" source="{_swf_close_window}"/>
+		<mx:Text id="_QuestAcceptWindow_Text2" y="90" fontSize="14" x="WINDOW_X + 20" text="mariaComment"/>
+		<mx:Image id="_QuestAcceptWindow_Image3" x="WINDOW_X + 20" y="WINDOW_Y + 35" source="{_swf_tab}"/>
+		<mx:ViewStack id="questListStack">
+			<mx:Canvas id="_QuestAcceptWindow_Canvas4" label="{Utils.i18n("rankUpCheckTitle")}">
+				<mx:DataGrid id="_QuestAcceptWindow_DataGrid1" y="223" height="257" rowCount="5" styleName="DataGridBase" sortableColumns="false" showHeaders="false" selectable="false" columns="{[_QuestAcceptWindow_DataGridColumn1_i()]}" dataProvider='{_subjugationQuests}' x="WINDOW_X + 20" width="WINDOW_WD - 40"/>
+			</mx:Canvas>
+			<mx:Canvas id="_QuestAcceptWindow_Canvas5" label="{Utils.i18n("generalSubjugation")}">
+				<mx:DataGrid id="_QuestAcceptWindow_DataGrid2" y="223" height="257" rowCount="5" styleName="DataGridBase" sortableColumns="false" showHeaders="false" selectable="false" columns="{[_QuestAcceptWindow_DataGridColumn2_i()]}" dataProvider='{_deliveryQuests}' x="WINDOW_X + 20" width="WINDOW_WD - 40"/>
+			</mx:Canvas>
+			<mx:Canvas id="_QuestAcceptWindow_Canvas6" label="{Utils.i18n("generalDelivery")}">
+				<mx:DataGrid id="_QuestAcceptWindow_DataGrid3" y="223" height="257" rowCount="5" styleName="DataGridBase" sortableColumns="false" showHeaders="false" selectable="false" columns="{[_QuestAcceptWindow_DataGridColumn3_i()]}" dataProvider='{_purificationQuests}' x="WINDOW_X + 20" width="WINDOW_WD - 40"/>
+			</mx:Canvas>
+			<mx:Canvas label="日替り">
+				<mx:DataGrid id="_QuestAcceptWindow_DataGrid4" y="223" height="257" rowCount="5" styleName="DataGridBase" sortableColumns="false" showHeaders="false" selectable="false" columns="{[_QuestAcceptWindow_DataGridColumn4_i()]}" dataProvider='{_dailyQuests}' x="WINDOW_X + 20" width="WINDOW_WD - 40"/>
+			</mx:Canvas>
+		</mx:ViewStack>
+		<mx:Image id="_QuestAcceptWindow_Image4" click="{onClose();}" x="BUTTON_X" y="BUTTON_Y" source="{_swf_close}"/>
+	</mx:Canvas>
+	<mx:Canvas id="ConfirmCanvas"/>
+
+</mx:Canvas>

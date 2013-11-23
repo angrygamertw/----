@@ -1,0 +1,589 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.vo.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _chatText:String;
+        private var  _location:String;
+        private var  _chatWindowExpansion:Boolean = false;
+        public static const  GUILD_CHAT_UPDATE:String = "guildChatUpdate";
+        public static const  GUILD_CHAT_UPDATE_BY_WORLD:String = "guildChatUpdateByWorld";
+        private static const  CHAT_ERROR_MESSAGE:String = Utils.i18n("guildChatSendError");
+        public static const  CHAT_UPDATE:String = "chatUpdate";
+        public static const  CHANGE_SIZE:String = "changeSize";
+        public static const  CHAT_LOG:String = "chatLog";
+
+
+        public function _GuildChatWindow_DataGridColumn2_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "playerName";
+            _loc_1.width = 260;
+            _loc_1.setStyle("color", 2966695);
+            return _loc_1;
+        }// end function
+
+        public function _GuildChatWindow_ClassFactory5_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            smallChatRenderer = _loc_1;
+            _loc_1.generator = GuildChatWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _GuildChatWindow_DataGridColumn12_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "createdAtLabel";
+            _loc_1.width = 190;
+            _loc_1.setStyle("color", 12279952);
+            return _loc_1;
+        }// end function
+
+        public function _GuildChatWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildChatWindow_DataGridColumn1 = _loc_1;
+            _loc_1.wordWrap = true;
+            BindingManager.executeBindings(this, "_GuildChatWindow_DataGridColumn1", _GuildChatWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _GuildChatWindow_DataGridColumn9_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildChatWindow_DataGridColumn9 = _loc_1;
+            _loc_1.wordWrap = true;
+            BindingManager.executeBindings(this, "_GuildChatWindow_DataGridColumn9", _GuildChatWindow_DataGridColumn9);
+            return _loc_1;
+        }// end function
+
+        public function _GuildChatWindow_ClassFactory4_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = DataGridRowColor;
+            return _loc_1;
+        }// end function
+
+        public function _GuildChatWindow_DataGridColumn11_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "body";
+            _loc_1.width = 700;
+            _loc_1.itemRenderer = _GuildChatWindow_ClassFactory3_c();
+            return _loc_1;
+        }// end function
+
+        public function setGuildChatText(param1:Array) : void
+        {
+            var _loc_2:Object = null;
+            if (param1[0])
+            {
+                _oldChatText = new ArrayCollection();
+                for each (_loc_2 in param1)
+                {
+                    
+                    if (_oldChatText.length == 0 || _oldChatText[(_oldChatText.length - 1)].id < _loc_2.id)
+                    {
+                        _oldChatText.addItem(_loc_2);
+                    }
+                }
+                oldChatTextFilterRefresh();
+            }
+            scrollDown();
+            return;
+        }// end function
+
+        public function setScaleButtonStyle() : void
+        {
+            scaleButtonStyleName = chatWindowExpansion ? ("chatWindowShrinkBtn") : ("chatWindowExpandBtn");
+            return;
+        }// end function
+
+        public function _GuildChatWindow_DataGridColumn8_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "createdAtLabel";
+            _loc_1.width = 190;
+            _loc_1.setStyle("color", 12279952);
+            return _loc_1;
+        }// end function
+
+        public function refreshChatText() : void
+        {
+            focusOnInputText();
+            oldChatTextFilterRefresh();
+            return;
+        }// end function
+
+        public function _GuildChatWindow_ClassFactory3_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = DataGridRowColor;
+            return _loc_1;
+        }// end function
+
+        public function _GuildChatWindow_DataGridColumn10_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "playerName";
+            _loc_1.width = 260;
+            _loc_1.setStyle("color", 2966695);
+            return _loc_1;
+        }// end function
+
+        public function _GuildChatWindow_DataGridColumn7_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "body";
+            _loc_1.width = 700;
+            _loc_1.itemRenderer = _GuildChatWindow_ClassFactory2_c();
+            return _loc_1;
+        }// end function
+
+        public function _GuildChatWindow_ClassFactory2_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = DataGridRowColor;
+            return _loc_1;
+        }// end function
+
+        public function focusOnInputText() : void
+        {
+            input.imeMode = "JAPANESE_HIRAGANA";
+            if (input.text == CHAT_ERROR_MESSAGE)
+            {
+                input.text = "";
+            }
+            input.setStyle("color", 734012);
+            input.addEventListener(FlexEvent.ENTER, onChat);
+            input.editable = true;
+            enterButton.visible = true;
+            enterButton.addEventListener(MouseEvent.CLICK, onChat);
+            return;
+        }// end function
+
+        public function scrollDown() : void
+        {
+            var _loc_1:Object = null;
+            var _loc_2:Object = null;
+            var _loc_3:int = 0;
+            while (_loc_3 < 4)
+            {
+                
+                switch(_loc_3)
+                {
+                    case 2:
+                    {
+                        _loc_1 = guild_chat_grid_large_faction;
+                        _loc_2 = guild_chat_grid_small_faction;
+                        break;
+                    }
+                    case 1:
+                    {
+                        _loc_1 = guild_chat_grid_large_all;
+                        _loc_2 = guild_chat_grid_small_all;
+                        break;
+                    }
+                    case 3:
+                    {
+                        _loc_1 = guild_chat_grid_large_sys;
+                        _loc_2 = guild_chat_grid_small_sys;
+                        break;
+                    }
+                    case 0:
+                    default:
+                    {
+                        _loc_1 = guild_chat_grid_large;
+                        _loc_2 = guild_chat_grid_small;
+                        break;
+                        break;
+                    }
+                }
+                _loc_1.scrollToIndex(_loc_1.dataProvider.length);
+                _loc_2.scrollToIndex(_loc_2.dataProvider.length);
+                _loc_3++;
+            }
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            return;
+        }// end function
+
+        public function _GuildChatWindow_DataGridColumn6_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "playerName";
+            _loc_1.width = 260;
+            _loc_1.setStyle("color", 2966695);
+            return _loc_1;
+        }// end function
+
+        public function onChangeSize() : void
+        {
+            changeSize();
+            sendEvent(CHANGE_SIZE);
+            return;
+        }// end function
+
+        public function _GuildChatWindow_ClassFactory1_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = DataGridRowColor;
+            return _loc_1;
+        }// end function
+
+        public function _GuildChatWindow_DataGridColumn16_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "createdAtLabel";
+            _loc_1.width = 190;
+            _loc_1.setStyle("color", 12279952);
+            return _loc_1;
+        }// end function
+
+        public function oldChatTextFilterSet(param1:Object) : Boolean
+        {
+            var _loc_2:Boolean = false;
+            switch(this.chatsViewStack.selectedIndex)
+            {
+                case 0:
+                {
+                    if (param1.chatType == GuildChatVO.CHAT_TYPE_GUILD || param1.chatType == GuildChatVO.CHAT_TYPE_SYSTEM_FOR_GUILD)
+                    {
+                        _loc_2 = true;
+                    }
+                    break;
+                }
+                case 1:
+                {
+                    _loc_2 = true;
+                    break;
+                }
+                case 2:
+                {
+                    if (param1.chatType == GuildChatVO.CHAT_TYPE_SYSTEM_FOR_ALL)
+                    {
+                        _loc_2 = true;
+                    }
+                    break;
+                }
+                case 3:
+                {
+                    if (param1.chatType == GuildChatVO.CHAT_TYPE_FACTION || param1.chatType == GuildChatVO.CHAT_TYPE_SYSTEM_FOR_FACTION)
+                    {
+                        _loc_2 = true;
+                    }
+                    break;
+                }
+                default:
+                {
+                    break;
+                    break;
+                }
+            }
+            return _loc_2;
+        }// end function
+
+        public function _GuildChatWindow_DataGridColumn5_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildChatWindow_DataGridColumn5 = _loc_1;
+            _loc_1.wordWrap = true;
+            BindingManager.executeBindings(this, "_GuildChatWindow_DataGridColumn5", _GuildChatWindow_DataGridColumn5);
+            return _loc_1;
+        }// end function
+
+        public function handleUpdateComplete(event:Event) : void
+        {
+            scrollDown();
+            return;
+        }// end function
+
+        public function _GuildChatWindow_ClassFactory8_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            smallChatRendererAll = _loc_1;
+            _loc_1.generator = GuildChatWindow_inlineComponent4;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _GuildChatWindow_DataGridColumn15_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "body";
+            _loc_1.width = 700;
+            _loc_1.itemRenderer = _GuildChatWindow_ClassFactory4_c();
+            return _loc_1;
+        }// end function
+
+        public function _GuildChatWindow_DataGridColumn4_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "createdAtLabel";
+            _loc_1.width = 190;
+            _loc_1.setStyle("color", 12279952);
+            return _loc_1;
+        }// end function
+
+        public function spaceCheck(param1:String) : Boolean
+        {
+            var _loc_2:* = param1.length;
+            var _loc_3:Array = [];
+            var _loc_4:int = 0;
+            while (_loc_4 < _loc_2)
+            {
+                
+                if (param1.charAt(_loc_4) != " " && param1.charAt(_loc_4) != "　")
+                {
+                    _loc_3.push(param1.charAt(_loc_4));
+                }
+                _loc_4++;
+            }
+            return _loc_3.length > 0;
+        }// end function
+
+        public function _GuildChatWindow_ClassFactory7_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            smallChatRendererSys = _loc_1;
+            _loc_1.generator = GuildChatWindow_inlineComponent3;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _GuildChatWindow_DataGridColumn14_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "playerName";
+            _loc_1.width = 260;
+            _loc_1.setStyle("color", 2966695);
+            return _loc_1;
+        }// end function
+
+        public function oldChatTextFilterRefresh() : void
+        {
+            if (_oldChatText)
+            {
+                _oldChatText.filterFunction = oldChatTextFilterSet;
+                _oldChatText.refresh();
+            }
+            return;
+        }// end function
+
+        public function _GuildChatWindow_DataGridColumn3_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "body";
+            _loc_1.width = 700;
+            _loc_1.itemRenderer = _GuildChatWindow_ClassFactory1_c();
+            return _loc_1;
+        }// end function
+
+        public function changeSize() : void
+        {
+            var _loc_1:Object = null;
+            var _loc_2:Object = null;
+            var _loc_3:Object = null;
+            var _loc_4:int = 0;
+            while (_loc_4 < 4)
+            {
+                
+                switch(_loc_4)
+                {
+                    case 2:
+                    {
+                        _loc_1 = guildChatViewStackFct;
+                        _loc_2 = guildChatBoxLargeFct;
+                        _loc_3 = guildChatBoxSmallFct;
+                        break;
+                    }
+                    case 1:
+                    {
+                        _loc_1 = guildChatViewStackAll;
+                        _loc_2 = guildChatBoxLargeAll;
+                        _loc_3 = guildChatBoxSmallAll;
+                        break;
+                    }
+                    case 3:
+                    {
+                        _loc_1 = guildChatViewStackSys;
+                        _loc_2 = guildChatBoxLargeSys;
+                        _loc_3 = guildChatBoxSmallSys;
+                        break;
+                    }
+                    case 0:
+                    default:
+                    {
+                        _loc_1 = guildChatViewStack;
+                        _loc_2 = guildChatBoxLarge;
+                        _loc_3 = guildChatBoxSmall;
+                        break;
+                        break;
+                    }
+                }
+                switch(_loc_1.selectedIndex)
+                {
+                    case 0:
+                    {
+                        var _loc_5:* = _loc_1;
+                        var _loc_6:* = _loc_1.selectedIndex + 1;
+                        _loc_5.selectedIndex = _loc_6;
+                        _chatWindowExpansion = true;
+                        input.width = 608;
+                        inputBox.y = 391;
+                        chatVBox.width = 613;
+                        chatVBox.height = 390;
+                        _loc_2.width = 613;
+                        _loc_2.height = 380;
+                        break;
+                    }
+                    case 1:
+                    default:
+                    {
+                        _loc_1.selectedIndex = 0;
+                        _chatWindowExpansion = false;
+                        input.width = 390;
+                        inputBox.y = 148;
+                        chatVBox.width = 415;
+                        chatVBox.height = 158;
+                        _loc_3.width = 395;
+                        _loc_3.height = 170;
+                        break;
+                        break;
+                    }
+                }
+                _loc_1.width = chatVBox.width;
+                _loc_1.height = chatVBox.height - 10;
+                _loc_4++;
+            }
+            setScaleButtonStyle();
+            scrollDown();
+            return;
+        }// end function
+
+        public function onChat(event:Event) : void
+        {
+            var _loc_2:* = new String();
+            if (input.text && spaceCheck(input.text))
+            {
+                switch(this.chatsViewStack.selectedIndex)
+                {
+                    case 3:
+                    {
+                        _loc_2 = GuildChatVO.CHAT_TYPE_FACTION.toString() + input.text;
+                        break;
+                    }
+                    case 0:
+                    {
+                        _loc_2 = GuildChatVO.CHAT_TYPE_GUILD.toString() + input.text;
+                        break;
+                    }
+                    default:
+                    {
+                        break;
+                    }
+                }
+                sendPopupEvent(eventName, _loc_2);
+                _chatText = _loc_2;
+            }
+            input.text = null;
+            scrollDown();
+            return;
+        }// end function
+
+        public function setGuildChatError() : void
+        {
+            input.removeEventListener(FlexEvent.ENTER, onChat);
+            enterButton.visible = false;
+            enterButton.removeEventListener(MouseEvent.CLICK, onChat);
+            input.editable = false;
+            input.setStyle("color", 11141120);
+            input.text = CHAT_ERROR_MESSAGE;
+            return;
+        }// end function
+
+        public function _GuildChatWindow_ClassFactory6_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            smallChatRendererFct = _loc_1;
+            _loc_1.generator = GuildChatWindow_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _GuildChatWindow_DataGridColumn13_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildChatWindow_DataGridColumn13 = _loc_1;
+            _loc_1.wordWrap = true;
+            BindingManager.executeBindings(this, "_GuildChatWindow_DataGridColumn13", _GuildChatWindow_DataGridColumn13);
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:VBox id="chatVBox" width="100%" height="143">
+		<mx:ViewStack id="chatsViewStack" width="100%" height="100%" change="{refreshChatText();}">
+			<mx:Canvas>
+				<mx:ViewStack id="guildChatViewStack" width="100%" height="100%" x="-1" y="0">
+					<mx:Canvas id="guildChatBoxSmall" label="Base">
+						<mx:DataGrid id="guild_chat_grid_small" height="100%" width="100%" styleName="DataGridBase" sortableColumns="false" showHeaders="false" selectable="false" variableRowHeight="true" wordWrap="true" columns="{[_GuildChatWindow_DataGridColumn1_i()]}" horizontalGridLines="false" backgroundAlpha="0" borderThickness="0" updateComplete="{handleUpdateComplete(event);}" dataProvider='{_oldChatText}'/>
+					</mx:Canvas>
+					<mx:Canvas id="guildChatBoxLarge" height="100%" width="100%" fontSize="14">
+						<mx:DataGrid id="guild_chat_grid_large" editable="false" width="100%" height="100%" styleName="InfoTxtBox" sortableColumns="false" showHeaders="false" wordWrap="true" variableRowHeight="true" selectable="false" columns="{[_GuildChatWindow_DataGridColumn2_c(), _GuildChatWindow_DataGridColumn3_c(), _GuildChatWindow_DataGridColumn4_c()]}" backgroundAlpha="0" verticalGridLines="false" horizontalGridLines="false" borderThickness="0" updateComplete="{handleUpdateComplete(event);}" dataProvider='{_oldChatText}'/>
+					</mx:Canvas>
+				</mx:ViewStack>
+			</mx:Canvas>
+			<mx:Canvas>
+				<mx:ViewStack id="guildChatViewStackAll" width="100%" height="100%" x="-1" y="0">
+					<mx:Canvas id="guildChatBoxSmallAll" label="Base">
+						<mx:DataGrid id="guild_chat_grid_small_all" height="100%" width="100%" styleName="DataGridBase" sortableColumns="false" showHeaders="false" selectable="false" variableRowHeight="true" wordWrap="true" columns="{[_GuildChatWindow_DataGridColumn5_i()]}" horizontalGridLines="false" backgroundAlpha="0" borderThickness="0" updateComplete="{handleUpdateComplete(event);}" dataProvider='{_oldChatText}'/>
+					</mx:Canvas>
+					<mx:Canvas id="guildChatBoxLargeAll" height="100%" width="100%" fontSize="14">
+						<mx:DataGrid id="guild_chat_grid_large_all" editable="false" width="100%" height="100%" styleName="InfoTxtBox" sortableColumns="false" showHeaders="false" wordWrap="true" variableRowHeight="true" selectable="false" columns="{[_GuildChatWindow_DataGridColumn6_c(), _GuildChatWindow_DataGridColumn7_c(), _GuildChatWindow_DataGridColumn8_c()]}" backgroundAlpha="0" verticalGridLines="false" horizontalGridLines="false" borderThickness="0" updateComplete="{handleUpdateComplete(event);}" dataProvider='{_oldChatText}'/>
+					</mx:Canvas>
+				</mx:ViewStack>
+			</mx:Canvas>
+			<mx:Canvas>
+				<mx:ViewStack id="guildChatViewStackSys" width="100%" height="100%" x="-1" y="0">
+					<mx:Canvas id="guildChatBoxSmallSys" label="Base">
+						<mx:DataGrid id="guild_chat_grid_small_sys" height="100%" width="100%" styleName="DataGridBase" sortableColumns="false" showHeaders="false" selectable="false" variableRowHeight="true" wordWrap="true" columns="{[_GuildChatWindow_DataGridColumn9_i()]}" horizontalGridLines="false" backgroundAlpha="0" borderThickness="0" updateComplete="{handleUpdateComplete(event);}" dataProvider='{_oldChatText}'/>
+					</mx:Canvas>
+					<mx:Canvas id="guildChatBoxLargeSys" height="100%" width="100%" fontSize="14">
+						<mx:DataGrid id="guild_chat_grid_large_sys" editable="false" width="100%" height="100%" styleName="InfoTxtBox" sortableColumns="false" showHeaders="false" wordWrap="true" variableRowHeight="true" selectable="false" columns="{[_GuildChatWindow_DataGridColumn10_c(), _GuildChatWindow_DataGridColumn11_c(), _GuildChatWindow_DataGridColumn12_c()]}" backgroundAlpha="0" verticalGridLines="false" horizontalGridLines="false" borderThickness="0" updateComplete="{handleUpdateComplete(event);}" dataProvider='{_oldChatText}'/>
+					</mx:Canvas>
+				</mx:ViewStack>
+			</mx:Canvas>
+			<mx:Canvas>
+				<mx:ViewStack id="guildChatViewStackFct" width="100%" height="100%" x="-1" y="0">
+					<mx:Canvas id="guildChatBoxSmallFct" label="Base">
+						<mx:DataGrid id="guild_chat_grid_small_faction" height="100%" width="100%" styleName="DataGridBase" sortableColumns="false" showHeaders="false" selectable="false" variableRowHeight="true" wordWrap="true" columns="{[_GuildChatWindow_DataGridColumn13_i()]}" horizontalGridLines="false" backgroundAlpha="0" borderThickness="0" updateComplete="{handleUpdateComplete(event);}" dataProvider='{_oldChatText}'/>
+					</mx:Canvas>
+					<mx:Canvas id="guildChatBoxLargeFct" height="100%" width="100%" fontSize="14">
+						<mx:DataGrid id="guild_chat_grid_large_faction" editable="false" width="100%" height="100%" styleName="InfoTxtBox" sortableColumns="false" showHeaders="false" wordWrap="true" variableRowHeight="true" selectable="false" columns="{[_GuildChatWindow_DataGridColumn14_c(), _GuildChatWindow_DataGridColumn15_c(), _GuildChatWindow_DataGridColumn16_c()]}" backgroundAlpha="0" verticalGridLines="false" horizontalGridLines="false" borderThickness="0" updateComplete="{handleUpdateComplete(event);}" dataProvider='{_oldChatText}'/>
+					</mx:Canvas>
+				</mx:ViewStack>
+			</mx:Canvas>
+		</mx:ViewStack>
+	</mx:VBox>
+	<mx:HBox id="inputBox" y="148">
+		<mx:Spacer/>
+		<mx:TextInput id="input" width="390" imeMode="JAPANESE_HIRAGANA" maxChars="254" ="{focusOnInputText();}" click="{focusOnInputText();}"/>
+		<mx:Image id="enterButton" source="_embed_mxml__swf_guild_chat_button_info_chatenter_swf_162954869"/>
+	</mx:HBox>
+
+</mx:PopupWindow>

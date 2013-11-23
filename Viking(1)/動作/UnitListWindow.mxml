@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private static const  WINDOW_X:int = 20;
+        private static const  WINDOW_Y:int = 20;
+        private static const  BUTTON_X:int = 325;
+        private static const  BUTTON_Y:int = 490;
+        private static const  WINDOW_HT:int = 520;
+        private static const  WINDOW_WD:int = 720;
+
+
+        public function _UnitListWindow_DataGridColumn6_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "maskedMaxHp";
+            _loc_1.headerText = "HP";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _UnitListWindow_DataGridColumn8_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UnitListWindow_DataGridColumn8 = _loc_1;
+            _loc_1.dataField = "baseDefense";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_UnitListWindow_DataGridColumn8", _UnitListWindow_DataGridColumn8);
+            return _loc_1;
+        }// end function
+
+        public function closeWindow() : void
+        {
+            onClose();
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_close_window.getChildAt(0)).content).gotoAndPlay(1);
+            return;
+        }// end function
+
+        public function _UnitListWindow_ClassFactory4_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = UnitDetailLabelRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _UnitListWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UnitListWindow_DataGridColumn4 = _loc_1;
+            _loc_1.dataField = "team";
+            _loc_1.width = 40;
+            BindingManager.executeBindings(this, "_UnitListWindow_DataGridColumn4", _UnitListWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function _UnitListWindow_ClassFactory2_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            teamLabel = _loc_1;
+            _loc_1.generator = UnitListWindow_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _UnitListWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UnitListWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "name";
+            _loc_1.itemRenderer = _UnitListWindow_ClassFactory4_c();
+            BindingManager.executeBindings(this, "_UnitListWindow_DataGridColumn2", _UnitListWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function expRequest(param1:Object) : String
+        {
+            return param1.team == 0 ? (param1.exp + "/" + param1.nextExp) : ("----");
+        }// end function
+
+        public function _UnitListWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UnitListWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "jobName";
+            BindingManager.executeBindings(this, "_UnitListWindow_DataGridColumn3", _UnitListWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _UnitListWindow_DataGridColumn5_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "level";
+            _loc_1.headerText = "Lv";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function turnRequest(param1:Object) : int
+        {
+            return (_units.indexOf(param1) + 1);
+        }// end function
+
+        public function _UnitListWindow_DataGridColumn7_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UnitListWindow_DataGridColumn7 = _loc_1;
+            _loc_1.dataField = "baseDamage";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_UnitListWindow_DataGridColumn7", _UnitListWindow_DataGridColumn7);
+            return _loc_1;
+        }// end function
+
+        public function _UnitListWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            turnLabel = _loc_1;
+            _loc_1.generator = UnitListWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _UnitListWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UnitListWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "turn";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_UnitListWindow_DataGridColumn1", _UnitListWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _UnitListWindow_ClassFactory3_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            expLabel = _loc_1;
+            _loc_1.generator = UnitListWindow_inlineComponent3;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _UnitListWindow_DataGridColumn9_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UnitListWindow_DataGridColumn9 = _loc_1;
+            _loc_1.dataField = "weaponName";
+            BindingManager.executeBindings(this, "_UnitListWindow_DataGridColumn9", _UnitListWindow_DataGridColumn9);
+            return _loc_1;
+        }// end function
+
+        public function teamRequest(param1:Object) : String
+        {
+            return param1.team == 0 ? (Utils.i18n("unitListMyArmy")) : (Utils.i18n("unitListEnemy"));
+        }// end function
+
+        public function setup() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_720x520");
+            Loader(_swf_close.getChildAt(0)).content.addEventListener("BUTTON_CLOSE", function (event:Event) : void
+            {
+                closeWindow();
+                return;
+            }// end function
+            );
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_UnitListWindow_Image1" source="{_swf_window}"/>
+	<mx:Text id="_UnitListWindow_Text1" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("unitListTitle")}"/>
+	<mx:DataGrid id="_UnitListWindow_DataGrid1" rowCount="16" styleName="DataGridBase" sortableColumns="false" columns="{[_UnitListWindow_DataGridColumn1_i(), _UnitListWindow_DataGridColumn2_i(), _UnitListWindow_DataGridColumn3_i(), _UnitListWindow_DataGridColumn4_i(), _UnitListWindow_DataGridColumn5_c(), _UnitListWindow_DataGridColumn6_c(), _UnitListWindow_DataGridColumn7_i(), _UnitListWindow_DataGridColumn8_i(), _UnitListWindow_DataGridColumn9_i()]}" dataProvider='{_units}' x="WINDOW_X + 20" y="WINDOW_Y + 35 + 10" width="WINDOW_WD - 40"/>
+	<mx:Image id="_UnitListWindow_Image2" click="{closeWindow();}" x="BUTTON_X" y="BUTTON_Y" source="{_swf_close}"/>
+	<mx:Image id="_UnitListWindow_Image3" click="{closeWindow();}" x="WINDOW_X + WINDOW_WD - 25" y="WINDOW_Y" source="{_swf_close_window}"/>
+
+</mx:PopupWindow>

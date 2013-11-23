@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" verticalAlign="middle" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.vo.home.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.styles.*;
+
+        private var  taskVO:TaskVO;
+        private static var  buttonStyles:Array;
+
+
+        public function init() : void
+        {
+            Loader(_swf_power.getChildAt(0)).contentLoaderInfo.addEventListener(Event.COMPLETE, initButton);
+            return;
+        }// end function
+
+        public function initButton(event:Event) : void
+        {
+            MovieClip(Loader(_swf_power.getChildAt(0)).content).gotoAndPlay("button_add_action");
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Text id="_TaskTextRenderer_Text1" styleName="InfoTxt" width="300" height="40" color="#00513141">
+		<mx:htmlText><![CDATA[taskText]]></mx:htmlText>
+	</mx:Text>
+	<mx:Button id="finishTaskButton" buttonMode="true" click="{parentDocument.finishTask(taskVO);}" styleName="buttonStyle" visible="_isTaskView" includeInLayout="_isTaskView"/>
+	<mx:Image id="incrementMaxTaskButton" buttonMode="true" click="{parentDocument.incrementMaxTasks();}" source="{_swf_power}" visible="_incrementable" includeInLayout="_incrementable"/>
+
+</mx:HBox>

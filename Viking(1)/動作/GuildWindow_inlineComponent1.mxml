@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" verticalAlign="middle">
+	<mx:Script><![CDATA[
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.styles.*;
+
+        public var  _GuildWindow_inlineComponent1_Button1:Button;
+        public var  _GuildWindow_inlineComponent1_Label1:Label;
+
+    ]]></mx:Script>
+
+	<mx:Box width="30" horizontalAlign="center">
+		<mx:Button id="_GuildWindow_inlineComponent1_Button1" buttonMode="true" upSkin="_embed_mxml__images_st_btn_delete_png_1860925897" overSkin="_embed_mxml__images_st_btn_delete_png_1860925897" downSkin="_embed_mxml__images_st_btn_delete_png_1860925897" toolTip="{outerDocument.componentStr(0)}"/>
+	</mx:Box>
+	<mx:Label id="_GuildWindow_inlineComponent1_Label1" text="{data.name}"/>
+
+</mx:HBox>

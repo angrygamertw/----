@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  alertWindow:AlertWindow;
+        private var  _homeMaps:Array;
+        public static const  CLICK_CLOSE_BUTTON:String = "clickCloseButton";
+        public static var  EmbedSwfButton:Class;
+        public static const  CLOSE_RESEARCH_WINDOW:String = "closeResearchWindow";
+
+
+        public function init() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_500x180");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_black_smith.getChildAt(0)).content).gotoAndPlay("button_blacksmith");
+            MovieClip(Loader(_swf_leather.getChildAt(0)).content).gotoAndPlay("button_leather");
+            MovieClip(Loader(_swf_cloth.getChildAt(0)).content).gotoAndPlay("button_cloth");
+            MovieClip(Loader(_swf_magic.getChildAt(0)).content).gotoAndPlay("button_magic");
+            MovieClip(Loader(_swf_craft.getChildAt(0)).content).gotoAndPlay("button_accessory");
+            return;
+        }// end function
+
+        public function clickCloseButton() : void
+        {
+            dispatchEvent(new Event(CLICK_CLOSE_BUTTON));
+            return;
+        }// end function
+
+        public function onClick(param1:int) : void
+        {
+            if (_homeMaps[(param1 - 1)].buildingVO.level >= 7)
+            {
+                alertWindow = AlertWindow.show(Utils.i18n("researchNoMoreResearch", _homeMaps[(param1 - 1)].buildingVO.nameLabel));
+                popupWindow(alertWindow, false);
+                return;
+            }
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            dispatchEvent(new PopupEvent(Viking.HOME_ACTION_RESEARCH, {researchId:param1}));
+            return;
+        }// end function
+
+        public function initResearchTmarks(param1:Boolean = false) : void
+        {
+            if (!param1)
+            {
+                tutMarkResearchVisible = false;
+            }
+            else
+            {
+                tutMarkResearchVisible = true;
+            }
+            return;
+        }// end function
+
+        public function close() : void
+        {
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            dispatchEvent(new Event(CLOSE_RESEARCH_WINDOW));
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_ResearchWindow_Image1" source="{_swf_window}"/>
+	<mx:Image id="_ResearchWindow_Image2" x="150" y="245" click="{onClick(2);}" source="{_swf_black_smith}"/>
+	<mx:Text id="_ResearchWindow_Text1" styleName="PanelBaseTitle" x="365" y="193" text="{Utils.i18n("generalResearch")}"/>
+	<mx:Text id="_ResearchWindow_Text2" x="260" y="250" fontSize="15" text="{_homeMapsCollection.getItemAt(0)}"/>
+	<mx:Image id="_ResearchWindow_Image3" x="310" y="245" click="{onClick(4);}" source="{_swf_leather}"/>
+	<mx:Text id="_ResearchWindow_Text3" x="420" y="250" fontSize="15" text="{_homeMapsCollection.getItemAt(1)}"/>
+	<mx:Image id="_ResearchWindow_Image4" x="470" y="245" click="{onClick(5);}" source="{_swf_cloth}"/>
+	<mx:Text id="_ResearchWindow_Text4" x="580" y="250" fontSize="15" text="{_homeMapsCollection.getItemAt(2)}"/>
+	<mx:Image id="_ResearchWindow_Image5" x="150" y="300" click="{onClick(7);}" source="{_swf_magic}"/>
+	<mx:Text id="_ResearchWindow_Text5" x="260" y="305" fontSize="15" text="{_homeMapsCollection.getItemAt(3)}"/>
+	<mx:Image id="_ResearchWindow_Image6" x="310" y="300" click="{onClick(9);}" source="{_swf_craft}"/>
+	<mx:Text id="_ResearchWindow_Text6" x="420" y="305" fontSize="15" text="{_homeMapsCollection.getItemAt(4)}"/>
+	<mx:Image id="_ResearchWindow_Image7" x="485" y="300" click="{clickCloseButton();}" source="{_swf_close}"/>
+	<mx:Image x="605" y="190" width="20" height="20" source="_embed_mxml__swf_common_button_close_window_swf_1370265653" click="{clickCloseButton();}"/>
+	<mx:Image id="tutMarkBlacksmith" source="_embed_mxml__swf_common_arrow_top_swf_788233961" width="75" height="75" y="275" x="200" visible="tutMarkResearchVisible"/>
+
+</mx:PopupWindow>

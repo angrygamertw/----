@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{comp();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public static const  COLONY_CONFIRMED:String = NAME + "/selectColonyConfirmed";
+        public static const  NAME:String = "ColonyDescriptionWindow";
+        public static const  COLONY_CANCELED:String = NAME + "/selectColonyCanceled";
+
+
+        public function _ColonyDescriptionWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ColonyDescriptionWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "name";
+            _loc_1.width = 100;
+            BindingManager.executeBindings(this, "_ColonyDescriptionWindow_DataGridColumn1", _ColonyDescriptionWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function comp() : void
+        {
+            MovieClip(Loader(_windowBg.getChildAt(0)).content).gotoAndPlay("center_400x360");
+            var _loc_1:* = new UIComponent();
+            _loc_1.addChild(createLine(200, 144, 560, 144));
+            _loc_1.addChild(createLine(200, 343, 560, 343));
+            this.addChild(_loc_1);
+            return;
+        }// end function
+
+        public function init(param1:ColonyVO, param2:Object, param3:PlayerVO) : void
+        {
+            MovieClip(Loader(_buttonConfirm.getChildAt(0)).content).gotoAndStop(0);
+            MovieClip(Loader(_buttonConfirm.getChildAt(0)).content).gotoAndPlay("button_decide");
+            MovieClip(Loader(_buttonCancel.getChildAt(0)).content).gotoAndStop(0);
+            MovieClip(Loader(_buttonCancel.getChildAt(0)).content).gotoAndPlay("button_back");
+            MovieClip(Loader(_buttonBack.getChildAt(0)).content).gotoAndStop(0);
+            MovieClip(Loader(_buttonBack.getChildAt(0)).content).gotoAndPlay("button_back");
+            MovieClip(Loader(_buttonX.getChildAt(0)).content).gotoAndStop(0);
+            MovieClip(Loader(_buttonX.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_buttonNewColony.getChildAt(0)).content).gotoAndStop(0);
+            MovieClip(Loader(_buttonNewColony.getChildAt(0)).content).gotoAndPlay("button_group");
+            MovieClip(Loader(_buttonOldColony.getChildAt(0)).content).gotoAndStop(0);
+            MovieClip(Loader(_buttonOldColony.getChildAt(0)).content).gotoAndPlay("button_individual");
+            _colony = param1;
+            _description = param1.masterVO.newDescription;
+            _mvp = param1.masterVO.loots.getOne("mvp", true);
+            _loots = param1.masterVO.loots.find("mvp", false);
+            _enabled = false;
+            _ticket = param3.colonyBattleTicket;
+            _viewSelectCondition = false;
+            if (!param1.isOpen)
+            {
+                _msg = Utils.i18n("localize98");
+            }
+            else if (param2 && param2.name == _colony.ownerGuildName)
+            {
+                _msg = Utils.i18n("localize99");
+            }
+            else
+            {
+                onSelectCondition();
+            }
+            return;
+        }// end function
+
+        public function createLine(param1:int, param2:int, param3:int, param4:int) : Shape
+        {
+            var _loc_5:* = new Shape();
+            new Shape().graphics.lineStyle(1, 8816755);
+            _loc_5.graphics.moveTo(param1, param2);
+            _loc_5.graphics.lineTo(param3, param4);
+            return _loc_5;
+        }// end function
+
+        public function onCancel() : void
+        {
+            this.onClose();
+            return;
+        }// end function
+
+        public function onNewColony() : void
+        {
+            _conditionType = 1;
+            _msg = Utils.i18n("selectGuildColonyRule");
+            _description = _colony.masterVO.newDescription;
+            _viewSelectCondition = false;
+            _enabled = true;
+            return;
+        }// end function
+
+        public function onSelectCondition() : void
+        {
+            _conditionType = 0;
+            _msg = Utils.i18n("selectColonyRule");
+            _enabled = true;
+            _viewSelectCondition = true;
+            return;
+        }// end function
+
+        public function _ColonyDescriptionWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ColonyDescriptionWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "quantity";
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ColonyDescriptionWindow_DataGridColumn2", _ColonyDescriptionWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function onConfirm() : void
+        {
+            dispatchEvent(new PopupEvent(COLONY_CONFIRMED, {colonyId:_colony.colonyId, type:_conditionType}));
+            this.onClose();
+            return;
+        }// end function
+
+        public function onOldColony() : void
+        {
+            _conditionType = 0;
+            _msg = Utils.i18n("selectIndividualColonyRule");
+            _description = _colony.masterVO.description;
+            _viewSelectCondition = false;
+            _enabled = true;
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_ColonyDescriptionWindow_Image1" source="{_windowBg}"/>
+	<mx:Label id="_ColonyDescriptionWindow_Label1" x="180" y="82" width="400" styleName="PanelBaseTitle" color="#00ffffff" textAlign="center" text="{Utils.i18n("localize102")}"/>
+	<mx:Label id="_ColonyDescriptionWindow_Label2" x="200" y="120" width="360" fontSize="17" textAlign="center" text="{Utils.i18n("localize103") + " : " + _colony.masterVO.name}"/>
+	<mx:Label id="_ColonyDescriptionWindow_Label3" x="200" y="145" width="360" fontSize="16" textAlign="center" text="{Utils.i18n("localize104") + " : " + _colony.ownerGuildName}"/>
+	<mx:Text id="_ColonyDescriptionWindow_Text1" x="205" y="176" width="170" height="200" fontSize="14" text="_description"/>
+	<mx:Label id="_ColonyDescriptionWindow_Label4" x="390" y="176" width="165" height="30" fontSize="14" text="{Utils.i18n("generalGetMaterial") + "       " + _colony.masterVO.gold}"/>
+	<mx:Image source="_embed_mxml__swf_home_unit_status_icon_icon_money_swf_196506313" x="458" y="178"/>
+	<mx:Label id="_ColonyDescriptionWindow_Label5" x="390" y="196" width="165" height="30" fontSize="14" text="{MVP:" + _mvp.name + " (" + _mvp.quantity + ")}"/>
+	<mx:DataGrid id="colony_loots_list" x="390" y="221" width="165" height="112" rowHeight="22" rowCount="5" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_ColonyDescriptionWindow_DataGridColumn1_i(), _ColonyDescriptionWindow_DataGridColumn2_i()]}" dataProvider='{_loots}'/>
+	<mx:Label id="_ColonyDescriptionWindow_Label6" x="200" y="345" width="360" fontSize="14" text="_msg"/>
+	<mx:Label id="_ColonyDescriptionWindow_Label7" x="200" y="345" width="360" fontSize="14" textAlign="right" text="{Utils.i18n("matchBattleTicketLeft") + "：" + _ticket}"/>
+	<mx:Canvas id="_ColonyDescriptionWindow_Canvas1" visible="!_viewSelectCondition">
+		<mx:Image id="_ColonyDescriptionWindow_Image3" x="260" y="380" width="110" click="{onConfirm();}" visible="_enabled" source="{_buttonConfirm}"/>
+		<mx:Image id="_ColonyDescriptionWindow_Image4" x="390" y="380" width="110" click="{onSelectCondition();}" visible="_enabled" source="{_buttonBack}"/>
+		<mx:Image id="_ColonyDescriptionWindow_Image5" x="325" y="380" width="110" click="{onClose();}" visible="!_enabled" source="{_buttonCancel}"/>
+	</mx:Canvas>
+	<mx:Canvas id="_ColonyDescriptionWindow_Canvas2" visible="_viewSelectCondition">
+		<mx:Image id="_ColonyDescriptionWindow_Image6" x="260" y="380" width="110" click="{onNewColony();}" source="{_buttonNewColony}"/>
+		<mx:Image id="_ColonyDescriptionWindow_Image7" x="390" y="380" width="110" click="{onOldColony();}" source="{_buttonOldColony}"/>
+	</mx:Canvas>
+	<mx:Image id="_ColonyDescriptionWindow_Image8" x="555" y="80" click="{onClose();}" source="{_buttonX}"/>
+
+</mx:PopupWindow>

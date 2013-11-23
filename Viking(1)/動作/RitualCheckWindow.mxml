@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public static const  RITUAL:String = NAME + "/notes/ritual";
+        public static const  NAME:String = "RitualCheckWindow";
+
+
+        public function setUnitAndItemName(param1:UnitVO) : void
+        {
+            _unit = new UnitVO();
+            _unit = param1;
+            return;
+        }// end function
+
+        public function onOk() : void
+        {
+            sendPopupEvent(RITUAL, {unit:_unit});
+            onClose();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Box width="350" height="180" styleName="DialogBg">
+		<mx:Canvas>
+			<mx:Text id="_RitualCheckWindow_Text1" width="330" x="10" y="55" textAlign="center" fontSize="12" text="{_unit.item.nameLabel + "を" + _unit.name + "に使用します。"}"/>
+			<mx:Text width="180" x="120" y="75" text="よろしいですか？" fontSize="12"/>
+			<mx:Button id="ok_button" x="177" y="145" styleName="OkButton" buttonMode="true" click="{onOk();}"/>
+			<mx:Button id="cancel_button" x="97" y="145" styleName="CancelCanaButton" buttonMode="true" click="{onClose();}"/>
+		</mx:Canvas>
+	</mx:Box>
+
+</mx:PopupWindow>

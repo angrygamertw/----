@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="439" height="244">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.vo.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _skills:ArrayCollection;
+
+
+        public function _SkillDiscardWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SkillDiscardWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "description";
+            BindingManager.executeBindings(this, "_SkillDiscardWindow_DataGridColumn2", _SkillDiscardWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _SkillDiscardWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SkillDiscardWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 100;
+            BindingManager.executeBindings(this, "_SkillDiscardWindow_DataGridColumn1", _SkillDiscardWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function discard() : void
+        {
+            sendPopupEvent(Viking.DISCARD_SKILL, SkillVO(skillDataGrid.selectedItem));
+            onClose();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Label id="_SkillDiscardWindow_Label1" styleName="DialogText" x="13" y="5" text="{Utils.i18n("localize272")}"/>
+	<mx:DataGrid id="skillDataGrid" styleName="UnitBuilding" width="400" rowCount="2" x="20" y="30" height="97" sortableColumns="false" columns="{[_SkillDiscardWindow_DataGridColumn1_i(), _SkillDiscardWindow_DataGridColumn2_i()]}" dataProvider='{skills}'/>
+	<mx:HBox y="150" x="128" horizontalGap="20">
+		<mx:Button label="" styleName="CancelCanaButton" buttonMode="true" click="{onClose();}"/>
+		<mx:Button id="okButton" label="" styleName="OkButton" buttonMode="true" click="{discard();}" enabled="{skillDataGrid.selectedItem}"/>
+	</mx:HBox>
+
+</mx:PopupWindow>

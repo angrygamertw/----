@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.styles.*;
+
+        public var  _PaymentCommodityWindow_inlineComponent2_Label1:Label;
+
+    ]]></mx:Script>
+
+	<mx:Image source="_embed_mxml__images_icon_power_png_227571469"/>
+	<mx:Label id="_PaymentCommodityWindow_inlineComponent2_Label1" text="{outerDocument.getLabel(data, "power")}"/>
+
+</mx:HBox>

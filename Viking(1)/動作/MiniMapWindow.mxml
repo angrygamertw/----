@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="222" height="222" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.proxy.allMap.*;
+        import flash.display.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public var  frame:UIComponent;
+        public static const  MINI_MAP_HEIGHT:int = 190;
+        public static const  MINI_MAP_WIDTH:int = 190;
+
+
+        public function init() : void
+        {
+            var _loc_1:* = new BitmapData(MINI_MAP_WIDTH, MINI_MAP_HEIGHT, true, 0);
+            miniMap = new Bitmap(_loc_1);
+            frame.width = this.int(MINI_MAP_WIDTH / (AllMapProxy.BG_WIDTH / AllMapProxy.SCR_WIDTH));
+            frame.height = this.int(MINI_MAP_HEIGHT / (AllMapProxy.BG_HEIGHT / AllMapProxy.SCR_HEIGHT));
+            frame.graphics.lineStyle(1, 16729088);
+            frame.graphics.drawRect(0, 0, frame.width, frame.height);
+            addChild(frame);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_MiniMapWindow_Image1" x="16" y="16" source="{miniMap}"/>
+
+</mx:Canvas>

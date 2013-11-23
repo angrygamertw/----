@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.vo.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+    ]]></mx:Script>
+
+	<mx:Canvas x="0" y="0" height="96" width="300" fontSize="12" color="#00433530">
+		<mx:Canvas x="5" y="1">
+			<mx:Image id="_ProductionInfoWindow_Image1" source="_embed_mxml__swf_home_unit_status_icon_icon_silver_swf_879798309" x="0" y="1" toolTip="{Utils.i18n("generalSilver")}"/>
+			<mx:Label id="_ProductionInfoWindow_Label1" x="19" y="0" textAlign="left" text="{playerVO.silver}"/>
+			<mx:Label id="_ProductionInfoWindow_Label2" x="56" y="0" color="#00eb6100" textAlign="left" text="{"+" + playerVO.silverOutput}"/>
+		</mx:Canvas>
+		<mx:Canvas x="110" y="1">
+			<mx:Image id="_ProductionInfoWindow_Image2" source="_embed_mxml__swf_home_icon_icon_spirit_of_fire_swf_2016936201" x="0" y="1" toolTip="{Utils.i18n("generalSpiritOfFire")}"/>
+			<mx:Label id="_ProductionInfoWindow_Label3" x="19" y="0" textAlign="left" text="{playerVO.spiritOfFire}"/>
+			<mx:Label id="_ProductionInfoWindow_Label4" x="56" y="0" color="#00eb6100" textAlign="left" text="{"+" + playerVO.spiritOfFireOutput}"/>
+		</mx:Canvas>
+		<mx:Canvas x="5" y="25">
+			<mx:Image id="_ProductionInfoWindow_Image3" source="_embed_mxml__swf_home_icon_icon_spirit_of_earth_swf_844085" x="0" y="1" toolTip="{Utils.i18n("generalSpiritOfEarth")}"/>
+			<mx:Label id="_ProductionInfoWindow_Label5" x="19" y="0" textAlign="left" text="{playerVO.spiritOfEarth}"/>
+			<mx:Label id="_ProductionInfoWindow_Label6" x="56" y="0" color="#00eb6100" textAlign="left" text="{"+" + playerVO.spiritOfEarthOutput}"/>
+		</mx:Canvas>
+		<mx:Canvas x="110" y="25">
+			<mx:Image id="_ProductionInfoWindow_Image4" source="_embed_mxml__swf_home_icon_icon_spirit_of_water_swf_2094276307" x="0" y="1" toolTip="{Utils.i18n("generalSpiritOfWater")}"/>
+			<mx:Label id="_ProductionInfoWindow_Label7" x="19" y="0" textAlign="left" text="{playerVO.spiritOfWater}"/>
+			<mx:Label id="_ProductionInfoWindow_Label8" x="56" y="0" color="#00eb6100" textAlign="left" text="{"+" + playerVO.spiritOfWaterOutput}"/>
+		</mx:Canvas>
+	</mx:Canvas>
+
+</mx:Canvas>

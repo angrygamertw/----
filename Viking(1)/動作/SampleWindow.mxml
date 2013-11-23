@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import flash.events.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public static const  NAME:String = "SampleWindow";
+        public static const  FINISH_WINDOW:String = NAME + "/note/finishWindow";
+
+
+        public function close() : void
+        {
+            sendEvent(FINISH_WINDOW);
+            onClose();
+            return;
+        }// end function
+
+        public function init(param1:int, param2:int) : void
+        {
+            windowLayer.x = param1;
+            windowLayer.y = param2;
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas width="760" height="560">
+		<mx:Box id="windowLayer" x="0" y="300"/>
+		<mx:Text text="Sample window!!" x="400" y="200"/>
+	</mx:Canvas>
+	<mx:Button width="26" height="26" styleName="closeBtn" buttonMode="true" mouseChildren="false" fontSize="30" top="10" right="10" click="{close();}"/>
+
+</mx:PopupWindow>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:ContinuationDescriptionWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{comp();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  EmbedSwfExpeditionDetail:Class;
+
+
+        public function getBgSwf() : MovieClipLoaderAsset
+        {
+            return new EmbedSwfExpeditionDetail();
+        }// end function
+
+        public function init(param1:int) : void
+        {
+            super.init(param1);
+            titleText = Utils.i18n("continuationEventMap") + level + Utils.i18n("continuationBattleLevel");
+            return;
+        }// end function
+    ]]></mx:Script>
+
+
+</mx:ContinuationDescriptionWindow>

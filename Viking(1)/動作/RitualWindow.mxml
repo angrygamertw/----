@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:JobChangeSelectUnitWindow xmlns:mx="http://www.adobe.com/2006/mxml" height="560" width="760" creationComplete="{onCreationComplete();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.events.*;
+        import mx.collections.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _unit:UnitVO;
+        private var  ritualCheckWindow:RitualCheckWindow;
+        private var  skillDiscardWindow:SkillDiscardWindow;
+        public static const  RITUAL_WITH_UNLEARN_SKILL:String = NAME + "/notes/ritualWithUnlearnSkill";
+        public static const  NAME:String = "RitualWindow";
+        public static const  RITUAL_CHECK:String = NAME + "/notes/ritualCheck";
+
+
+        public function handleMouseEvent(event:MouseEvent) : void
+        {
+            var _loc_2:* = _units[_unitIndex[event.target.name]];
+            switch(event.type)
+            {
+                case MouseEvent.CLICK:
+                {
+                    onUnitClick(_loc_2);
+                    break;
+                }
+                default:
+                {
+                    super.handleMouseEvent(event);
+                    break;
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function onUnitClick(param1:UnitVO) : void
+        {
+            if (!param1.item)
+            {
+                return;
+            }
+            sendPopupEvent(RITUAL_CHECK, {unit:param1});
+            return;
+        }// end function
+
+        public function skillSelected(event:PopupEvent) : void
+        {
+            var _loc_2:* = event.param as SkillVO;
+            sendPopupEvent(RITUAL_WITH_UNLEARN_SKILL, {unitId:_unit.unitId, unlearnSkillId:_loc_2.skillId});
+            _unit = null;
+            return;
+        }// end function
+
+        public function selectSkill(param1:UnitVO) : void
+        {
+            _unit = param1;
+            skillDiscardWindow.skills = new ArrayCollection(param1.ownSkills);
+            skillDiscardWindow.addEventListener(Viking.DISCARD_SKILL, skillSelected);
+            popupWindow(skillDiscardWindow);
+            return;
+        }// end function
+
+        public function onCreationComplete() : void
+        {
+            bg.title = "儀式";
+            return;
+        }// end function
+    ]]></mx:Script>
+
+
+</mx:JobChangeSelectUnitWindow>

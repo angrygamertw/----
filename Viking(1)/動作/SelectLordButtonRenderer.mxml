@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import flash.events.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.styles.*;
+
+
+        public function onClick() : void
+        {
+            parentDocument.okButtonClicked(data);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Button id="okButton" label="" width="50" height="24" styleName="GridDecideBtn" buttonMode="true" click="{onClick();}"/>
+
+</mx:Box>

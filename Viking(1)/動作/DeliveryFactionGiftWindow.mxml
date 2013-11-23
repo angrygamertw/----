@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{addSwf();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public static const  DELIVERY:String = NAME + "delivery";
+        public static const  NAME:String = "deliveryFactionGiftWindow";
+
+
+        public function addSwf() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_300x270");
+            MovieClip(Loader(_swf_decide.getChildAt(0)).content).gotoAndPlay("button_decide");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            decideButton.addChild(_swf_decide);
+            closeButton.addChild(_swf_close);
+            return;
+        }// end function
+
+        public function decide() : void
+        {
+            sendPopupEvent(DELIVERY, stepper.value);
+            close();
+            return;
+        }// end function
+
+        public function close() : void
+        {
+            onClose();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas>
+		<mx:Image id="_DeliveryFactionGiftWindow_Image1" source="{_swf_window}"/>
+		<mx:Text id="_DeliveryFactionGiftWindow_Text1" x="365" y="147" styleName="PanelBaseTitle" text="{Utils.i18n("deliver")}"/>
+		<mx:NumericStepper id="stepper" x="258" y="305" minimum="1" value="1" cornerRadius="0" borderColor="10058583" iconColor="5318420" color="#000b333c" themeColor="16737843" maximum="_maxQuantity"/>
+		<mx:TextArea id="_DeliveryFactionGiftWindow_TextArea1" x="250" y="190" width="200" height="50" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text="{Utils.i18n("deliveryFactionGift")}"/>
+		<mx:TextArea id="_DeliveryFactionGiftWindow_TextArea2" x="250" y="230" width="200" height="30" editable="false" fontSize="15" backgroundAlpha="0" borderStyle="none" text="{Utils.i18n("currentFactionGift") + "" + _currentGiftCount}"/>
+		<mx:TextArea id="_DeliveryFactionGiftWindow_TextArea3" x="250" y="260" width="250" height="30" editable="false" fontSize="15" backgroundAlpha="0" borderStyle="none" text="{Utils.i18n("factionGiftNeeded") + "" + _giftCountLeft}"/>
+		<mx:Image id="decideButton" x="260" y="350" click="{decide();}"/>
+		<mx:Image id="closeButton" x="390" y="350" click="{close();}"/>
+	</mx:Canvas>
+
+</mx:PopupWindow>

@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="800" height="600" creationComplete="{onComplete();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.allMap.*;
+        import com.kbmj.viking.view.city.*;
+        import com.kbmj.viking.vo.*;
+        import com.kbmj.viking.vo.allMap.*;
+        import com.kbmj.viking.vo.city.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.utils.*;
+
+        private var  leyLineDescriptions:Array;
+        private var  guildApprovalWindow:GuildApprovalWindow;
+        private var  _selectGuildMemberName:String;
+        private var  _comment:Object;
+        private var  _selectedPlayer:PlayerVO;
+        public var  anotherPlayerId:int;
+        public static const  SHOW_RAID_REPORT:String = "showRaidReport";
+        public static const  FEATURE_1:String = Utils.i18n("guildDonsitions1");
+        private static const  WINDOW_X:int = 20;
+        private static const  WINDOW_Y:int = 80;
+        private static const  BUTTON_X:int = 325;
+        private static const  BUTTON_Y:int = 486;
+        public static const  FEATURE_6:String = Utils.i18n("guildDonsitions6");
+        public static const  FEATURE_8:String = Utils.i18n("guildDonsitions8");
+        public static const  FEATURE_2:String = Utils.i18n("guildDonsitions2");
+        public static const  FEATURE_3:String = Utils.i18n("guildDonsitions3");
+        public static const  FEATURE_5:String = Utils.i18n("guildDonsitions5");
+        public static const  FEATURE_7:String = Utils.i18n("guildDonsitions7");
+        public static const  FEATURE_4:String = Utils.i18n("guildDonsitions4");
+        public static const  FEATURE_9:String = Utils.i18n("guildDonsitions9");
+        public static const  SHOW_PLAYERS_ARMY:String = "showPlayersArmy";
+        public static const  LOAD_APPLICATION_DETAIL:String = "loadApplicationDetail";
+        private static const  WINDOW_HT:int = 460;
+        private static const  WINDOW_WD:int = 720;
+
+
+        public function setArmyUnitPlayer() : void
+        {
+            var _loc_2:int = 0;
+            var _loc_1:int = 0;
+            while (_loc_1 < _guildArmyUnits.length)
+            {
+                
+                _loc_2 = 0;
+                while (_loc_2 < viewDataPlayers.length)
+                {
+                    
+                    if (viewDataPlayers[_loc_2].playerId as int == _guildArmyUnits[_loc_1].playerId as int)
+                    {
+                        _guildArmyUnits[_loc_1].playerName = viewDataPlayers[_loc_2].name;
+                    }
+                    _loc_2++;
+                }
+                _loc_1++;
+            }
+            return;
+        }// end function
+
+        public function _GuildWindow_DataGridColumn15_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildWindow_DataGridColumn15 = _loc_1;
+            _loc_1.dataField = "weaponName";
+            _loc_1.width = 100;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_GuildWindow_DataGridColumn15", _GuildWindow_DataGridColumn15);
+            return _loc_1;
+        }// end function
+
+        public function closeWindow() : void
+        {
+            onClose();
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_close_window.getChildAt(0)).content).gotoAndPlay(1);
+            return;
+        }// end function
+
+        public function _GuildWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildWindow_DataGridColumn4 = _loc_1;
+            _loc_1.dataField = "propertiesCount";
+            _loc_1.width = 70;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_GuildWindow_DataGridColumn4", _GuildWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function _GuildWindow_DataGridColumn14_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildWindow_DataGridColumn14 = _loc_1;
+            _loc_1.dataField = "realDefense";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_GuildWindow_DataGridColumn14", _GuildWindow_DataGridColumn14);
+            return _loc_1;
+        }// end function
+
+        public function onComplete() : void
+        {
+            guildApprovalWindow.addEventListener(GuildApprovalWindow.ALLOW_APPLICATION, handleEvent);
+            guildApprovalWindow.addEventListener(GuildApprovalWindow.REJECT_APPLICATION, handleEvent);
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_720x460");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            Loader(_swf_tab2.getChildAt(0)).content.addEventListener("TAB_GUILD_OTHER_MEMBER", function (event:Event) : void
+            {
+                itemList.selectedIndex = 1;
+                return;
+            }// end function
+            );
+            Loader(_swf_tab2.getChildAt(0)).content.addEventListener("TAB_GUILD_OTHER_LEY_LINE", function (event:Event) : void
+            {
+                itemList.selectedIndex = 4;
+                return;
+            }// end function
+            );
+            MovieClip(Loader(_swf_tab2.getChildAt(0)).content).gotoAndPlay("tab_guild_other_member");
+            return;
+        }// end function
+
+        public function _GuildWindow_ClassFactory7_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            application_detail_renderer = _loc_1;
+            _loc_1.generator = GuildWindow_inlineComponent7;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function setGuildLeyLinesLabel(param1:GuildDetailVO) : void
+        {
+            leyLinesCount = 0;
+            var _loc_2:Array = [];
+            var _loc_3:int = 0;
+            while (_loc_3 <= AllMapVO.TOPOGRAPHY_LEY_LINE_NUM)
+            {
+                
+                if (param1.hasLeyLine(_loc_3))
+                {
+                    _loc_2.push({name:AllMapVO.TOPOGRAPHY_NAMES[_loc_3 + AllMapVO.TOPOGRAPHY_LEY_LINE], description:leyLineDescriptions[_loc_3]});
+                    (leyLinesCount + 1);
+                }
+                _loc_3++;
+            }
+            leyLines = _loc_2;
+            return;
+        }// end function
+
+        public function _GuildWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "playerRankId";
+            _loc_1.width = 90;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_GuildWindow_DataGridColumn3", _GuildWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _GuildWindow_ClassFactory6_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            positionRenderer = _loc_1;
+            _loc_1.generator = GuildWindow_inlineComponent6;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _GuildWindow_DataGridColumn13_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildWindow_DataGridColumn13 = _loc_1;
+            _loc_1.dataField = "realStrength";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_GuildWindow_DataGridColumn13", _GuildWindow_DataGridColumn13);
+            return _loc_1;
+        }// end function
+
+        public function showApprovalWindow(param1:GuildApplicationVO, param2:PlayerVO) : void
+        {
+            popupWindow(guildApprovalWindow);
+            guildApprovalWindow.init(param1, param2, param1.comment);
+            return;
+        }// end function
+
+        public function _GuildWindow_DataGridColumn24_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildWindow_DataGridColumn24 = _loc_1;
+            _loc_1.dataField = "description";
+            BindingManager.executeBindings(this, "_GuildWindow_DataGridColumn24", _GuildWindow_DataGridColumn24);
+            return _loc_1;
+        }// end function
+
+        public function _GuildWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "";
+            _loc_1.width = 90;
+            BindingManager.executeBindings(this, "_GuildWindow_DataGridColumn2", _GuildWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _GuildWindow_DataGridColumn12_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "maxHp";
+            _loc_1.headerText = "HP";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _GuildWindow_ClassFactory5_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            topPointrenderer = _loc_1;
+            _loc_1.generator = GuildWindow_inlineComponent5;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _GuildWindow_DataGridColumn23_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildWindow_DataGridColumn23 = _loc_1;
+            _loc_1.dataField = "name";
+            _loc_1.width = 100;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_GuildWindow_DataGridColumn23", _GuildWindow_DataGridColumn23);
+            return _loc_1;
+        }// end function
+
+        public function _GuildWindow_DataGridColumn9_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildWindow_DataGridColumn9 = _loc_1;
+            _loc_1.dataField = "playerName";
+            _loc_1.width = 130;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_GuildWindow_DataGridColumn9", _GuildWindow_DataGridColumn9);
+            return _loc_1;
+        }// end function
+
+        public function _GuildWindow_DataGridColumn11_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "level";
+            _loc_1.headerText = "Lv";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _GuildWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "playerName";
+            _loc_1.setStyle("textAlign", "left");
+            BindingManager.executeBindings(this, "_GuildWindow_DataGridColumn1", _GuildWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function getRankText(param1:int) : String
+        {
+            return PlayerVO.ONMYOU_RANK_LABELS[param1];
+        }// end function
+
+        public function _GuildWindow_ClassFactory4_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            pointRenderer = _loc_1;
+            _loc_1.generator = GuildWindow_inlineComponent4;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function disappearTab(param1:Array) : void
+        {
+            tab.source = _swf_tab2;
+            MovieClip(Loader(_swf_tab2.getChildAt(0)).content).gotoAndPlay("tab_guild_other_member");
+            itemList.selectedIndex = 1;
+            return;
+        }// end function
+
+        public function _GuildWindow_DataGridColumn19_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildWindow_DataGridColumn19 = _loc_1;
+            _loc_1.dataField = "playerVO.propertiesCount";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_GuildWindow_DataGridColumn19", _GuildWindow_DataGridColumn19);
+            return _loc_1;
+        }// end function
+
+        public function _GuildWindow_DataGridColumn22_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildWindow_DataGridColumn22 = _loc_1;
+            _loc_1.dataField = "playerVO.rarity";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_GuildWindow_DataGridColumn22", _GuildWindow_DataGridColumn22);
+            return _loc_1;
+        }// end function
+
+        public function init(param1:GuildDetailVO, param2:PlayerVO) : void
+        {
+            _playerVO = param2;
+            guildName = param1.guildName;
+            setGuildLeyLinesLabel(param1);
+            guildAllTerritoriesCount = param1.allTerritoriesCount;
+            guildLevelMaxPropertiesCount = param1.levelMaxPropertiesCount;
+            guildMemberCount = param1.membershipCount;
+            guildTotalNotoriety = param1.totalNotoriety;
+            guildDedicationPoint = param1.dedicationPoint;
+            GuildData.comment = param1.comment;
+            viewDataPlayers = new ArrayCollection(param1.players);
+            isMyGuild = param2.guild && param2.guild.id == param1.guildId;
+            isMaster = isMyGuild && param2.guildMaster;
+            return;
+        }// end function
+
+        public function getPositionStr(param1:Object) : String
+        {
+            return AllMapMediator.hexXtoGameX(param1.homeAllMapPos.x).toString() + ", " + AllMapMediator.hexYtoGameY(param1.homeAllMapPos.y).toString();
+        }// end function
+
+        public function _GuildWindow_DataGridColumn8_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildWindow_DataGridColumn8 = _loc_1;
+            _loc_1.dataField = "name";
+            _loc_1.itemRenderer = _GuildWindow_ClassFactory8_c();
+            BindingManager.executeBindings(this, "_GuildWindow_DataGridColumn8", _GuildWindow_DataGridColumn8);
+            return _loc_1;
+        }// end function
+
+        public function _GuildWindow_DataGridColumn10_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildWindow_DataGridColumn10 = _loc_1;
+            _loc_1.dataField = "jobName";
+            _loc_1.width = 100;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_GuildWindow_DataGridColumn10", _GuildWindow_DataGridColumn10);
+            return _loc_1;
+        }// end function
+
+        public function _GuildWindow_ClassFactory3_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            rank_renderer2 = _loc_1;
+            _loc_1.generator = GuildWindow_inlineComponent3;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _GuildWindow_DataGridColumn18_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildWindow_DataGridColumn18 = _loc_1;
+            _loc_1.dataField = "playerVO.playerRankId";
+            _loc_1.width = 70;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_GuildWindow_DataGridColumn18", _GuildWindow_DataGridColumn18);
+            return _loc_1;
+        }// end function
+
+        public function onShowArmy(param1:int) : void
+        {
+            anotherPlayerId = param1;
+            sendPopupEvent(SHOW_PLAYERS_ARMY, param1);
+            return;
+        }// end function
+
+        public function _GuildWindow_DataGridColumn21_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildWindow_DataGridColumn21 = _loc_1;
+            _loc_1.dataField = "playerVO.maxUnitLevel";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_GuildWindow_DataGridColumn21", _GuildWindow_DataGridColumn21);
+            return _loc_1;
+        }// end function
+
+        public function handleEvent(event:PopupEvent) : void
+        {
+            switch(event.type)
+            {
+                case GuildApprovalWindow.ALLOW_APPLICATION:
+                {
+                    sendPopupEvent(GuildApprovalWindow.ALLOW_APPLICATION, event.param);
+                    break;
+                }
+                case GuildApprovalWindow.REJECT_APPLICATION:
+                {
+                    sendPopupEvent(GuildApprovalWindow.REJECT_APPLICATION, event.param);
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function _GuildWindow_DataGridColumn7_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildWindow_DataGridColumn7 = _loc_1;
+            _loc_1.dataField = "maxUnitLevel";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_GuildWindow_DataGridColumn7", _GuildWindow_DataGridColumn7);
+            return _loc_1;
+        }// end function
+
+        public function _GuildWindow_ClassFactory2_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            rank_renderer = _loc_1;
+            _loc_1.generator = GuildWindow_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _GuildWindow_DataGridColumn17_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildWindow_DataGridColumn17 = _loc_1;
+            _loc_1.width = 260;
+            BindingManager.executeBindings(this, "_GuildWindow_DataGridColumn17", _GuildWindow_DataGridColumn17);
+            return _loc_1;
+        }// end function
+
+        public function _GuildWindow_DataGridColumn20_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildWindow_DataGridColumn20 = _loc_1;
+            _loc_1.dataField = "playerVO.unitCount";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_GuildWindow_DataGridColumn20", _GuildWindow_DataGridColumn20);
+            return _loc_1;
+        }// end function
+
+        public function onApplicationDetail(param1:Object) : void
+        {
+            sendPopupEvent(LOAD_APPLICATION_DETAIL, param1.id);
+            return;
+        }// end function
+
+        public function unitListPopUp(param1:Array) : void
+        {
+            unitListWindow.units = param1;
+            unitListWindow.visible = true;
+            return;
+        }// end function
+
+        public function _GuildWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            icon_renderer = _loc_1;
+            _loc_1.generator = GuildWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _GuildWindow_DataGridColumn16_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildWindow_DataGridColumn16 = _loc_1;
+            _loc_1.dataField = "date";
+            _loc_1.width = 140;
+            BindingManager.executeBindings(this, "_GuildWindow_DataGridColumn16", _GuildWindow_DataGridColumn16);
+            return _loc_1;
+        }// end function
+
+        public function _GuildWindow_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildWindow_DataGridColumn6 = _loc_1;
+            _loc_1.dataField = "unitCount";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_GuildWindow_DataGridColumn6", _GuildWindow_DataGridColumn6);
+            return _loc_1;
+        }// end function
+
+        public function gridToolTip(param1:Object) : String
+        {
+            return Utils.i18n("generalShowDetail");
+        }// end function
+
+        public function onShowReport(param1:Object) : void
+        {
+            var _loc_2:* = param1 as PlayerVO;
+            selectedPlayer = _loc_2;
+            sendPopupEvent(SHOW_RAID_REPORT, _loc_2.playerId);
+            return;
+        }// end function
+
+        public function _GuildWindow_DataGridColumn5_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildWindow_DataGridColumn5 = _loc_1;
+            _loc_1.dataField = "levelMaxPropertiesCount";
+            _loc_1.width = 140;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_GuildWindow_DataGridColumn5", _GuildWindow_DataGridColumn5);
+            return _loc_1;
+        }// end function
+
+        public function _GuildWindow_ClassFactory8_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = UnitDetailLabelWithDownIconRenderer;
+            return _loc_1;
+        }// end function
+
+        public function componentStr(param1:int) : String
+        {
+            if (param1 == 0)
+            {
+                return Utils.i18n("generalExpulsion");
+            }
+            return Utils.i18n("generalConfirmation");
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_GuildWindow_Image1" source="{_swf_window}"/>
+	<mx:Text id="_GuildWindow_Text1" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("generalGuildInfo")}"/>
+	<mx:HBox id="_GuildWindow_HBox1" x="WINDOW_X + 20" y="WINDOW_Y + 35" width="WINDOW_WD - 40">
+		<mx:Text id="_GuildWindow_Text2" styleName="GildWindowInfo" text="{Utils.i18n("createGuildName") + "：" + guildName}"/>
+	</mx:HBox>
+	<mx:HBox id="_GuildWindow_HBox2" x="WINDOW_X + 20" y="WINDOW_Y + 35 + 20" width="WINDOW_WD - 40">
+		<mx:Text id="_GuildWindow_Text3" styleName="GildWindowInfo" text="{Utils.i18n("searchGuildMemberCount") + "：" + guildMemberCount}"/>
+		<mx:Text id="_GuildWindow_Text4" styleName="GildWindowInfo" text="{Utils.i18n("searchGuildTerritoryCount") + "：" + guildAllTerritoriesCount + "(" + guildLevelMaxPropertiesCount + ")"}"/>
+		<mx:Text id="_GuildWindow_Text5" styleName="GildWindowInfo" text="{Utils.i18n("localize66") + "：" + leyLinesCount}"/>
+	</mx:HBox>
+	<mx:ViewStack id="itemList" width="100%" height="100%">
+		<mx:Canvas id="_GuildWindow_Canvas1" width="100%" height="100%" label="{Utils.i18n("generalGuildInfo")}">
+			<mx:Box id="_GuildWindow_Box1" height="260" borderColor="2829099" borderStyle="solid" backgroundColor="#00ffffff" x="WINDOW_X + 20" y="WINDOW_Y + 35 + 78" width="WINDOW_WD - 40">
+				<mx:Text id="_GuildWindow_Text6" height="160" color="#00000000" fontSize="14" leading="0" text="{"　" + GuildData.comment}" width="WINDOW_WD - 40 - 10"/>
+			</mx:Box>
+		</mx:Canvas>
+		<mx:Canvas id="_GuildWindow_Canvas2" width="100%" height="100%" label="{Utils.i18n("generalMember")}">
+			<mx:Box id="_GuildWindow_Box2" height="280" x="WINDOW_X + 20" y="WINDOW_Y + 35 + 78">
+				<mx:DataGrid id="players_list" rowCount="11" rowHeight="23" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_GuildWindow_DataGridColumn1_i(), _GuildWindow_DataGridColumn2_i(), _GuildWindow_DataGridColumn3_i(), _GuildWindow_DataGridColumn4_i(), _GuildWindow_DataGridColumn5_i(), _GuildWindow_DataGridColumn6_i(), _GuildWindow_DataGridColumn7_i()]}" dataProvider='{viewDataPlayers}' width="WINDOW_WD - 40"/>
+			</mx:Box>
+		</mx:Canvas>
+		<mx:Canvas id="_GuildWindow_Canvas3" width="100%" height="100%" label="{Utils.i18n("generalDispatchList")}">
+			<mx:Box id="_GuildWindow_Box3" height="260" x="WINDOW_X + 20" y="WINDOW_Y + 35 + 78">
+				<mx:DataGrid id="army_data_list" rowCount="10" rowHeight="23" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_GuildWindow_DataGridColumn8_i(), _GuildWindow_DataGridColumn9_i(), _GuildWindow_DataGridColumn10_i(), _GuildWindow_DataGridColumn11_c(), _GuildWindow_DataGridColumn12_c(), _GuildWindow_DataGridColumn13_i(), _GuildWindow_DataGridColumn14_i(), _GuildWindow_DataGridColumn15_i()]}" dataProvider='{_guildArmyUnits}' width="WINDOW_WD - 40"/>
+			</mx:Box>
+		</mx:Canvas>
+		<mx:Canvas id="_GuildWindow_Canvas4" width="100%" height="100%" label="{Utils.i18n("admissionGuildRequest")}">
+			<mx:Box id="_GuildWindow_Box4" height="280" x="WINDOW_X + 20" y="WINDOW_Y + 35 + 78">
+				<mx:DataGrid id="application_data_list" rowCount="9" rowHeight="23" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_GuildWindow_DataGridColumn16_i(), _GuildWindow_DataGridColumn17_i(), _GuildWindow_DataGridColumn18_i(), _GuildWindow_DataGridColumn19_i(), _GuildWindow_DataGridColumn20_i(), _GuildWindow_DataGridColumn21_i(), _GuildWindow_DataGridColumn22_i()]}" dataProvider='{_applicationData}' width="WINDOW_WD - 40"/>
+			</mx:Box>
+		</mx:Canvas>
+		<mx:Canvas id="_GuildWindow_Canvas5" width="100%" height="100%" label="{Utils.i18n("localize68")}">
+			<mx:Box id="_GuildWindow_Box5" height="280" x="WINDOW_X + 20" y="WINDOW_Y + 35 + 78">
+				<mx:DataGrid id="ley_line_data_list" rowCount="11" rowHeight="23" styleName="DataGridBase" selectable="false" sortableColumns="false" horizontalScrollPolicy="off" columns="{[_GuildWindow_DataGridColumn23_i(), _GuildWindow_DataGridColumn24_i()]}" dataProvider='{_leyLines}' width="WINDOW_WD - 40"/>
+			</mx:Box>
+		</mx:Canvas>
+	</mx:ViewStack>
+	<mx:Image id="tab" x="WINDOW_X + 20" y="WINDOW_Y + 35 + 50" source="{_swf_tab2}"/>
+	<mx:Image id="_GuildWindow_Image3" click="{closeWindow();}" x="BUTTON_X" y="BUTTON_Y" source="{_swf_close}"/>
+	<mx:Button visible="false"/>
+	<mx:Image id="_GuildWindow_Image4" click="{closeWindow();}" x="WINDOW_X + WINDOW_WD - 25" y="WINDOW_Y" source="{_swf_close_window}"/>
+	<mx:UnitListWindow id="unitListWindow" visible="false" y="0" x="15"/>
+
+</mx:PopupWindow>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="263" height="128">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private static var  HP_BAR_HT:int = 16;
+        private static var  HP_BAR_WD:int = 138;
+        private static var  _staticBindingEventDispatcher:EventDispatcher;
+
+
+        public function drawHpBar() : void
+        {
+            square1.graphics.beginFill(0);
+            square1.graphics.drawRect(0, 0, HP_BAR_WD, HP_BAR_HT);
+            square1.graphics.endFill();
+            square2.graphics.beginFill(8519680);
+            square2.graphics.drawRect(0 + HP_BAR_BOLD, 0 + HP_BAR_BOLD, HP_BAR_WD - HP_BAR_BOLD * 2, HP_BAR_HT - HP_BAR_BOLD * 2);
+            square2.graphics.endFill();
+            square3.graphics.beginFill(5285376);
+            square3.graphics.drawRect(0, 0 + HP_BAR_BOLD, HP_BAR_WD - HP_BAR_BOLD * 2, HP_BAR_HT - HP_BAR_BOLD * 2);
+            square3.graphics.endFill();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="unitLayer" width="240" height="100"/>
+	<mx:Label id="_ResultItemRenderer_Label1" x="100" y="12" fontSize="14" fontWeight="bold" text="{UnitExpVO(data).unitVO.name}"/>
+	<mx:Label id="_ResultItemRenderer_Label2" x="100" y="32" fontSize="14" text="{"HP " + UnitExpVO(data).unitVO.hp + "/" + UnitExpVO(data).unitVO.realMaxHp}"/>
+	<mx:Canvas id="unitHpBar" x="102" y="50">
+		<mx:UIComponent id="square1"/>
+		<mx:UIComponent id="square2"/>
+		<mx:UIComponent id="square3" x="HP_BAR_BOLD" scaleX="{UnitExpVO(data).unitVO.hp / UnitExpVO(data).unitVO.realMaxHp}"/>
+	</mx:Canvas>
+	<mx:Label id="_ResultItemRenderer_Label3" x="100" y="68" fontSize="14" color="#00eb6100" text="{Utils.i18n("localize201") + "Exp " + getExp}"/>
+	<mx:Label id="_ResultItemRenderer_Label4" x="100" y="86" fontSize="14" text=""Exp " + nowExp + "/" + nxtExp"/>
+
+</mx:Canvas>

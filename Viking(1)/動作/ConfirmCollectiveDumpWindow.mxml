@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  weaponDetail:WeaponDetail;
+        private var  equipmentDetail:EquipmentDetail;
+        public static const  CONFIRMED:String = "ConfirmCollectiveDumpWindow/confirmed";
+
+
+        public function _ConfirmCollectiveDumpWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ConfirmCollectiveDumpWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "enduranceLabel";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ConfirmCollectiveDumpWindow_DataGridColumn2", _ConfirmCollectiveDumpWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _ConfirmCollectiveDumpWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ConfirmCollectiveDumpWindow_DataGridColumn4 = _loc_1;
+            _loc_1.dataField = "rarity";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ConfirmCollectiveDumpWindow_DataGridColumn4", _ConfirmCollectiveDumpWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function onDecide() : void
+        {
+            sendPopupEvent(CONFIRMED, dumpItems);
+            onClose();
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            MovieClip(Loader(_swf_ok_button.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_cancel_button.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_ok_button.getChildAt(0)).content).gotoAndPlay("button_decide");
+            MovieClip(Loader(_swf_cancel_button.getChildAt(0)).content).gotoAndPlay("button_cancel");
+            return;
+        }// end function
+
+        public function onDetail(param1:Object) : void
+        {
+            if (param1.masterType == "WeaponMaster" || param1.masterType == "ArmorMaster" || param1.masterType == "AccessoryMaster")
+            {
+                weaponDetail.viewData = param1;
+                if (weaponDetail.viewData)
+                {
+                    popupWindow(weaponDetail, false);
+                }
+            }
+            else
+            {
+                equipmentDetail.viewData = param1;
+                if (equipmentDetail.viewData)
+                {
+                    popupWindow(equipmentDetail);
+                }
+            }
+            return;
+        }// end function
+
+        public function _ConfirmCollectiveDumpWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ConfirmCollectiveDumpWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 80;
+            BindingManager.executeBindings(this, "_ConfirmCollectiveDumpWindow_DataGridColumn1", _ConfirmCollectiveDumpWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _ConfirmCollectiveDumpWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ConfirmCollectiveDumpWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "belongingTypeLabel";
+            _loc_1.width = 65;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ConfirmCollectiveDumpWindow_DataGridColumn3", _ConfirmCollectiveDumpWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _ConfirmCollectiveDumpWindow_DataGridColumn5_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ConfirmCollectiveDumpWindow_DataGridColumn5 = _loc_1;
+            _loc_1.dataField = "description";
+            _loc_1.sortable = false;
+            BindingManager.executeBindings(this, "_ConfirmCollectiveDumpWindow_DataGridColumn5", _ConfirmCollectiveDumpWindow_DataGridColumn5);
+            return _loc_1;
+        }// end function
+
+        public function _ConfirmCollectiveDumpWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            nameRenderer = _loc_1;
+            _loc_1.generator = ConfirmCollectiveDumpWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Box id="bigbox" width="400" height="360" x="180" y="110">
+		<mx:Canvas id="smallerCanvas">
+			<mx:Label id="_ConfirmCollectiveDumpWindow_Label1" x="20" y="10" fontSize="14" text="{Utils.i18n("confirmCollectiveDump")}"/>
+			<mx:DataGrid id="dataList" styleName="DataGridBase" x="20" y="45" height="195" width="360" rowHeight="28" rowCount="7" sortableColumns="false" columns="{[_ConfirmCollectiveDumpWindow_DataGridColumn1_i(), _ConfirmCollectiveDumpWindow_DataGridColumn2_i(), _ConfirmCollectiveDumpWindow_DataGridColumn3_i(), _ConfirmCollectiveDumpWindow_DataGridColumn4_i(), _ConfirmCollectiveDumpWindow_DataGridColumn5_i()]}" verticalAlign="middle" dataProvider='{_dumpItems}'/>
+			<mx:Image id="_ConfirmCollectiveDumpWindow_Image1" x="80" y="280" click="{onDecide();}" source="{_swf_ok_button}"/>
+			<mx:Image id="_ConfirmCollectiveDumpWindow_Image2" x="200" y="280" click="{onClose();}" source="{_swf_cancel_button}"/>
+		</mx:Canvas>
+	</mx:Box>
+
+</mx:PopupWindow>

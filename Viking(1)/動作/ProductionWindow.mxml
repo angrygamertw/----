@@ -1,0 +1,669 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:CanvasWithPopUp xmlns:mx="http://www.adobe.com/2006/mxml" width="750" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        public var  _loc_1:Array = null;
+        public var  upgradeItemWindow:UpgradeItemWindow;
+        public var  _loc_1:Array = null;
+        public var  _loc_1:Array = null;
+        public var  _loc_1:Array = null;
+        private var  _reproductions:ArrayCollection;
+        private var  _upgradeItems:ArrayCollection;
+        public var  productionConditionWindow:ProductionConditionWindow;
+        private var  _productionsByType:ArrayCollection;
+        private var  selectId:int;
+        public var  _loc_1:Array = null;
+        private var  productionTypes:Array;
+        public var  _tutMarkProductionVisible:Boolean = false;
+        public var  _loc_1:Array = null;
+        public var  productionQuantityWindow:ProductionQuantityWindow;
+        private var  equipmentDetail:EquipmentDetail;
+        private var  weaponDetail:WeaponDetail;
+        public static const  CLOSED_PRODUCTION_WINDOW:String = "closedProductionWindow";
+        public static const  PRODUCE_MAX_QUANTITY:String = "produceMaxQuantity";
+        public static const  OPEN_UPGRADE_WINDOW:String = "openUpgradeWindow";
+        public static const  OPEN_CONDITION_WINDOW:String = "openConditionWindow";
+        public static const  OPEN_QUANTITY_WINDOW:String = "openQuantityWindow";
+        public static const  TAB_LABEL:Object = {0:"tab_production_blacksmith", 1:"tab_production_leather", 2:"tab_production_cloth", 3:"tab_production_magic", 4:"tab_production_accessory", 5:"tab_compound_soul", 6:"tab_compound_strengthen"};
+        public static const  UPGRADE_ITEM:String = "upgradeItem";
+
+
+        public function _ProductionWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "masterVO.product.description";
+            BindingManager.executeBindings(this, "_ProductionWindow_DataGridColumn3", _ProductionWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn10_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionWindow_DataGridColumn10 = _loc_1;
+            _loc_1.dataField = "button";
+            _loc_1.width = 52;
+            _loc_1.itemRenderer = _ProductionWindow_ClassFactory6_c();
+            BindingManager.executeBindings(this, "_ProductionWindow_DataGridColumn10", _ProductionWindow_DataGridColumn10);
+            return _loc_1;
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn18_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionWindow_DataGridColumn18 = _loc_1;
+            _loc_1.dataField = "masterVO.product.description";
+            BindingManager.executeBindings(this, "_ProductionWindow_DataGridColumn18", _ProductionWindow_DataGridColumn18);
+            return _loc_1;
+        }// end function
+
+        public function _ProductionWindow_ClassFactory2_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRendererUpgradeItems = _loc_1;
+            _loc_1.generator = ProductionWindow_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function componentToolTip() : String
+        {
+            return Utils.i18n("generalShowDetail");
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn21_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionWindow_DataGridColumn21 = _loc_1;
+            _loc_1.dataField = "masterVO.product.description";
+            BindingManager.executeBindings(this, "_ProductionWindow_DataGridColumn21", _ProductionWindow_DataGridColumn21);
+            return _loc_1;
+        }// end function
+
+        public function onDetailUpgradeItems(param1:Object) : void
+        {
+            if (param1.masterVO.masterType == "WeaponMaster" || param1.masterVO.masterType == "ArmorMaster" || param1.masterVO.masterType == "AccessoryMaster")
+            {
+                weaponDetail.viewData = param1.masterVO;
+                if (weaponDetail.viewData)
+                {
+                    popupWindow(weaponDetail);
+                }
+            }
+            else
+            {
+                equipmentDetail.viewData = param1.masterVO;
+                if (equipmentDetail.viewData)
+                {
+                    popupWindow(equipmentDetail);
+                }
+            }
+            return;
+        }// end function
+
+        public function changeItemFilter(param1:Object) : Boolean
+        {
+            if (param1.masterVO.product.masterType == "ItemMaster" || param1.masterVO.product.masterType == "MaterialMaster")
+            {
+                return true;
+            }
+            return false;
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionWindow_DataGridColumn2 = _loc_1;
+            _loc_1.width = 140;
+            BindingManager.executeBindings(this, "_ProductionWindow_DataGridColumn2", _ProductionWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn17_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionWindow_DataGridColumn17 = _loc_1;
+            _loc_1.dataField = "masterVO.product.nameLabel";
+            _loc_1.width = 140;
+            BindingManager.executeBindings(this, "_ProductionWindow_DataGridColumn17", _ProductionWindow_DataGridColumn17);
+            return _loc_1;
+        }// end function
+
+        public function reproduceButtonClicked(param1:ReproductionVO) : void
+        {
+            productionQuantityWindow.quantityMax = 1;
+            productionQuantityWindow.reproduction = param1;
+            popupWindow(productionQuantityWindow);
+            return;
+        }// end function
+
+        public function _ProductionWindow_ClassFactory9_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = ProductionButtonRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _ProductionWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRenderer = _loc_1;
+            _loc_1.generator = ProductionWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function produceHandler(event:PopupEvent) : void
+        {
+            PopUpManager.removePopUp(productionQuantityWindow);
+            this.dispatchEvent(new PopupEvent(Viking.HOME_PRODUCE, event.param));
+            return;
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn20_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionWindow_DataGridColumn20 = _loc_1;
+            _loc_1.dataField = "masterVO.product.nameLabel";
+            _loc_1.width = 140;
+            BindingManager.executeBindings(this, "_ProductionWindow_DataGridColumn20", _ProductionWindow_DataGridColumn20);
+            return _loc_1;
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            produceButton = _loc_1;
+            _loc_1.dataField = "button";
+            _loc_1.width = 52;
+            _loc_1.itemRenderer = _ProductionWindow_ClassFactory3_c();
+            BindingManager.executeBindings(this, "produceButton", produceButton);
+            return _loc_1;
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn9_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionWindow_DataGridColumn9 = _loc_1;
+            _loc_1.dataField = "masterVO.product.description";
+            BindingManager.executeBindings(this, "_ProductionWindow_DataGridColumn9", _ProductionWindow_DataGridColumn9);
+            return _loc_1;
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn16_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionWindow_DataGridColumn16 = _loc_1;
+            _loc_1.dataField = "button";
+            _loc_1.width = 52;
+            _loc_1.itemRenderer = _ProductionWindow_ClassFactory8_c();
+            BindingManager.executeBindings(this, "_ProductionWindow_DataGridColumn16", _ProductionWindow_DataGridColumn16);
+            return _loc_1;
+        }// end function
+
+        public function _ProductionWindow_ClassFactory8_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = ProductionButtonRenderer;
+            return _loc_1;
+        }// end function
+
+        public function initProductionTmarks(param1:int, param2:Boolean) : void
+        {
+            if (param1 == 10 && !param2)
+            {
+                tutVisible = true;
+                nonTutVisible = false;
+                _tutMarkProductionVisible = true;
+            }
+            else
+            {
+                _tutMarkProductionVisible = false;
+                tutVisible = false;
+                nonTutVisible = true;
+            }
+            return;
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn8_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionWindow_DataGridColumn8 = _loc_1;
+            _loc_1.dataField = "masterVO.product.nameLabel";
+            _loc_1.width = 124;
+            BindingManager.executeBindings(this, "_ProductionWindow_DataGridColumn8", _ProductionWindow_DataGridColumn8);
+            return _loc_1;
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn15_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionWindow_DataGridColumn15 = _loc_1;
+            _loc_1.dataField = "masterVO.product.description";
+            BindingManager.executeBindings(this, "_ProductionWindow_DataGridColumn15", _ProductionWindow_DataGridColumn15);
+            return _loc_1;
+        }// end function
+
+        public function _ProductionWindow_ClassFactory10_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = ItemUpgradeButtonRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _ProductionWindow_ClassFactory7_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = ProductionButtonRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn14_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionWindow_DataGridColumn14 = _loc_1;
+            _loc_1.dataField = "masterVO.product.nameLabel";
+            _loc_1.width = 140;
+            BindingManager.executeBindings(this, "_ProductionWindow_DataGridColumn14", _ProductionWindow_DataGridColumn14);
+            return _loc_1;
+        }// end function
+
+        public function init() : void
+        {
+            itemList.selectedIndex = 0;
+            productionQuantityWindow.addEventListener(ProductionQuantityWindow.PRODUCE, produceHandler);
+            return;
+        }// end function
+
+        public function _ProductionWindow_ClassFactory6_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = ProductionButtonRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn7_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionWindow_DataGridColumn7 = _loc_1;
+            _loc_1.dataField = "button";
+            _loc_1.width = 78;
+            _loc_1.itemRenderer = _ProductionWindow_ClassFactory5_c();
+            BindingManager.executeBindings(this, "_ProductionWindow_DataGridColumn7", _ProductionWindow_DataGridColumn7);
+            return _loc_1;
+        }// end function
+
+        public function onDetail(param1:Object) : void
+        {
+            if (param1.masterVO.product.masterType == "WeaponMaster" || param1.masterVO.product.masterType == "ArmorMaster" || param1.masterVO.product.masterType == "AccessoryMaster")
+            {
+                weaponDetail.viewData = param1.masterVO.product;
+                if (weaponDetail.viewData)
+                {
+                    popupWindow(weaponDetail);
+                }
+            }
+            else
+            {
+                equipmentDetail.viewData = param1.masterVO.product;
+                if (equipmentDetail.viewData)
+                {
+                    popupWindow(equipmentDetail);
+                }
+            }
+            return;
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn25_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionWindow_DataGridColumn25 = _loc_1;
+            _loc_1.dataField = "masterVO.description";
+            BindingManager.executeBindings(this, "_ProductionWindow_DataGridColumn25", _ProductionWindow_DataGridColumn25);
+            return _loc_1;
+        }// end function
+
+        public function conditionButtonClicked(param1:ProductionVO) : void
+        {
+            var production:* = param1;
+            productionConditionWindow.callLater(function () : void
+            {
+                productionConditionWindow.production = production;
+                return;
+            }// end function
+            );
+            popupWindow(productionConditionWindow, false);
+            this.dispatchEvent(new Event(OPEN_CONDITION_WINDOW));
+            return;
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionWindow_DataGridColumn6 = _loc_1;
+            _loc_1.dataField = "masterVO.product.description";
+            BindingManager.executeBindings(this, "_ProductionWindow_DataGridColumn6", _ProductionWindow_DataGridColumn6);
+            return _loc_1;
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn13_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionWindow_DataGridColumn13 = _loc_1;
+            _loc_1.dataField = "button";
+            _loc_1.width = 52;
+            _loc_1.itemRenderer = _ProductionWindow_ClassFactory7_c();
+            BindingManager.executeBindings(this, "_ProductionWindow_DataGridColumn13", _ProductionWindow_DataGridColumn13);
+            return _loc_1;
+        }// end function
+
+        public function _ProductionWindow_ClassFactory5_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = ProductionButtonTutorialRenderer;
+            return _loc_1;
+        }// end function
+
+        public function onClose() : void
+        {
+            dispatchEvent(new PopupEvent(CLOSED_PRODUCTION_WINDOW, {window:this}));
+            return;
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn24_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionWindow_DataGridColumn24 = _loc_1;
+            _loc_1.dataField = "masterVO.masterTypeLabel";
+            _loc_1.width = 70;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ProductionWindow_DataGridColumn24", _ProductionWindow_DataGridColumn24);
+            return _loc_1;
+        }// end function
+
+        public function setJobMasterData(param1:Object) : void
+        {
+            var _loc_3:Object = null;
+            var _loc_2:int = 1;
+            selectJobData = new Array();
+            selectJobData.push({label:Utils.i18n("generalAllView"), id:0});
+            selectJobData.push({label:Utils.i18n("productionListSortLabel"), id:999});
+            for each (_loc_3 in param1)
+            {
+                
+                if (_loc_3.disabled == false && _loc_3.code && Number(_loc_3.code) < 1000)
+                {
+                    selectJobData.push({label:_loc_3.nameLabel, id:_loc_3.masterId});
+                }
+            }
+            return;
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn12_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionWindow_DataGridColumn12 = _loc_1;
+            _loc_1.dataField = "masterVO.product.description";
+            BindingManager.executeBindings(this, "_ProductionWindow_DataGridColumn12", _ProductionWindow_DataGridColumn12);
+            return _loc_1;
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn5_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionWindow_DataGridColumn5 = _loc_1;
+            _loc_1.dataField = "masterVO.product.nameLabel";
+            _loc_1.width = 140;
+            BindingManager.executeBindings(this, "_ProductionWindow_DataGridColumn5", _ProductionWindow_DataGridColumn5);
+            return _loc_1;
+        }// end function
+
+        public function upgradeHandler(event:PopupEvent) : void
+        {
+            upgradeItemWindow.removeEventListener(UpgradeItemWindow.UPGRADE_ITEM, upgradeHandler);
+            this.dispatchEvent(new PopupEvent(UPGRADE_ITEM, event.param));
+            return;
+        }// end function
+
+        public function _ProductionWindow_ClassFactory4_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = ProductionButtonRenderer;
+            return _loc_1;
+        }// end function
+
+        public function produceButtonClicked(param1:ProductionVO) : void
+        {
+            var production:* = param1;
+            var createBool:* = productionQuantityWindow.judgeQuantityMax(production);
+            if (createBool)
+            {
+                productionQuantityWindow.callLater(function () : void
+            {
+                productionQuantityWindow.production = production;
+                return;
+            }// end function
+            );
+                popupWindow(productionQuantityWindow, false);
+                this.dispatchEvent(new Event(OPEN_QUANTITY_WINDOW));
+            }
+            else
+            {
+                this.dispatchEvent(new PopupEvent(PRODUCE_MAX_QUANTITY, production.masterVO.product.nameLabel));
+            }
+            return;
+        }// end function
+
+        public function jobFilter(event:Event) : void
+        {
+            selectId = event.currentTarget.selectedItem.id;
+            var _loc_2:* = new ArrayCollection();
+            switch(itemList.selectedIndex)
+            {
+                case 0:
+                {
+                    _loc_2 = blackSmithArray;
+                    break;
+                }
+                case 1:
+                {
+                    _loc_2 = leatherArray;
+                    break;
+                }
+                case 2:
+                {
+                    _loc_2 = clothArray;
+                    break;
+                }
+                case 3:
+                {
+                    _loc_2 = catalystArray;
+                    break;
+                }
+                case 4:
+                {
+                    _loc_2 = accessoryArray;
+                    break;
+                }
+                case 5:
+                {
+                    _loc_2 = crystalArray;
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            if (selectId == 0)
+            {
+                _loc_2.filterFunction = null;
+            }
+            else if (selectId == 999)
+            {
+                _loc_2.filterFunction = changeItemFilter;
+            }
+            else
+            {
+                _loc_2.filterFunction = changeJobFilter;
+            }
+            _loc_2.refresh();
+            return;
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn23_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionWindow_DataGridColumn23 = _loc_1;
+            _loc_1.dataField = "masterVO.nameLabel";
+            _loc_1.width = 100;
+            BindingManager.executeBindings(this, "_ProductionWindow_DataGridColumn23", _ProductionWindow_DataGridColumn23);
+            return _loc_1;
+        }// end function
+
+        public function changeJobFilter(param1:Object) : Boolean
+        {
+            var _loc_2:int = 0;
+            if (param1.masterVO.product.masterType == "WeaponMaster" || param1.masterVO.product.masterType == "ArmorMaster" || param1.masterVO.product.masterType == "AccessoryMaster")
+            {
+                _loc_2 = 0;
+                while (_loc_2 < param1.masterVO.product.equipabilities.length)
+                {
+                    
+                    if (param1.masterVO.product.equipabilities[_loc_2].job_id == selectId)
+                    {
+                        return true;
+                    }
+                    _loc_2++;
+                }
+                return false;
+            }
+            else
+            {
+                return false;
+            }
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn11_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionWindow_DataGridColumn11 = _loc_1;
+            _loc_1.dataField = "masterVO.product.nameLabel";
+            _loc_1.width = 140;
+            BindingManager.executeBindings(this, "_ProductionWindow_DataGridColumn11", _ProductionWindow_DataGridColumn11);
+            return _loc_1;
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionWindow_DataGridColumn4 = _loc_1;
+            _loc_1.dataField = "button";
+            _loc_1.width = 52;
+            _loc_1.itemRenderer = _ProductionWindow_ClassFactory4_c();
+            BindingManager.executeBindings(this, "_ProductionWindow_DataGridColumn4", _ProductionWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function _ProductionWindow_ClassFactory3_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = ProductionButtonRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn19_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionWindow_DataGridColumn19 = _loc_1;
+            _loc_1.dataField = "button";
+            _loc_1.width = 52;
+            _loc_1.itemRenderer = _ProductionWindow_ClassFactory9_c();
+            BindingManager.executeBindings(this, "_ProductionWindow_DataGridColumn19", _ProductionWindow_DataGridColumn19);
+            return _loc_1;
+        }// end function
+
+        public function upgradeButtonClicked(param1:Object) : void
+        {
+            upgradeItemWindow.init();
+            popupWindow(upgradeItemWindow, false);
+            this.dispatchEvent(new PopupEvent(OPEN_UPGRADE_WINDOW, param1));
+            upgradeItemWindow.addEventListener(UpgradeItemWindow.UPGRADE_ITEM, upgradeHandler);
+            return;
+        }// end function
+
+        public function _ProductionWindow_DataGridColumn22_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.headerText = "強化";
+            _loc_1.width = 52;
+            _loc_1.itemRenderer = _ProductionWindow_ClassFactory10_c();
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Canvas id="tabCanvas" x="42" y="114" width="300"/>
+	<mx:Text id="_ProductionWindow_Text1" styleName="PanelBaseTitle" x="325" y="83" text="{Utils.i18n("productionList")}"/>
+	<mx:ViewStack id="itemList" width="100%">
+		<mx:Canvas id="_ProductionWindow_Canvas3" width="100%" label="{Utils.i18n("generalBlacksmith")}">
+			<mx:ComboBox id="_ProductionWindow_ComboBox1" x="495" y="485" width="150" styleName="GuildComboBox" change="{jobFilter(event);}" dataProvider='{selectJobData}'/>
+			<mx:Box x="37" y="140" width="640">
+				<mx:DataGrid id="blacksmith_data_list" width="640" rowCount="11" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_ProductionWindow_DataGridColumn1_i(), _ProductionWindow_DataGridColumn2_i(), _ProductionWindow_DataGridColumn3_i()]}" verticalAlign="middle" dataProvider='{blackSmithArray}'/>
+			</mx:Box>
+		</mx:Canvas>
+		<mx:Canvas id="_ProductionWindow_Canvas4" width="100%" label="{Utils.i18n("generalLeather")}">
+			<mx:ComboBox id="_ProductionWindow_ComboBox2" x="495" y="485" width="150" styleName="GuildComboBox" change="{jobFilter(event);}" dataProvider='{selectJobData}' visible="nonTutVisible"/>
+			<mx:Box x="37" y="140" width="640">
+				<mx:DataGrid id="leather_data_list" width="640" rowCount="11" styleName="DataGridBase" selectable="false" sortableColumns="false" includeInLayout="false" columns="{[_ProductionWindow_DataGridColumn4_i(), _ProductionWindow_DataGridColumn5_i(), _ProductionWindow_DataGridColumn6_i()]}" verticalAlign="middle" dataProvider='{leatherArray}' visible="nonTutVisible"/>
+				<mx:DataGrid id="leather_data_list_tutorial" width="640" rowCount="11" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_ProductionWindow_DataGridColumn7_i(), _ProductionWindow_DataGridColumn8_i(), _ProductionWindow_DataGridColumn9_i()]}" verticalAlign="middle" dataProvider='{leatherArray}' visible="tutVisible"/>
+			</mx:Box>
+		</mx:Canvas>
+		<mx:Canvas id="_ProductionWindow_Canvas5" width="100%" label="{Utils.i18n("generalCloth")}">
+			<mx:ComboBox id="_ProductionWindow_ComboBox3" x="495" y="485" width="150" styleName="GuildComboBox" change="{jobFilter(event);}" dataProvider='{selectJobData}'/>
+			<mx:Box x="37" y="140" width="640">
+				<mx:DataGrid id="cloth_data_list" width="640" rowCount="11" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_ProductionWindow_DataGridColumn10_i(), _ProductionWindow_DataGridColumn11_i(), _ProductionWindow_DataGridColumn12_i()]}" verticalAlign="middle" dataProvider='{clothArray}'/>
+			</mx:Box>
+		</mx:Canvas>
+		<mx:Canvas id="_ProductionWindow_Canvas6" width="100%" label="{Utils.i18n("generalMagic")}">
+			<mx:ComboBox id="_ProductionWindow_ComboBox4" x="495" y="485" width="150" styleName="GuildComboBox" change="{jobFilter(event);}" dataProvider='{selectJobData}'/>
+			<mx:Box x="37" y="140" width="640">
+				<mx:DataGrid id="catalyst_data_list" width="640" rowCount="11" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_ProductionWindow_DataGridColumn13_i(), _ProductionWindow_DataGridColumn14_i(), _ProductionWindow_DataGridColumn15_i()]}" verticalAlign="middle" dataProvider='{catalystArray}'/>
+			</mx:Box>
+		</mx:Canvas>
+		<mx:Canvas id="_ProductionWindow_Canvas7" width="100%" label="{Utils.i18n("generalAccessory")}">
+			<mx:ComboBox id="_ProductionWindow_ComboBox5" x="495" y="485" width="150" styleName="GuildComboBox" change="{jobFilter(event);}" dataProvider='{selectJobData}'/>
+			<mx:Box x="37" y="140" width="640">
+				<mx:DataGrid id="crafts_data_list" width="640" rowCount="11" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_ProductionWindow_DataGridColumn16_i(), _ProductionWindow_DataGridColumn17_i(), _ProductionWindow_DataGridColumn18_i()]}" verticalAlign="middle" dataProvider='{accessoryArray}'/>
+			</mx:Box>
+		</mx:Canvas>
+		<mx:Canvas label="{Utils.i18n(\'generalAlthing\')" width="100%">
+			<mx:ComboBox id="_ProductionWindow_ComboBox6" x="495" y="485" width="150" styleName="GuildComboBox" change="{jobFilter(event);}" dataProvider='{selectJobData}'/>
+			<mx:Box x="37" y="140" width="640">
+				<mx:DataGrid id="clystals_data_list" width="640" rowCount="11" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_ProductionWindow_DataGridColumn19_i(), _ProductionWindow_DataGridColumn20_i(), _ProductionWindow_DataGridColumn21_i()]}" verticalAlign="middle" dataProvider='{crystalArray}'/>
+			</mx:Box>
+		</mx:Canvas>
+		<mx:Canvas label="強化" width="100%">
+			<mx:Box x="37" y="140" width="640">
+				<mx:DataGrid id="upgradeItems_data_list" width="640" rowCount="11" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_ProductionWindow_DataGridColumn22_c(), _ProductionWindow_DataGridColumn23_i(), _ProductionWindow_DataGridColumn24_i(), _ProductionWindow_DataGridColumn25_i()]}" verticalAlign="middle" dataProvider='{upgradeItems}'/>
+			</mx:Box>
+		</mx:Canvas>
+	</mx:ViewStack>
+	<mx:Image width="20" height="20" source="_embed_mxml__swf_common_button_close_window_swf_1370265653" top="80" right="65" click="{onClose();}"/>
+	<mx:Image id="tutMarkProduce" source="_embed_mxml__swf_common_arrow_bottom_swf_1091498217" width="75" height="75" y="70" x="178" visible="tutVisible"/>
+	<mx:Canvas id="buttonLayer"/>
+
+</mx:CanvasWithPopUp>

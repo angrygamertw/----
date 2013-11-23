@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{createComp();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  playerVO:PlayerVO;
+        public static const  SPECIAL_SUMMON_RUN:String = "specialSummonRun";
+        public static const  CLOSE_WINDOW:String = "closeWindow";
+        public static const  NAME:String = "sprecialSummonWiondow";
+
+
+        public function closeWindow() : void
+        {
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_no");
+            MovieClip(Loader(_swf_ok.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_ok.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_ticket_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_ticket_close.getChildAt(0)).content).gotoAndPlay("button_no");
+            MovieClip(Loader(_swf_ticket_ok.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_ticket_ok.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_back.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_back.getChildAt(0)).content).gotoAndPlay("button_back");
+            sendEvent(CLOSE_WINDOW);
+            return;
+        }// end function
+
+        public function init(param1:PlayerVO, param2:String, param3:ResourceVO) : void
+        {
+            var _loc_4:String = null;
+            var _loc_5:Object = null;
+            playerVO = param1;
+            _type = param2;
+            switch(_type)
+            {
+                case "hero":
+                {
+                    usePower = 600;
+                    titleText = Utils.i18n("specialSummonGold");
+                    _loc_4 = "1353";
+                    break;
+                }
+                case "rainbow":
+                {
+                    usePower = 900;
+                    titleText = Utils.i18n("specialSummonRainbow");
+                    _loc_4 = "1352";
+                    break;
+                }
+                case "sky":
+                {
+                    usePower = 0;
+                    titleText = Utils.i18n("specialSummonSky");
+                    _loc_4 = "1418";
+                    break;
+                }
+                case "campaign1":
+                {
+                    usePower = 500;
+                    titleText = Utils.i18n("summonTypeSelectYamihimeSummon");
+                    _loc_4 = "1528";
+                    break;
+                }
+                case "campaign2":
+                {
+                    usePower = 200;
+                    titleText = Utils.i18n("summonTypeSelectPumpkinSummon");
+                    _loc_4 = "1526";
+                    break;
+                }
+                case "campaign3":
+                {
+                    usePower = 500;
+                    titleText = Utils.i18n("summonTypeSelectBarahimeSummon");
+                    _loc_4 = "1528";
+                    break;
+                }
+                case "racial1":
+                {
+                    usePower = 900;
+                    titleText = "刀斧種族召喚";
+                    _loc_4 = "";
+                    break;
+                }
+                case "racial2":
+                {
+                    usePower = 900;
+                    titleText = "槍弓種族召喚";
+                    _loc_4 = "";
+                    break;
+                }
+                case "racial3":
+                {
+                    usePower = 900;
+                    titleText = "術種族召喚";
+                    _loc_4 = "";
+                    break;
+                }
+                default:
+                {
+                    usePower = 300;
+                    titleText = Utils.i18n("specialSummonSilver");
+                    _loc_4 = "1354";
+                    break;
+                    break;
+                }
+            }
+            _ticket = 0;
+            for each (_loc_5 in param3.materials)
+            {
+                
+                if (_loc_5.masterVO.code == _loc_4)
+                {
+                    _ticket = _loc_5.quantity;
+                    _itemName = _loc_5.nameLabel;
+                }
+            }
+            _ticketText = _ticket + (_type == "campaign1" || _type == "campaign2" || _type == "campaign3" ? ("個") : ("枚"));
+            if (usePower == 0 && _ticket <= 0)
+            {
+                viewStack.selectedIndex = 3;
+            }
+            else if (_ticket > 0)
+            {
+                viewStack.selectedIndex = 2;
+            }
+            else
+            {
+                viewStack.selectedIndex = 1;
+            }
+            return;
+        }// end function
+
+        public function createComp() : void
+        {
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_no");
+            MovieClip(Loader(_swf_ok.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_ticket_close.getChildAt(0)).content).gotoAndPlay("button_no");
+            MovieClip(Loader(_swf_ticket_ok.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_back.getChildAt(0)).content).gotoAndPlay("button_back");
+            return;
+        }// end function
+
+        public function summonSpecialUnit() : void
+        {
+            dispatchEvent(new PopupEvent(SPECIAL_SUMMON_RUN, _type));
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Text id="_SpecialSummonWindow_Text1" x="350" y="302" styleName="PanelBaseTitle" text="titleText"/>
+	<mx:ViewStack id="viewStack">
+		<mx:Canvas>
+			<mx:Text id="_SpecialSummonWindow_Text2" x="150" y="360" fontSize="14" text="{Utils.i18n("specialSummonMaxUnitNum")}"/>
+			<mx:HBox x="325" y="495" horizontalGap="150">
+				<mx:Image id="_SpecialSummonWindow_Image1" click="{closeWindow();}" source="{_swf_back}"/>
+			</mx:HBox>
+		</mx:Canvas>
+		<mx:Canvas>
+			<mx:Image source="_embed_mxml__images_icon_power_png_227571469" x="135" y="362"/>
+			<mx:Text id="_SpecialSummonWindow_Text3" x="150" y="360" fontSize="14" text="{Utils.i18n("specialSummonConf", usePower)}"/>
+			<mx:Text id="_SpecialSummonWindow_Text4" x="150" y="380" fontSize="14" text="{Utils.i18n("normalSummonCreateConfirm3")}"/>
+			<mx:HBox x="250" y="495" horizontalGap="150">
+				<mx:Image id="_SpecialSummonWindow_Image3" click="{summonSpecialUnit();}" source="{_swf_ok}"/>
+				<mx:Image id="_SpecialSummonWindow_Image4" click="{closeWindow();}" source="{_swf_close}"/>
+			</mx:HBox>
+		</mx:Canvas>
+		<mx:Canvas>
+			<mx:Text id="_SpecialSummonWindow_Text5" x="150" y="360" fontSize="14" text="{Utils.i18n("specialSummonWithItem", _itemName)}"/>
+			<mx:Text id="_SpecialSummonWindow_Text6" x="150" y="380" fontSize="14" text="{Utils.i18n("generalConfirm")}"/>
+			<mx:Text id="_SpecialSummonWindow_Text7" x="150" y="440" fontSize="16" text="_itemName + "：" + _ticketText"/>
+			<mx:HBox x="250" y="495" horizontalGap="150">
+				<mx:Image id="_SpecialSummonWindow_Image5" click="{summonSpecialUnit();}" source="{_swf_ticket_ok}"/>
+				<mx:Image id="_SpecialSummonWindow_Image6" click="{closeWindow();}" source="{_swf_ticket_close}"/>
+			</mx:HBox>
+		</mx:Canvas>
+		<mx:Canvas>
+			<mx:Text id="_SpecialSummonWindow_Text8" x="150" y="360" fontSize="14" text="{Utils.i18n("specialSummonNoItem", _itemName)}"/>
+			<mx:Image id="_SpecialSummonWindow_Image7" x="325" y="495" click="{closeWindow();}" source="{_swf_back}"/>
+		</mx:Canvas>
+	</mx:ViewStack>
+
+</mx:PopupWindow>

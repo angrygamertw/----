@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  EmbedSwfWindowCommon:Class;
+        private var  _notice:Object;
+        public static const  ADMIN_NOTICE_END:String = "adminNoticeEnd";
+
+
+        public function closeWindow() : void
+        {
+            dispatchEvent(new Event(ADMIN_NOTICE_END));
+            onClose();
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            MovieClip(Loader(_swf_bg.getChildAt(0)).content).gotoAndPlay("center_400x270");
+            MovieClip(Loader(_swf_button.getChildAt(0)).content).gotoAndPlay("button_ok");
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_AdminNoticeWindow_Image1" source="{_swf_bg}"/>
+	<mx:Text id="TitleText" x="225" y="145" width="300" height="30" textAlign="center" fontSize="18" color="#00ffffff" text="{Utils.i18n("generalEmergency")}"/>
+	<mx:TextArea id="BodyText" x="210" y="175" width="330" height="170" editable="false" fontSize="15" backgroundAlpha="0" borderStyle="none">
+		<mx:htmlText><![CDATA[_body]]></mx:htmlText>
+	</mx:TextArea>
+	<mx:Image id="okButton" x="320" y="355" click="{closeWindow();}" source="{_swf_button}"/>
+	<mx:Image id="closeButton" x="555" y="145" click="{closeWindow();}" source="{_swf_close_button}"/>
+
+</mx:PopupWindow>

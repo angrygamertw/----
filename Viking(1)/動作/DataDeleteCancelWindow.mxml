@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:CanvasWithPopUp xmlns:mx="http://www.adobe.com/2006/mxml" height="300" width="600">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        public static const  DELETE_CANCEL:String = "deleteCancel";
+
+
+        public function deleteCancel() : void
+        {
+            sendEvent(DELETE_CANCEL);
+            onClose();
+            return;
+        }// end function
+
+        public function onClose() : void
+        {
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Text id="_DataDeleteCancelWindow_Text1" x="15" y="50" fontSize="16" fontWeight="bold" text="\n      あなたのプレイヤーデータの削除を取り消すことが出来ます。" + "" + "\n      " + "" + "\n      プレイヤーデータ削除日時　：　" + delayTime + "" + "" + "\n      " + ""/>
+	<mx:HBox bottom="30" horizontalCenter="0">
+		<mx:Button label="" styleName="DeleteCancelBtn" buttonMode="true" click="{onClose();}"/>
+		<mx:Button label="" styleName="PlayerDeleteCancelBtn" buttonMode="true" click="{deleteCancel();}"/>
+	</mx:HBox>
+
+</mx:CanvasWithPopUp>

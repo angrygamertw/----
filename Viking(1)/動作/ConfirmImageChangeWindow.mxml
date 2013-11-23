@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.home.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        public static const  CONFIRMED:String = "ConfirmImageChangeWindow/Confirmed";
+
+
+        public function init(param1:UnitVO, param2:UnitImageVO) : void
+        {
+            _unit = param1;
+            _newUnitImage = param2;
+            if (_unit.faceUic.contains(_unit.faceLoader))
+            {
+                MovieClip(_unit.faceLoader.content).gotoAndPlay("img_unit_status");
+            }
+            return;
+        }// end function
+
+        public function onConfirm() : void
+        {
+            sendPopupEvent(CONFIRMED, {unit:_unit, path:_newUnitImage.path});
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function onCancel() : void
+        {
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:VBox>
+		<mx:VBox width="100%" y="20">
+			<mx:HBox width="100%">
+				<mx:Spacer width="100%"/>
+				<mx:Image id="_ConfirmImageChangeWindow_Image1" width="120" height="158" source="{_unit.faceUic}"/>
+				<mx:Image id="_ConfirmImageChangeWindow_Image2" width="120" height="158" source="{_newUnitImage.dupImage}"/>
+				<mx:Spacer width="100%"/>
+			</mx:HBox>
+			<mx:HBox width="100%" horizontalGap="2">
+				<mx:Spacer width="100%"/>
+				<mx:Image source="_embed_mxml__images_icon_power_png_227571469"/>
+				<mx:Label id="_ConfirmImageChangeWindow_Label1" styleName="UnitSelectText" text="{30神力を使用して" + _unit.name + "の顔を変更しますか？}"/>
+				<mx:Spacer width="100%"/>
+			</mx:HBox>
+			<mx:HBox width="100%">
+				<mx:Spacer width="100%"/>
+				<mx:Button id="cancelButton" styleName="CancelCanaButton" buttonMode="true" mouseChildren="false" click="{onCancel();}"/>
+				<mx:Button id="okButton" styleName="OnlyOkButton" buttonMode="true" mouseChildren="false" click="{onConfirm();}"/>
+				<mx:Spacer width="100%"/>
+			</mx:HBox>
+		</mx:VBox>
+	</mx:VBox>
+
+</mx:PopupWindow>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:GuildMasterWindow xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import flash.events.*;
+        import mx.core.*;
+
+        public static const  REMOVE_MEMBER:String = "removeMember";
+
+
+        public function btnStyle(param1:Object) : String
+        {
+            if (param1.id == playerVO.playerId || param1.guild_master)
+            {
+                return "RemoveMemberOff";
+            }
+            return "RemoveMember";
+        }// end function
+
+        public function onAppointment(param1:Object) : void
+        {
+            appointmentPlayerId = param1.id;
+            appointmentPlayerName = param1.player_name;
+            dispatchEvent(new Event(REMOVE_MEMBER));
+            return;
+        }// end function
+    ]]></mx:Script>
+
+
+</mx:GuildMasterWindow>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:CanvasWithPopUp xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public static const  BAR_QUEST_CLEAR:String = "barQuestClear";
+        public static const  QUEST_ACCEPT:String = "questAccept";
+        public static const  BAR_CANCEL_QUEST:String = "barCancelQuest";
+        public static const  QUEST_ACCEPT_CANCEL:String = "questAcceptCancel";
+        public static const  BAR_ACCEPT_QUEST:String = "barAcceptQuest";
+        public static const  CHANGE_CHARACTER_FINISH:String = "changeCharacterFinish";
+        public static const  BAR_CONFIRM_QUEST:String = "barConfrimQuest";
+        public static const  PLAYER_RANK_UP:String = "playerRankUp";
+
+
+        public function init() : void
+        {
+            return;
+        }// end function
+
+        public function onLeave(param1:String) : void
+        {
+            dispatchEvent(new Event(param1));
+            return;
+        }// end function
+
+        public function onVisit() : void
+        {
+            return;
+        }// end function
+
+        public function setButtonEnabled(param1:String) : void
+        {
+            switch(param1)
+            {
+                case "Accept":
+                {
+                    acceptBtn.enabled = true;
+                    var _loc_2:Boolean = false;
+                    completeBtn.enabled = false;
+                    var _loc_2:* = _loc_2;
+                    cancelBtn.enabled = _loc_2;
+                    confirmBtn.enabled = _loc_2;
+                    break;
+                }
+                case "Excuting":
+                {
+                    var _loc_2:Boolean = false;
+                    completeBtn.enabled = false;
+                    acceptBtn.enabled = _loc_2;
+                    var _loc_2:Boolean = true;
+                    cancelBtn.enabled = true;
+                    confirmBtn.enabled = _loc_2;
+                    break;
+                }
+                case "Complete":
+                {
+                    var _loc_2:Boolean = false;
+                    cancelBtn.enabled = false;
+                    acceptBtn.enabled = _loc_2;
+                    var _loc_2:Boolean = true;
+                    completeBtn.enabled = true;
+                    confirmBtn.enabled = _loc_2;
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function onDisabled(param1:Boolean) : void
+        {
+            var _loc_2:* = param1;
+            homeBtn.enabled = param1;
+            var _loc_2:* = _loc_2;
+            cityBtn.enabled = _loc_2;
+            questBtn.enabled = _loc_2;
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Box>
+		<mx:Canvas label="Base" width="760" height="560">
+			<mx:Image id="base" source="_embed_mxml__images_city_onmyo_practice_jpg_658910931"/>
+			<mx:Image id="menuBar4" x="599" y="72" source="{_menu4}"/>
+			<mx:Image id="menuBar2" x="599" y="211" source="{_menu2}"/>
+			<mx:Image id="menuBar1" x="599" y="293" source="{_menu1}"/>
+			<mx:VBox id="questBtn" y="84" enabled="true" right="17">
+				<mx:Button id="acceptBtn" label="" styleName="QuestAcceptBtn" buttonMode="true" enabled="true" click="{sendEvent(BAR_ACCEPT_QUEST);}"/>
+				<mx:Button id="confirmBtn" label="" styleName="QuestConfirmBtn" buttonMode="true" enabled="true" click="{sendEvent(BAR_CONFIRM_QUEST);}"/>
+				<mx:Button id="cancelBtn" label="" styleName="QuestCancelBtn" buttonMode="true" enabled="true" click="{sendEvent(BAR_CANCEL_QUEST);}"/>
+				<mx:Button id="completeBtn" label="" styleName="QuestCompleteBtn" buttonMode="true" enabled="true" click="{sendEvent(BAR_QUEST_CLEAR);}"/>
+			</mx:VBox>
+			<mx:VBox id="cityBtn" y="227" enabled="true" right="30">
+				<mx:Button label="" styleName="MarketButton" buttonMode="true" click="{sendEvent(Viking.CITY_ACTION_SHOW_MARKET);}"/>
+				<mx:Button label="" styleName="TempleButton" buttonMode="true" click="{sendEvent(Viking.CITY_ACTION_SHOW_TEMPLE);}"/>
+				<mx:Button label="" styleName="ColosseumButton" buttonMode="true" click="{sendEvent(Viking.ENTER_LOBBY);}"/>
+			</mx:VBox>
+			<mx:Button id="homeBtn" label="" styleName="Home" y="310" buttonMode="true" enabled="true" right="30" click="{sendEvent(Viking.CITY_ACTION_BACK_HOME);}"/>
+		</mx:Canvas>
+	</mx:Box>
+
+</mx:CanvasWithPopUp>

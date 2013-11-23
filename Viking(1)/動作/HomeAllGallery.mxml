@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:UnitNumber xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  EmbedSwfPaginator:Class;
+        private var  EmbedSwfWindowGalleryList:Class;
+        private var  _unitAlphaTimer:Timer;
+        private var  _unitDismissWindow:UnitDismissWindow;
+        private var  createFlag:Boolean = false;
+        private var  herePage:int = 1;
+        private var  _createBool:Boolean = false;
+        private var  _allUnits:Array;
+        private var  _collectWindow:CollectWindow;
+        public static const  PREVIOS_PAGE:String = NAME + "/previosPage";
+        public static const  OPEN_UNIT_LIST:String = NAME + "/openUnitList";
+        public static const  CLOSED_HOME_ALL_GALLERY:String = NAME + "/closedHomeAllGallery";
+        public static const  DISMISS:String = NAME + "/dismiss";
+        public static const  NAME:String = "HomeAllUnit";
+        public static const  MOVE_PREVIEW_PAGE:String = "HomeAllGallery/MovePreviewPage";
+        public static const  MOVE_NEXT_PAGE:String = "HomeAllGallery/MoveNextPage";
+        public static const  NEXT_PAGE:String = NAME + "/nextPage";
+        public static const  HAVE_GOLD:String = NAME + "/havegold";
+        public static const  IMAGE_CHANGE:String = NAME + "/imageChange";
+
+
+        public function commandWindowOpen(param1:UnitVO) : void
+        {
+            unitIcon.alpha = 1;
+            return;
+        }// end function
+
+        public function close() : void
+        {
+            dispatchEvent(new PopupEvent(CLOSED_HOME_ALL_GALLERY, {window:this}));
+            return;
+        }// end function
+
+        public function adjustPaginatorButton() : void
+        {
+            leftButton.visible = false;
+            rightButton.visible = false;
+            if (page > 1)
+            {
+                leftButton.visible = true;
+            }
+            if (maxPage > page)
+            {
+                rightButton.visible = true;
+            }
+            return;
+        }// end function
+
+        public function showDismissWindow(param1:int) : void
+        {
+            PopUpManager.addPopUp(_unitDismissWindow, this, true);
+            PopUpManager.centerPopUp(_unitDismissWindow);
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            createFlag = true;
+            MovieClip(Loader(_swf_paginator_right.getChildAt(0)).content).gotoAndPlay("button_next");
+            MovieClip(Loader(_swf_paginator_left.getChildAt(0)).content).gotoAndPlay("button_prev");
+            return;
+        }// end function
+
+        public function resetUnitStatus() : void
+        {
+            return;
+        }// end function
+
+        public function handleEvent(event:Event) : void
+        {
+            switch(event.type)
+            {
+                case UnitDismissWindow.UNIT_DISMISS:
+                {
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function onRight() : void
+        {
+            switch(herePage)
+            {
+                case 1:
+                {
+                    dispatchEvent(new PopupEvent(NEXT_PAGE, {frame:"start2"}));
+                    var _loc_2:* = herePage + 1;
+                    herePage = _loc_2;
+                    var _loc_1:* = unitsViewStack;
+                    var _loc_2:* = unitsViewStack.selectedIndex + 1;
+                    _loc_1.selectedIndex = _loc_2;
+                    break;
+                }
+                case 2:
+                {
+                    dispatchEvent(new PopupEvent(NEXT_PAGE, {frame:"start3"}));
+                    var _loc_2:* = herePage + 1;
+                    herePage = _loc_2;
+                    var _loc_1:* = unitsViewStack;
+                    var _loc_2:* = unitsViewStack.selectedIndex + 1;
+                    _loc_1.selectedIndex = _loc_2;
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function onLeft() : void
+        {
+            switch(herePage)
+            {
+                case 2:
+                {
+                    dispatchEvent(new PopupEvent(PREVIOS_PAGE, {frame:"start2"}));
+                    var _loc_2:* = herePage - 1;
+                    herePage = _loc_2;
+                    var _loc_1:* = unitsViewStack;
+                    var _loc_2:* = unitsViewStack.selectedIndex - 1;
+                    _loc_1.selectedIndex = _loc_2;
+                    break;
+                }
+                case 3:
+                {
+                    dispatchEvent(new PopupEvent(PREVIOS_PAGE, {frame:"start3"}));
+                    var _loc_2:* = herePage - 1;
+                    herePage = _loc_2;
+                    var _loc_1:* = unitsViewStack;
+                    var _loc_2:* = unitsViewStack.selectedIndex - 1;
+                    _loc_1.selectedIndex = _loc_2;
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function setUnitStatus(param1:UnitVO) : void
+        {
+            return;
+        }// end function
+
+        public function commandWindowClose() : void
+        {
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_HomeAllGallery_Image1" source="{_swf}"/>
+	<mx:Canvas id="unitsCanvas" visible="true">
+		<mx:ViewStack id="unitsViewStack" borderStyle="none">
+			<mx:VBox id="firstPage">
+				<mx:Canvas id="unitsCanvas1"/>
+			</mx:VBox>
+			<mx:VBox id="secondPage">
+				<mx:Canvas id="unitsCanvas2"/>
+			</mx:VBox>
+			<mx:VBox id="thirdPage">
+				<mx:Canvas id="unitsCanvas3"/>
+			</mx:VBox>
+		</mx:ViewStack>
+	</mx:Canvas>
+	<mx:Canvas id="Icon"/>
+	<mx:Canvas id="unitIcon">
+		<mx:Canvas id="iconCanvas1"/>
+		<mx:Canvas id="iconCanvas2"/>
+		<mx:Canvas id="iconCanvas3"/>
+	</mx:Canvas>
+	<mx:Image id="closeButton" x="677" y="14" width="45" height="45" source="_embed_mxml__swf_home_buttons_button_close_swf_1270316553" click="{close();}"/>
+	<mx:Image id="leftButton" x="40" y="248" width="45" height="105" visible="false" click="{sendEvent(MOVE_PREVIEW_PAGE);}" source="{_swf_paginator_left}"/>
+	<mx:Image id="rightButton" x="655" y="248" width="45" height="105" visible="false" click="{sendEvent(MOVE_NEXT_PAGE);}" source="{_swf_paginator_right}"/>
+	<mx:Text id="galleryNumText" x="22" y="470" width="45" height="30" textAlign="right" fontSize="15" text="galleryNum"/>
+	<mx:Text id="allGalleryNumText" x="42" y="490" width="45" height="30" textAlign="right" fontSize="15" text="allGalleryNum"/>
+
+</mx:UnitNumber>

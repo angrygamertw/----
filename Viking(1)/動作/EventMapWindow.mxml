@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  descriptionWindow:EventMapDescriptionWindow;
+        private var  _currentLevel:int = 0;
+        private var  _mapCount:int = 7;
+        private var  _recordLevel:int = 0;
+        public static const  DESCRIPTION_COMPLETE:String = NAME + "descriptionComplete";
+        public static var  EmbedSwfLantern:Class;
+        public static const  CLOSE_EXPEDITION_WINDOW:String = NAME + "closeExpeditionWindow";
+        public static var  EmbedSwfExpedition:Class;
+        public static const  NAME:String = "eventMapWindow";
+        public static const  MINIMUM_RANK:int = 1;
+        public static const  RESUME_POINT:String = NAME + "resumePoint";
+
+
+        public function init() : void
+        {
+            Loader(_swf_expedition.getChildAt(0)).content.addEventListener("BUTTON_BACK", backButtonsClicked);
+            MovieClip(Loader(_swf_resume.getChildAt(0)).content).gotoAndPlay("button_halfway");
+            return;
+        }// end function
+
+        public function backButtonsClicked(event:Event) : void
+        {
+            dispatchEvent(new Event(CLOSE_EXPEDITION_WINDOW));
+            return;
+        }// end function
+
+        public function setLevel(param1:int, param2:int) : void
+        {
+            _currentLevel = param1;
+            var _loc_3:String = "";
+            var _loc_4:Boolean = false;
+            var _loc_5:int = 0;
+            while (_loc_5 < _mapCount)
+            {
+                
+                _loc_3 = "_swf_lantern_" + _loc_5;
+                MovieClip(Loader(this[_loc_3].getChildAt(0)).content).gotoAndPlay("off");
+                if ((_currentLevel + 1) >= descriptionWindow.evilPoints[_loc_5].level)
+                {
+                    MovieClip(Loader(this[_loc_3].getChildAt(0)).content).gotoAndPlay("on");
+                    _loc_4 = true;
+                }
+                _loc_5++;
+            }
+            if (!_loc_4)
+            {
+                MovieClip(Loader(_swf_lantern_0.getChildAt(0)).content).gotoAndPlay("on");
+            }
+            setResumePoint(param2);
+            return;
+        }// end function
+
+        public function buttonsClicked(param1:int) : void
+        {
+            var index:* = param1;
+            if ((_currentLevel + 1) != descriptionWindow.evilPoints[index].level)
+            {
+                return;
+            }
+            descriptionWindow.init(index);
+            this.popupWindow(descriptionWindow, false);
+            if (!descriptionWindow.hasEventListener(ExpeditionDescriptionWindow.DESCRIPTION_COMPLETE))
+            {
+                descriptionWindow.addEventListener(ExpeditionDescriptionWindow.DESCRIPTION_COMPLETE, function (event:PopupEvent) : void
+            {
+                dispatchEvent(new PopupEvent(DESCRIPTION_COMPLETE, {topographyId:event.param.topographyId, level:event.param.level, evilPointId:event.param.evilPointId, forbiddenJobIds:event.param.forbiddenJobIds, evilPointType:event.param.evilPointType}));
+                return;
+            }// end function
+            );
+            }
+            return;
+        }// end function
+
+        public function setResumePoint(param1:int) : void
+        {
+            _recordLevel = param1;
+            return;
+        }// end function
+
+        public function setPlayerStatus(param1:PlayerVO) : void
+        {
+            playerStatus.playerVO = param1;
+            productionInfoWindow.playerVO = param1;
+            setExpeditionRank(param1.playerRankId);
+            setLevel(param1.lastEventMapLevel, param1.eventMapBattleRecord);
+            return;
+        }// end function
+
+        public function setExpeditionRank(param1:int) : void
+        {
+            _rankId = param1;
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_EventMapWindow_Image1" source="{_swf_expedition}"/>
+	<mx:Image id="products" source="_embed_mxml__swf_window_info_products_swf_1304559433" x="363" y="0"/>
+	<mx:Image id="info" source="_embed_mxml__swf_window_info_home_swf_1388347787" x="0" y="0"/>
+	<mx:Image id="lantern_0" x="400" y="490" click="{buttonsClicked(0);}" source="{_swf_lantern_0}"/>
+	<mx:Image id="lantern_1" x="275" y="425" click="{buttonsClicked(1);}" source="{_swf_lantern_1}"/>
+	<mx:Image id="lantern_2" x="380" y="360" click="{buttonsClicked(2);}" source="{_swf_lantern_2}"/>
+	<mx:Image id="lantern_3" x="290" y="295" click="{buttonsClicked(3);}" source="{_swf_lantern_3}"/>
+	<mx:Image id="lantern_4" x="360" y="230" click="{buttonsClicked(4);}" source="{_swf_lantern_4}"/>
+	<mx:Image id="lantern_5" x="315" y="165" click="{buttonsClicked(5);}" source="{_swf_lantern_5}"/>
+	<mx:Image id="lantern_6" x="340" y="90" click="{buttonsClicked(6);}" source="{_swf_lantern_6}"/>
+	<mx:Canvas id="factionLayer" x="37" y="17"/>
+	<mx:Canvas id="rankLayer" x="58" y="17"/>
+	<mx:PlayerStatus id="playerStatus" x="10"/>
+	<mx:ProductionInfoWindow id="productionInfoWindow" x="380" y="14"/>
+
+</mx:PopupWindow>

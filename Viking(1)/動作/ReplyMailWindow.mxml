@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public static const  REPLY_MAIL_SEND:String = "replyMailSend";
+
+
+        public function onSend() : void
+        {
+            var _loc_1:Object = {player_name:playerName.text, subject:subject.text, body:mailText.text};
+            dispatchEvent(new PopupEvent(REPLY_MAIL_SEND, _loc_1));
+            return;
+        }// end function
+
+        public function closeWindow() : void
+        {
+            init();
+            onClose();
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("right_400x460");
+            MovieClip(Loader(_swf_send.getChildAt(0)).content).gotoAndPlay("button_send");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            return;
+        }// end function
+
+        public function setLetter(param1:Object) : void
+        {
+            var _loc_5:Object = null;
+            var _loc_2:Boolean = true;
+            var _loc_3:int = 0;
+            playerName.text = param1.senderName;
+            subject.text = "Re:" + param1.subject;
+            mailText.htmlText = "";
+            var _loc_4:* = param1.body.split("<br />");
+            for each (_loc_5 in _loc_4)
+            {
+                
+                mailText.htmlText = mailText.htmlText + ("&gt; " + _loc_5 + "\n");
+            }
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_ReplyMailWindow_Image1" source="{_swf_window}"/>
+	<mx:Text id="_ReplyMailWindow_Text1" styleName="PanelBaseTitle" x="450" y="80" text="{Utils.i18n("replyMailCreateMail")}"/>
+	<mx:Canvas x="280" y="80">
+		<mx:Text id="_ReplyMailWindow_Text2" styleName="mailText" x="30" y="50" text="{Utils.i18n("mailTransmitDestination")}"/>
+		<mx:Text id="_ReplyMailWindow_Text3" styleName="mailText" x="80" y="50" text="{Utils.i18n("generalName")}"/>
+		<mx:TextInput id="playerName" maxChars="12" width="120" x="120" y="50"/>
+		<mx:Text id="_ReplyMailWindow_Text4" styleName="mailText" x="30" y="80" text="{Utils.i18n("mailDetailSubject")}"/>
+		<mx:TextInput id="subject" maxChars="12" width="310" x="80" y="80"/>
+		<mx:Text id="_ReplyMailWindow_Text5" styleName="mailText" x="30" y="110" text="{Utils.i18n("mailTransmitBody")}"/>
+		<mx:TextArea id="mailText" width="360" height="250" x="30" y="140" text=""/>
+		<mx:Image id="_ReplyMailWindow_Image2" x="100" y="400" click="{onSend();}" source="{_swf_send}"/>
+		<mx:Image id="_ReplyMailWindow_Image3" x="220" y="400" click="{closeWindow();}" source="{_swf_close}"/>
+	</mx:Canvas>
+
+</mx:PopupWindow>

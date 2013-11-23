@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560">
+	<mx:Script><![CDATA[
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  dummy:Array;
+        private var  closeHandler:Function;
+        private var  movies:Array;
+        public static var  NO:uint = 2;
+        public static var  YES:uint = 1;
+        private static var  alertWindow:AlertWindow;
+        public static var  POINT:uint = 16;
+        private static var  keys:Array;
+        public static var  CANCEL:uint = 8;
+        public static var  OK:uint = 4;
+
+
+        public function setUpButtons(param1:uint) : void
+        {
+            MovieClip(Loader(movieWindow.getChildAt(0)).content).gotoAndPlay("center_300x200");
+            var _loc_2:* = new Array();
+            var _loc_3:int = 0;
+            while (_loc_3 < movies.length)
+            {
+                
+                movies[_loc_3].visible = (param1 & 1 << _loc_3) != 0;
+                if (movies[_loc_3].visible)
+                {
+                    MovieClip(Loader(movies[_loc_3].getChildAt(0)).content).gotoAndStop(0);
+                    MovieClip(Loader(movies[_loc_3].getChildAt(0)).content).gotoAndPlay(keys[_loc_3]);
+                    _loc_2.push(_loc_3);
+                }
+                _loc_3++;
+            }
+            var _loc_4:int = 110;
+            var _loc_5:int = 10;
+            _loc_3 = 0;
+            while (_loc_3 < _loc_2.length)
+            {
+                
+                xs.setItemAt(230 + (300 - (_loc_4 * _loc_2.length + _loc_5 * (_loc_2.length - 1))) / 2 + (_loc_4 + _loc_5) * _loc_3, _loc_2[_loc_3]);
+                _loc_3++;
+            }
+            return;
+        }// end function
+
+        public function setPoint() : void
+        {
+            var _loc_1:* = text.search("\n");
+            if (_loc_1 == -1)
+            {
+                _loc_1 = text.length;
+            }
+            var _loc_2:int = 0;
+            var _loc_3:int = 0;
+            while (_loc_3 < _loc_1)
+            {
+                
+                _loc_2 = _loc_2 + (text.charCodeAt(_loc_3) <= 127 ? (9) : (14));
+                _loc_3++;
+            }
+            imagePoint.x = (760 - _loc_2) / 2 - imagePoint.width - 2;
+            imagePoint.visible = true;
+            return;
+        }// end function
+
+        public function onClose(param1:int) : void
+        {
+            var _loc_2:CloseEvent = null;
+            trace("AlertWindow", param1);
+            if (closeHandler != null)
+            {
+                _loc_2 = new CloseEvent("click");
+                _loc_2.detail = param1;
+                closeHandler(_loc_2);
+            }
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function clrPoint() : void
+        {
+            imagePoint.visible = false;
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_AlertWindow_Image1" source="{movieWindow}"/>
+	<mx:Text id="_AlertWindow_Text1" x="250" y="181" width="260" styleName="PanelBaseTitle" text="title"/>
+	<mx:Text id="_AlertWindow_Text2" x="250" y="230" width="260" styleName="CenterText" text="text"/>
+	<mx:Image id="imagePoint" y="232" width="16" height="16" source="_embed_mxml__images_icon_power_png_227571469"/>
+	<mx:Image id="imageButtonYes" y="312" width="110" click="{onClose(YES);}" x="{int(xs.getItemAt(0))}" source="{movieButtonYes}"/>
+	<mx:Image id="imageButtonNo" y="312" width="110" click="{onClose(NO);}" x="{int(xs.getItemAt(1))}" source="{movieButtonNo}"/>
+	<mx:Image id="imageButtonOk" y="312" width="110" click="{onClose(OK);}" x="{int(xs.getItemAt(2))}" source="{movieButtonOk}"/>
+	<mx:Image id="imageButtonCancel" y="312" width="110" click="{onClose(CANCEL);}" x="{int(xs.getItemAt(3))}" source="{movieButtonCancel}"/>
+
+</mx:Canvas>

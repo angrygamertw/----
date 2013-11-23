@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" height="350" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+
+        public function _RaidDitailUnitsRenderer_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            imageRenderer = _loc_1;
+            _loc_1.generator = RaidDitailUnitsRenderer_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function init() : void
+        {
+            return;
+        }// end function
+
+        public function getExp(param1:Object) : String
+        {
+            return param1.exp_gain ? ("+" + param1.exp_gain) : ("0");
+        }// end function
+
+        public function setUnits(param1:Array, param2:Boolean) : void
+        {
+            var _loc_4:Image = null;
+            deadIcon.visible = false;
+            _units = param1;
+            var _loc_3:int = 0;
+            while (_loc_3 < param1.length)
+            {
+                
+                param1[_loc_3].faceimage.x = param2 ? (265 - 45 * _loc_3) : (20 + 45 * _loc_3);
+                unitLayer.addChild(param1[_loc_3].faceimage);
+                if (param1[_loc_3].alive == false)
+                {
+                    if (!param2)
+                    {
+                        deadIcon.x = param1[_loc_3].faceimage.x + 15;
+                        deadIcon.y = param1[_loc_3].faceimage.y + 47;
+                    }
+                    else
+                    {
+                        deadIcon.x = param1[_loc_3].faceimage.x + 32;
+                        deadIcon.y = param1[_loc_3].faceimage.y + 47;
+                    }
+                    deadIcon.visible = true;
+                    _loc_4 = new Image();
+                    _loc_4.source = deadIcon.source;
+                    _loc_4.x = deadIcon.x;
+                    _loc_4.y = deadIcon.y;
+                    unitLayer.addChild(_loc_4);
+                }
+                _loc_3++;
+            }
+            return;
+        }// end function
+
+        public function removeImage() : void
+        {
+            unitLayer.removeAllChildren();
+            _units = new Array();
+            return;
+        }// end function
+
+        public function getLabel(param1:Object, param2:String) : String
+        {
+            return param1[param2] ? (param1[param2]) : ("");
+        }// end function
+
+        public function _RaidDitailUnitsRenderer_ClassFactory2_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            statusRenderer = _loc_1;
+            _loc_1.generator = RaidDitailUnitsRenderer_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="deadIcon" source="_embed_mxml__swf_home_icon_icon_dead_png_1126137997" visible="false"/>
+	<mx:Canvas id="unitLayer"/>
+	<mx:TileList id="nameList" width="335" height="110" rowHeight="22" selectable="false" maxColumns="1" x="0" y="90" backgroundAlpha="0" borderStyle="none" dataProvider='{_units}' itemRenderer="statusRenderer"/>
+
+</mx:Canvas>

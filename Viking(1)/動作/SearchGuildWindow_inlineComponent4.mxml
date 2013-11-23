@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.styles.*;
+
+        public var  _SearchGuildWindow_inlineComponent4_DataGrid1:DataGrid;
+        public var  _SearchGuildWindow_inlineComponent4_DataGridColumn1:DataGridColumn;
+        public var  _SearchGuildWindow_inlineComponent4_DataGridColumn2:DataGridColumn;
+        public var  _SearchGuildWindow_inlineComponent4_DataGridColumn3:DataGridColumn;
+
+
+        public function _SearchGuildWindow_inlineComponent4_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SearchGuildWindow_inlineComponent4_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "name";
+            _loc_1.width = 62;
+            BindingManager.executeBindings(this, "_SearchGuildWindow_inlineComponent4_DataGridColumn1", _SearchGuildWindow_inlineComponent4_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _SearchGuildWindow_inlineComponent4_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SearchGuildWindow_inlineComponent4_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "member";
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SearchGuildWindow_inlineComponent4_DataGridColumn2", _SearchGuildWindow_inlineComponent4_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _SearchGuildWindow_inlineComponent4_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SearchGuildWindow_inlineComponent4_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "level_max_properties_count";
+            _loc_1.setStyle("textAlign", "center");
+            _loc_1.setStyle("paddingRight", 0);
+            _loc_1.setStyle("paddingLeft", 0);
+            BindingManager.executeBindings(this, "_SearchGuildWindow_inlineComponent4_DataGridColumn3", _SearchGuildWindow_inlineComponent4_DataGridColumn3);
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:DataGrid id="_SearchGuildWindow_inlineComponent4_DataGrid1" styleName="GuildListDataGrid" width="180" height="117" rowHeight="29" rowCount="3" selectable="false" sortableColumns="false" verticalScrollPolicy="off" showHeaders="false" columns="{[_SearchGuildWindow_inlineComponent4_DataGridColumn1_i(), _SearchGuildWindow_inlineComponent4_DataGridColumn2_i(), _SearchGuildWindow_inlineComponent4_DataGridColumn3_i()]}" paddingTop="0" paddingBottom="0" dataProvider='{data}'/>
+
+</mx:Canvas>

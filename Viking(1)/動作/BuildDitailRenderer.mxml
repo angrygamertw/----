@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" verticalAlign="middle">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.vo.home.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.styles.*;
+
+        private var  selectedConstruction:ConstructionVO;
+        public var  selectBuildName:String;
+        private var  buildUnitWindow:BuildUnitWindow;
+        private var  canNotBuild:Class;
+        private var  canBuild:Class;
+        private static const  RANK_LABELS:Object = {1:"見習", 2:"銅", 3:"銀", 4:"金", 5:"白金", 6:"金剛", 7:"天"};
+        private static const  ABILITY_LABELS:Object = {strength:"力", intelligence:"賢", tech:"技", agility:"速", defense:"防", luck:"運"};
+        public static const  ON_CLICK:String = "buildDitailRenderer/onClick";
+
+
+        public function getAbility(param1:Object) : String
+        {
+            return ABILITY_LABELS[param1.abilities];
+        }// end function
+
+        public function getMaterials(param1:Object, param2:int) : String
+        {
+            return param1.materials[param2].masterVO.nameLabel;
+        }// end function
+
+        public function getButtonImage(param1:Object) : Class
+        {
+            if (param1.requirement.canBuild)
+            {
+                return canBuild;
+            }
+            return canNotBuild;
+        }// end function
+
+        public function getMaterialsSize(param1:Object, param2:int) : int
+        {
+            return param1.materials[param2].quantity;
+        }// end function
+
+        public function getCanBuild(param1:Object) : Boolean
+        {
+            return param1.requirement.canBuild;
+        }// end function
+
+        public function getRank(param1:Object) : String
+        {
+            return RANK_LABELS[param1.playerRank];
+        }// end function
+
+        public function getColor(param1:Object, param2:int) : uint
+        {
+            return param1.requirement.materials[param2].isShort ? (15073298) : (0);
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas height="180" width="350">
+		<mx:Text id="text" styleName="BuildingName" x="115" y="5" text="{data.nameLabel}"/>
+		<mx:Text id="description" x="115" y="25" width="230" fontSize="11" textAlign="left" text="{parentDocument.getBuildingDescription(data)}"/>
+		<mx:Canvas/>
+		<mx:Canvas y="85" x="30">
+			<mx:Grid width="60" horizontalGap="30" verticalGap="0">
+				<mx:GridRow>
+					<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00204631">
+						<mx:Label id="_BuildDitailRenderer_Label1" width="50" height="21" fontSize="12" textAlign="center" color="#00eeeeee" text="{Utils.i18n("localize74")}"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow>
+					<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00204631">
+						<mx:Label id="_BuildDitailRenderer_Label2" width="50" height="21" fontSize="12" textAlign="center" color="#00eeeeee" text="{Utils.i18n("localize75")}"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow>
+					<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00204631">
+						<mx:Label id="_BuildDitailRenderer_Label3" width="50" height="21" fontSize="12" textAlign="center" color="#00eeeeee" text="{Utils.i18n("localize76")}"/>
+					</mx:GridItem>
+				</mx:GridRow>
+			</mx:Grid>
+			<mx:Grid x="50" width="70" horizontalGap="30" verticalGap="0">
+				<mx:GridRow>
+					<mx:GridItem borderStyle="outset" borderColor="2829099" backgroundColor="#00e1e2c2">
+						<mx:Text id="_BuildDitailRenderer_Text3" width="60" height="21" fontSize="12" textAlign="right" text="{data.minutes + " 分"}"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow>
+					<mx:GridItem borderStyle="outset" borderColor="2829099" backgroundColor="#00f5f4dd">
+						<mx:Text id="_BuildDitailRenderer_Text4" width="60" height="21" fontSize="12" textAlign="right" text="{data.gold + " 文"}" color="#00000000"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow>
+					<mx:GridItem borderStyle="outset" borderColor="2829099" backgroundColor="#00e1e2c2">
+						<mx:Text id="_BuildDitailRenderer_Text5" width="60" height="21" fontSize="12" textAlign="right" text="getRank(data)"/>
+					</mx:GridItem>
+				</mx:GridRow>
+			</mx:Grid>
+			<mx:Grid x="110" width="60" height="95" horizontalGap="30" verticalGap="0">
+				<mx:GridRow>
+					<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00204631">
+						<mx:Label id="_BuildDitailRenderer_Label4" height="71" width="40" fontSize="12" textAlign="center" paddingTop="27" color="#00eeeeee" text="{Utils.i18n("localize77")}"/>
+					</mx:GridItem>
+				</mx:GridRow>
+			</mx:Grid>
+			<mx:Grid x="150" width="130" horizontalGap="30" verticalGap="0">
+				<mx:GridRow id="firstGridMaterial" visible="true">
+					<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00e1e2c2">
+						<mx:Label id="_BuildDitailRenderer_Label5" width="120" height="21" fontSize="12" textAlign="left" text="getMaterials(data, 0)"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow id="secondGridMaterial" visible="true">
+					<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00f5f4dd">
+						<mx:Label id="_BuildDitailRenderer_Label6" width="120" height="21" fontSize="12" textAlign="left" text="getMaterials(data, 1)"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow id="thirdGridMaterial" visible="true">
+					<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00e1e2c2">
+						<mx:Label id="_BuildDitailRenderer_Label7" width="120" height="21" fontSize="12" textAlign="left" text="getMaterials(data, 2)"/>
+					</mx:GridItem>
+				</mx:GridRow>
+			</mx:Grid>
+			<mx:Grid x="270" width="45" horizontalGap="30" verticalGap="0">
+				<mx:GridRow id="firstGridQty" visible="true">
+					<mx:GridItem borderStyle="outset" borderColor="2829099" backgroundColor="#00e1e2c2">
+						<mx:Text id="_BuildDitailRenderer_Text6" width="40" height="21" fontSize="12" textAlign="center" text="getMaterialsSize(data, 0)" color="#00000000"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow id="secondGridQty" visible="true">
+					<mx:GridItem borderStyle="outset" borderColor="2829099" backgroundColor="#00f5f4dd">
+						<mx:Text id="_BuildDitailRenderer_Text7" width="40" height="21" fontSize="12" textAlign="center" text="getMaterialsSize(data, 1)" color="#00000000"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow id="thirdGridQty" visible="true">
+					<mx:GridItem borderStyle="outset" borderColor="2829099" backgroundColor="#00e1e2c2">
+						<mx:Text id="_BuildDitailRenderer_Text8" width="40" height="21" fontSize="12" textAlign="center" text="getMaterialsSize(data, 2)" color="#00000000"/>
+					</mx:GridItem>
+				</mx:GridRow>
+			</mx:Grid>
+		</mx:Canvas>
+		<mx:Image id="_BuildDitailRenderer_Image1" x="30" click="{parentDocument.onClick(data);}" source="{getButtonImage(data)}"/>
+	</mx:Canvas>
+
+</mx:HBox>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:UnitDetailLabelRenderer xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.vo.tactics.*;
+        import mx.controls.*;
+        import mx.core.*;
+
+        private var  downIconImage:Image;
+
+    ]]></mx:Script>
+
+
+</mx:UnitDetailLabelRenderer>

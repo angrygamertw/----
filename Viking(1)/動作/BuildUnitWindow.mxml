@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" height="560" width="760">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.vo.home.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        public var  selectedIndex:int;
+        public static const  CLOSE_UNIT_LIST:String = "BuildUnitWinodw/closeUnitList";
+        public static const  UNIT_SELECTED:String = "BuildUnitWinodw/UnitSelected";
+
+
+        public function _BuildUnitWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuildUnitWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "unit.jobMasterVO.nameLabel";
+            _loc_1.width = 120;
+            _loc_1.setStyle("fontSize", 11);
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_BuildUnitWindow_DataGridColumn3", _BuildUnitWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _BuildUnitWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            expLabel = _loc_1;
+            _loc_1.generator = BuildUnitWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _BuildUnitWindow_ClassFactory3_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = UnitDetailRendererForBuilding;
+            return _loc_1;
+        }// end function
+
+        public function init(param1:Array, param2:ConstructionVO) : void
+        {
+            var _loc_3:UnitVO = null;
+            var _loc_4:Boolean = false;
+            var _loc_5:uint = 0;
+            var _loc_6:uint = 0;
+            _units = param1;
+            _construction = param2;
+            _unitArray = new ArrayCollection();
+            for each (_loc_3 in _units)
+            {
+                
+                _loc_4 = false;
+                _loc_5 = 0;
+                _loc_6 = 0;
+                if (_construction.requirement.units.getOne("unitId", _loc_3.unitId))
+                {
+                    _loc_4 = true;
+                }
+                else
+                {
+                    if (_construction.requirement.abilityName == "strength")
+                    {
+                        _loc_5 = 15073298;
+                    }
+                    if (_construction.requirement.abilityName == "intelligence")
+                    {
+                        _loc_6 = 15073298;
+                    }
+                }
+                _unitArray.addItem({unit:_loc_3, canBuild:_loc_4, strengthColor:_loc_5, intelligenceColor:_loc_6});
+            }
+            return;
+        }// end function
+
+        public function _BuildUnitWindow_DataGridColumn4_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "unit.level";
+            _loc_1.headerText = "Lv";
+            _loc_1.width = 50;
+            _loc_1.setStyle("fontSize", 11);
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _BuildUnitWindow_DataGridColumn6_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "unit.maxHp";
+            _loc_1.headerText = "MAX HP";
+            _loc_1.width = 80;
+            _loc_1.setStyle("fontSize", 11);
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _BuildUnitWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuildUnitWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "unit.name";
+            _loc_1.itemRenderer = _BuildUnitWindow_ClassFactory3_c();
+            _loc_1.setStyle("fontSize", 11);
+            BindingManager.executeBindings(this, "_BuildUnitWindow_DataGridColumn2", _BuildUnitWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function buildButtonClicked(param1:Object) : void
+        {
+            dispatchEvent(new PopupEvent(UNIT_SELECTED, {unit:param1}));
+            return;
+        }// end function
+
+        public function _BuildUnitWindow_ClassFactory2_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = BuildButtonRenderer;
+            return _loc_1;
+        }// end function
+
+        public function onClose() : void
+        {
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function _BuildUnitWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuildUnitWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "button";
+            _loc_1.width = 50;
+            _loc_1.itemRenderer = _BuildUnitWindow_ClassFactory2_c();
+            BindingManager.executeBindings(this, "_BuildUnitWindow_DataGridColumn1", _BuildUnitWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _BuildUnitWindow_DataGridColumn5_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _BuildUnitWindow_DataGridColumn5 = _loc_1;
+            _loc_1.dataField = "exp";
+            _loc_1.width = 90;
+            _loc_1.setStyle("fontSize", 11);
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_BuildUnitWindow_DataGridColumn5", _BuildUnitWindow_DataGridColumn5);
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Canvas id="unitCanvas">
+		<mx:Text id="_BuildUnitWindow_Text1" styleName="UnitSelectText" top="109" left="40" text="{Utils.i18n("buildUnit_someone")}"/>
+		<mx:Text id="_BuildUnitWindow_Text2" styleName="PanelBaseTitle" x="365" y="80" text="{Utils.i18n("generalResearch")}"/>
+		<mx:DataGrid id="unitList" styleName="UnitListGrid" selectable="false" x="40" y="131" width="690" rowCount="12" sortableColumns="false" columns="{[_BuildUnitWindow_DataGridColumn1_i(), _BuildUnitWindow_DataGridColumn2_i(), _BuildUnitWindow_DataGridColumn3_i(), _BuildUnitWindow_DataGridColumn4_c(), _BuildUnitWindow_DataGridColumn5_i(), _BuildUnitWindow_DataGridColumn6_c()]}" dataProvider='{_unitArray}'/>
+		<mx:Canvas id="buttonLayer"/>
+	</mx:Canvas>
+	<mx:Image width="20" height="20" source="_embed_mxml__swf_common_button_close_window_swf_1370265653" top="80" right="20" click="{onClose();}"/>
+
+</mx:Canvas>

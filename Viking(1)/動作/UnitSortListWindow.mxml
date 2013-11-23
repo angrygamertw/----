@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _units:Array;
+        public static var  imageSortOff:Class;
+        private static const  WINDOW_X:int = 20;
+        private static const  WINDOW_Y:int = 20;
+        private static const  BUTTON_X:int = 325;
+        private static const  BUTTON_Y:int = 490;
+        public static const  DECIDE_UNIT_SORT:String = "UnitLockListWindow/decideUnitSort";
+        public static var  imageSort:Class;
+        private static const  WINDOW_HT:int = 520;
+        private static const  WINDOW_WD:int = 720;
+
+
+        public function _UnitSortListWindow_DataGridColumn5_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "level";
+            _loc_1.headerText = "Lv";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _UnitSortListWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UnitSortListWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "name";
+            _loc_1.itemRenderer = _UnitSortListWindow_ClassFactory2_c();
+            BindingManager.executeBindings(this, "_UnitSortListWindow_DataGridColumn3", _UnitSortListWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function closeWindow() : void
+        {
+            onClose();
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_decide.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_decide.getChildAt(0)).content).gotoAndPlay("button_decide_off");
+            MovieClip(Loader(_swf_close_window.getChildAt(0)).content).gotoAndPlay(1);
+            return;
+        }// end function
+
+        public function _UnitSortListWindow_DataGridColumn9_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UnitSortListWindow_DataGridColumn9 = _loc_1;
+            _loc_1.dataField = "weaponName";
+            BindingManager.executeBindings(this, "_UnitSortListWindow_DataGridColumn9", _UnitSortListWindow_DataGridColumn9);
+            return _loc_1;
+        }// end function
+
+        public function _UnitSortListWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            sortButtonRenderer = _loc_1;
+            _loc_1.generator = UnitSortListWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _UnitSortListWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UnitSortListWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_UnitSortListWindow_DataGridColumn1", _UnitSortListWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function getImage(param1:Object) : Class
+        {
+            if (sortUnitIds.getItemIndex(param1.unitId) != -1)
+            {
+                return imageSort;
+            }
+            return imageSortOff;
+        }// end function
+
+        public function decideSort() : void
+        {
+            if (sortUnitIds.length != 2)
+            {
+                return;
+            }
+            sendPopupEvent(DECIDE_UNIT_SORT, sortUnitIds.toArray());
+            return;
+        }// end function
+
+        public function _UnitSortListWindow_DataGridColumn7_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "baseDamage";
+            _loc_1.headerText = "攻";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _UnitSortListWindow_DataGridColumn6_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "maskedMaxHp";
+            _loc_1.headerText = "HP";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _UnitSortListWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UnitSortListWindow_DataGridColumn4 = _loc_1;
+            _loc_1.dataField = "jobName";
+            BindingManager.executeBindings(this, "_UnitSortListWindow_DataGridColumn4", _UnitSortListWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function _UnitSortListWindow_ClassFactory2_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = UnitDetailLabelRenderer;
+            return _loc_1;
+        }// end function
+
+        public function selectSortUnit(param1:Object) : void
+        {
+            var _loc_2:* = sortUnitIds.getItemIndex(param1.unitId);
+            if (_loc_2 != -1)
+            {
+                sortUnitIds.removeItemAt(_loc_2);
+            }
+            else
+            {
+                sortUnitIds.addItem(param1.unitId);
+            }
+            MovieClip(Loader(_swf_decide.getChildAt(0)).content).gotoAndPlay("button_decide_off");
+            if (sortUnitIds.length == 2)
+            {
+                MovieClip(Loader(_swf_decide.getChildAt(0)).content).gotoAndPlay("button_decide");
+            }
+            dispatchEvent(new Event("selectUnitIdsChanged"));
+            return;
+        }// end function
+
+        public function _UnitSortListWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UnitSortListWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "sortId";
+            BindingManager.executeBindings(this, "_UnitSortListWindow_DataGridColumn2", _UnitSortListWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _UnitSortListWindow_DataGridColumn8_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "baseDefense";
+            _loc_1.headerText = "防";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function setup() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_720x520");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_decide.getChildAt(0)).content).gotoAndPlay("button_decide_off");
+            sortUnitIds = new ArrayCollection();
+            dispatchEvent(new Event("selectUnitIdsChanged"));
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_UnitSortListWindow_Image1" source="{_swf_window}"/>
+	<mx:Text id="_UnitSortListWindow_Text1" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("unitSortShikihime")}"/>
+	<mx:DataGrid id="_UnitSortListWindow_DataGrid1" rowCount="14" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_UnitSortListWindow_DataGridColumn1_i(), _UnitSortListWindow_DataGridColumn2_i(), _UnitSortListWindow_DataGridColumn3_i(), _UnitSortListWindow_DataGridColumn4_i(), _UnitSortListWindow_DataGridColumn5_c(), _UnitSortListWindow_DataGridColumn6_c(), _UnitSortListWindow_DataGridColumn7_c(), _UnitSortListWindow_DataGridColumn8_c(), _UnitSortListWindow_DataGridColumn9_i()]}" dataProvider='{_viewCollection}' x="WINDOW_X + 20" y="WINDOW_Y + 35 + 10" width="WINDOW_WD - 40"/>
+	<mx:Image id="_UnitSortListWindow_Image2" click="{closeWindow();}" x="BUTTON_X - 100" y="BUTTON_Y" source="{_swf_close}"/>
+	<mx:Image id="_UnitSortListWindow_Image3" click="{decideSort();}" x="BUTTON_X + 50" y="BUTTON_Y" source="{_swf_decide}"/>
+	<mx:Image id="_UnitSortListWindow_Image4" click="{closeWindow();}" x="WINDOW_X + WINDOW_WD - 25" y="WINDOW_Y" source="{_swf_close_window}"/>
+
+</mx:PopupWindow>

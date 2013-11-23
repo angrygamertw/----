@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" height="567" width="750" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _backUnitName:String;
+        private var  _unitID:int;
+        public static const  SEARCH_UNITS:String = NAME + "/searchUnits";
+        public static const  NAME:String = "ArmiesListWindow";
+
+
+        public function _ArmiesListWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ArmiesListWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "jobName";
+            _loc_1.width = 100;
+            BindingManager.executeBindings(this, "_ArmiesListWindow_DataGridColumn3", _ArmiesListWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _ArmiesListWindow_DataGridColumn5_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "maxHp";
+            _loc_1.headerText = "HP";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _ArmiesListWindow_DataGridColumn7_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ArmiesListWindow_DataGridColumn7 = _loc_1;
+            _loc_1.dataField = "baseDefense";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ArmiesListWindow_DataGridColumn7", _ArmiesListWindow_DataGridColumn7);
+            return _loc_1;
+        }// end function
+
+        public function closeWindow() : void
+        {
+            onClose();
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            return;
+        }// end function
+
+        public function unitNon() : void
+        {
+            alertPopUp(Utils.i18n("ArmiesListRepatriationUnitNon"));
+            return;
+        }// end function
+
+        public function setUnits(param1:Array, param2:Array) : void
+        {
+            var _loc_4:int = 0;
+            var _loc_3:int = 0;
+            while (_loc_3 < param1.length)
+            {
+                
+                _loc_4 = 0;
+                while (_loc_4 < param2.length)
+                {
+                    
+                    if (param2[_loc_4].playerId as int == param1[_loc_3].playerId as int)
+                    {
+                        param1[_loc_3].playerName = param2[_loc_4].name;
+                    }
+                    _loc_4++;
+                }
+                _loc_3++;
+            }
+            _units = param1;
+            return;
+        }// end function
+
+        public function _ArmiesListWindow_DataGridColumn4_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "level";
+            _loc_1.headerText = "Lv";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _ArmiesListWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ArmiesListWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "playerName";
+            _loc_1.width = 130;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ArmiesListWindow_DataGridColumn2", _ArmiesListWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _ArmiesListWindow_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ArmiesListWindow_DataGridColumn6 = _loc_1;
+            _loc_1.dataField = "baseDamage";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ArmiesListWindow_DataGridColumn6", _ArmiesListWindow_DataGridColumn6);
+            return _loc_1;
+        }// end function
+
+        public function _ArmiesListWindow_DataGridColumn8_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ArmiesListWindow_DataGridColumn8 = _loc_1;
+            _loc_1.dataField = "weaponName";
+            _loc_1.width = 100;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ArmiesListWindow_DataGridColumn8", _ArmiesListWindow_DataGridColumn8);
+            return _loc_1;
+        }// end function
+
+        public function _ArmiesListWindow_ClassFactory1_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = UnitDetailLabelRenderer;
+            return _loc_1;
+        }// end function
+
+        public function alertPopUp(param1:String) : void
+        {
+            var _loc_2:* = AlertWindow.show(param1);
+            popupWindow(_loc_2, false);
+            return;
+        }// end function
+
+        public function onClickSearch(param1:Object) : void
+        {
+            _backUnitName = param1.name;
+            _unitID = param1.unitId;
+            dispatchEvent(new Event(SEARCH_UNITS));
+            return;
+        }// end function
+
+        public function _ArmiesListWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ArmiesListWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "name";
+            _loc_1.width = 100;
+            _loc_1.itemRenderer = _ArmiesListWindow_ClassFactory1_c();
+            BindingManager.executeBindings(this, "_ArmiesListWindow_DataGridColumn1", _ArmiesListWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Text id="_ArmiesListWindow_Text1" x="25" y="60" styleName="GuildSearchText" text="description"/>
+	<mx:Button width="26" height="26" styleName="closeBtn" buttonMode="true" fontSize="30" top="30" right="20" click="{onClose();}"/>
+	<mx:DataGrid id="_ArmiesListWindow_DataGrid1" width="650" height="373" styleName="DataGridBase" sortableColumns="false" columns="{[_ArmiesListWindow_DataGridColumn1_i(), _ArmiesListWindow_DataGridColumn2_i(), _ArmiesListWindow_DataGridColumn3_i(), _ArmiesListWindow_DataGridColumn4_c(), _ArmiesListWindow_DataGridColumn5_c(), _ArmiesListWindow_DataGridColumn6_i(), _ArmiesListWindow_DataGridColumn7_i(), _ArmiesListWindow_DataGridColumn8_i()]}" right="25" top="100" dataProvider='{_units}'/>
+	<mx:HBox y="500" x="312" horizontalGap="20">
+		<mx:Button label="" styleName="CancelCanaButton" buttonMode="true" click="{onClose();}"/>
+	</mx:HBox>
+
+</mx:PopupWindow>

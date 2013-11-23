@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public var  _RaidDitailUnitsRenderer_inlineComponent2_Label1:Label;
+        public var  _RaidDitailUnitsRenderer_inlineComponent2_Label2:Label;
+        public var  _RaidDitailUnitsRenderer_inlineComponent2_Label3:Label;
+        public var  _RaidDitailUnitsRenderer_inlineComponent2_Label4:Label;
+
+    ]]></mx:Script>
+
+	<mx:Label id="_RaidDitailUnitsRenderer_inlineComponent2_Label1" x="10" height="30" mouseChildren="false" fontSize="12" text="{outerDocument.getLabel(data, "name") + "(" + outerDocument.getLabel(data, "job_name") + ")"}"/>
+	<mx:Label id="_RaidDitailUnitsRenderer_inlineComponent2_Label2" x="110" height="30" width="100" mouseChildren="false" fontSize="11" text="{outerDocument.getLabel(data, "player_name")}"/>
+	<mx:Label id="_RaidDitailUnitsRenderer_inlineComponent2_Label3" x="180" height="30" width="100" mouseChildren="false" fontSize="12" text="{"Lv " + outerDocument.getLabel(data, "level")}"/>
+	<mx:Label id="_RaidDitailUnitsRenderer_inlineComponent2_Label4" x="250" height="30" width="80" mouseChildren="false" fontSize="11" text="{"EXP " + outerDocument.getExp(data)}"/>
+
+</mx:Canvas>

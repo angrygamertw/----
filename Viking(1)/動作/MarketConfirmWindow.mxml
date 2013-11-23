@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{onComplete();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  create:Boolean = false;
+        private var  _leyLine:Boolean = false;
+        private var  _materialMax:Boolean = false;
+        public static const  EXHIBIT_CANCEL:String = NAME + "/exhibitCancel";
+        private static const  WINDOW_X:int = 180;
+        private static const  WINDOW_Y:int = 145;
+        private static const  BUTTON_X:int = 325;
+        private static const  BUTTON_Y:int = 365;
+        public static const  BUY_TRADE_GOODS:String = NAME + "/buyTradeGoods";
+        public static const  NAME:String = "MarketConfirmWindow";
+        private static const  WINDOW_HT:int = 270;
+        private static const  WINDOW_WD:int = 400;
+
+
+        public function closeWindow() : void
+        {
+            onClose();
+            MovieClip(Loader(_swf_stack0_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_stack0_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_stack1_yes.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_stack1_yes.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_stack1_no.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_stack1_no.getChildAt(0)).content).gotoAndPlay("button_no");
+            MovieClip(Loader(_swf_stack2_yes.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_stack2_yes.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_stack2_no.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_stack2_no.getChildAt(0)).content).gotoAndPlay("button_no");
+            MovieClip(Loader(_swf_stack3_yes.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_stack3_yes.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_stack3_no.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_stack3_no.getChildAt(0)).content).gotoAndPlay("button_no");
+            MovieClip(Loader(_swf_close_window.getChildAt(0)).content).gotoAndPlay(1);
+            return;
+        }// end function
+
+        public function setNameLabel(param1:Object) : String
+        {
+            if (param1.instanceType == "Weapon")
+            {
+                return param1.nameLabel + "(" + param1.endurance + ")";
+            }
+            return param1.nameLabel;
+        }// end function
+
+        public function _MarketConfirmWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _MarketConfirmWindow_DataGridColumn4 = _loc_1;
+            BindingManager.executeBindings(this, "_MarketConfirmWindow_DataGridColumn4", _MarketConfirmWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function init(param1:String) : void
+        {
+            switch(param1)
+            {
+                case "errExhibit":
+                {
+                    ViewStackIndex = 0;
+                    topComment = Utils.i18n("marketConfirmCanNotSell");
+                    break;
+                }
+                case "exhibitCancel":
+                {
+                    ViewStackIndex = 1;
+                    topComment = Utils.i18n("marketConfirmConfWithdrawal");
+                    if (_materialMax)
+                    {
+                        ViewStackIndex = 2;
+                        topComment = Utils.i18n("marketConfirmWithdrawalConfOver");
+                    }
+                    break;
+                }
+                case "buyTradeGoodsConfirm":
+                {
+                    if (_materialMax)
+                    {
+                        ViewStackIndex = 4;
+                        topComment = Utils.i18n("marketConfirmBuyConfOver");
+                    }
+                    else
+                    {
+                        topComment = Utils.i18n("marketConfirmBuyConf");
+                        ViewStackIndex = 3;
+                    }
+                    break;
+                }
+                case "alreadyBuy":
+                {
+                    ViewStackIndex = 0;
+                    topComment = Utils.i18n("marketConfirmOutOfStock");
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            if (create)
+            {
+                windowViewStack.selectedIndex = ViewStackIndex;
+            }
+            return;
+        }// end function
+
+        public function getSellPriceLabel(param1:Object) : String
+        {
+            if (_leyLine)
+            {
+                return param1.price + " + " + int(param1.price * 0.05);
+            }
+            return String(param1.price);
+        }// end function
+
+        public function _MarketConfirmWindow_DataGridColumn5_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _MarketConfirmWindow_DataGridColumn5 = _loc_1;
+            _loc_1.dataField = "quantity";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_MarketConfirmWindow_DataGridColumn5", _MarketConfirmWindow_DataGridColumn5);
+            return _loc_1;
+        }// end function
+
+        public function onBuy() : void
+        {
+            closeWindow();
+            dispatchEvent(new Event(BUY_TRADE_GOODS));
+            return;
+        }// end function
+
+        public function onComplete() : void
+        {
+            windowViewStack.selectedIndex = ViewStackIndex;
+            create = true;
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_400x270");
+            MovieClip(Loader(_swf_stack0_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_stack1_yes.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_stack1_no.getChildAt(0)).content).gotoAndPlay("button_no");
+            MovieClip(Loader(_swf_stack2_yes.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_stack2_no.getChildAt(0)).content).gotoAndPlay("button_no");
+            MovieClip(Loader(_swf_stack3_yes.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_stack3_no.getChildAt(0)).content).gotoAndPlay("button_no");
+            return;
+        }// end function
+
+        public function _MarketConfirmWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _MarketConfirmWindow_DataGridColumn3 = _loc_1;
+            _loc_1.width = 110;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_MarketConfirmWindow_DataGridColumn3", _MarketConfirmWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _MarketConfirmWindow_ClassFactory3_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            buyPriceRenderer = _loc_1;
+            _loc_1.generator = MarketConfirmWindow_inlineComponent3;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _MarketConfirmWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _MarketConfirmWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "quantity";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_MarketConfirmWindow_DataGridColumn2", _MarketConfirmWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function getBuyPriceLabel(param1:Object) : int
+        {
+            var _loc_2:int = 0;
+            if (_leyLine)
+            {
+                _loc_2 = param1.price - int(param1.price * 0.05);
+                return _loc_2 >= 1 ? (_loc_2) : (1);
+            }
+            return param1.price;
+        }// end function
+
+        public function _MarketConfirmWindow_ClassFactory2_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            sellPriceRenderer = _loc_1;
+            _loc_1.generator = MarketConfirmWindow_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _MarketConfirmWindow_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _MarketConfirmWindow_DataGridColumn6 = _loc_1;
+            _loc_1.width = 110;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_MarketConfirmWindow_DataGridColumn6", _MarketConfirmWindow_DataGridColumn6);
+            return _loc_1;
+        }// end function
+
+        public function _MarketConfirmWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _MarketConfirmWindow_DataGridColumn1 = _loc_1;
+            BindingManager.executeBindings(this, "_MarketConfirmWindow_DataGridColumn1", _MarketConfirmWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function onExhibitCancel() : void
+        {
+            closeWindow();
+            dispatchEvent(new Event(EXHIBIT_CANCEL));
+            return;
+        }// end function
+
+        public function _MarketConfirmWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            nameLabelRenderer = _loc_1;
+            _loc_1.generator = MarketConfirmWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_MarketConfirmWindow_Image1" source="{_swf_window}"/>
+	<mx:Text id="Top" fontSize="14" text="topComment" x="WINDOW_X + 20" y="WINDOW_Y + 35" width="WINDOW_WD"/>
+	<mx:ViewStack id="windowViewStack" selectedIndex="ViewStackIndex">
+		<mx:Canvas>
+			<mx:Text id="_MarketConfirmWindow_Text2" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("generalConfirmation")}"/>
+			<mx:Image id="_MarketConfirmWindow_Image2" click="{closeWindow();}" x="BUTTON_X" y="BUTTON_Y" source="{_swf_stack0_close}"/>
+		</mx:Canvas>
+		<mx:Canvas>
+			<mx:Text id="_MarketConfirmWindow_Text3" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("marketConfirmWithdrawal")}"/>
+			<mx:DataGrid id="_MarketConfirmWindow_DataGrid1" rowHeight="30" rowCount="1" styleName="DataGridBase" sortableColumns="false" columns="{[_MarketConfirmWindow_DataGridColumn1_i(), _MarketConfirmWindow_DataGridColumn2_i(), _MarketConfirmWindow_DataGridColumn3_i()]}" x="WINDOW_X + 20" y="WINDOW_Y + 35 + 30" dataProvider='{_commodityData}' width="WINDOW_WD - 40"/>
+			<mx:Text id="_MarketConfirmWindow_Text4" fontSize="12" x="WINDOW_X + 20" y="WINDOW_Y + 35 + 100" text="{Utils.i18n("marketConfirmNoCommission")}"/>
+			<mx:Image id="_MarketConfirmWindow_Image3" click="{onExhibitCancel();}" x="BUTTON_X - 65" y="BUTTON_Y" source="{_swf_stack1_yes}"/>
+			<mx:Image id="_MarketConfirmWindow_Image4" click="{closeWindow();}" x="BUTTON_X + 65" y="BUTTON_Y" source="{_swf_stack1_no}"/>
+		</mx:Canvas>
+		<mx:Canvas>
+			<mx:Text id="_MarketConfirmWindow_Text5" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("marketConfirmWithdrawal")}"/>
+			<mx:Text id="_MarketConfirmWindow_Text6" fontSize="12" x="WINDOW_X + 20" y="WINDOW_Y + 35 + 100" text="{Utils.i18n("marketConfirmDestruction", _commodityData.nameLabel, _materialDumpCount)}"/>
+			<mx:Image id="_MarketConfirmWindow_Image5" click="{onExhibitCancel();}" x="BUTTON_X - 65" y="BUTTON_Y" source="{_swf_stack3_yes}"/>
+			<mx:Image id="_MarketConfirmWindow_Image6" click="{closeWindow();}" x="BUTTON_X + 65" y="BUTTON_Y" source="{_swf_stack3_no}"/>
+		</mx:Canvas>
+		<mx:Canvas>
+			<mx:Text id="_MarketConfirmWindow_Text7" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("marketConfirmBuy")}"/>
+			<mx:DataGrid id="_MarketConfirmWindow_DataGrid2" rowHeight="30" rowCount="1" styleName="DataGridBase" sortableColumns="false" columns="{[_MarketConfirmWindow_DataGridColumn4_i(), _MarketConfirmWindow_DataGridColumn5_i(), _MarketConfirmWindow_DataGridColumn6_i()]}" x="WINDOW_X + 20" y="WINDOW_Y + 35 + 60" dataProvider='{_buyData}' width="WINDOW_WD - 40"/>
+			<mx:Image id="_MarketConfirmWindow_Image7" click="{onBuy();}" x="BUTTON_X - 65" y="BUTTON_Y" source="{_swf_stack2_yes}"/>
+			<mx:Image id="_MarketConfirmWindow_Image8" click="{closeWindow();}" x="BUTTON_X + 65" y="BUTTON_Y" source="{_swf_stack2_no}"/>
+		</mx:Canvas>
+		<mx:Canvas>
+			<mx:Text id="_MarketConfirmWindow_Text8" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("generalConfirmation")}"/>
+			<mx:Text id="_MarketConfirmWindow_Text9" fontSize="12" x="WINDOW_X + 20" y="WINDOW_Y + 35 + 100" text="{Utils.i18n("marketConfirmDestruction", _buyDataName, _materialDumpCount)}"/>
+			<mx:Image id="_MarketConfirmWindow_Image9" click="{onBuy();}" x="BUTTON_X - 65" y="BUTTON_Y" source="{_swf_stack2_yes}"/>
+			<mx:Image id="_MarketConfirmWindow_Image10" click="{closeWindow();}" x="BUTTON_X + 65" y="BUTTON_Y" source="{_swf_stack2_no}"/>
+		</mx:Canvas>
+	</mx:ViewStack>
+	<mx:Image id="_MarketConfirmWindow_Image11" click="{closeWindow();}" x="WINDOW_X + WINDOW_WD - 25" y="WINDOW_Y" source="{_swf_close_window}"/>
+
+</mx:PopupWindow>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        public static const  CONFIRMED_BRAVE:String = "ConfirmSummonHeroWindow/ConfirmedBrave";
+        public static const  CONFIRMED:String = "ConfirmSummonHeroWindow/Confirmed";
+
+
+        public function setLayout(param1:String) : void
+        {
+            typeLavel = param1;
+            switch(param1)
+            {
+                case "Hero":
+                {
+                    titileLavel = "英雄召喚";
+                    power = "600";
+                    label1 = "英雄";
+                    label2 = "ごくまれに固有式姫、まれに上級職式姫が出現します。";
+                    break;
+                }
+                case "Brave":
+                {
+                    titileLavel = "勇者召喚";
+                    power = "300";
+                    label1 = "勇者";
+                    label2 = "ごくまれに固有式姫、まれに上級職式姫、\n一定確率で血脈を持つ式姫が出現します。";
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function onConfirm() : void
+        {
+            switch(typeLavel)
+            {
+                case "Hero":
+                {
+                    sendEvent(CONFIRMED);
+                    break;
+                }
+                case "Brave":
+                {
+                    sendEvent(CONFIRMED_BRAVE);
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:VBox>
+		<mx:Spacer height="100%"/>
+		<mx:VBox left="95" top="62" verticalGap="-4">
+			<mx:HBox horizontalGap="4">
+				<mx:Image source="_embed_mxml__images_icon_power_png_227571469"/>
+				<mx:Label id="_ConfirmSummonHeroWindow_Label1" styleName="UnitSelectText" fontSize="14" text="神力" + power + "を消費して" + label1 + "召喚をしますか？"/>
+			</mx:HBox>
+			<mx:Spacer height="10"/>
+			<mx:Label id="_ConfirmSummonHeroWindow_Label2" styleName="UnitSelectText" fontSize="14" text="label1 + "召喚すると本日雇用出来る式姫が変更され、""/>
+			<mx:Text id="_ConfirmSummonHeroWindow_Text1" styleName="UnitSelectText" fontSize="14" text="label2"/>
+			<mx:Spacer height="10"/>
+			<mx:HBox>
+				<mx:Spacer width="50"/>
+				<mx:VBox verticalGap="-4">
+					<mx:Label id="_ConfirmSummonHeroWindow_Label3" styleName="UnitSelectText" text="勇者召喚では出現しない固有式姫がいます。" color="#00bc403a" visible="typeLavel == "Brave""/>
+					<mx:Label id="_ConfirmSummonHeroWindow_Label4" styleName="UnitSelectText" text="0:00をまたぐと雇用出来る式姫が変更されますので" color="#00bc403a"/>
+					<mx:Label id="_ConfirmSummonHeroWindow_Label5" styleName="UnitSelectText" text="0:00付近でのご利用にはご注意下さい。" color="#00bc403a"/>
+				</mx:VBox>
+			</mx:HBox>
+		</mx:VBox>
+		<mx:HBox width="100%" left="210" bottom="15" horizontalGap="10">
+			<mx:Button label="" styleName="CancelCanaButton" buttonMode="true" click="{onClose();}"/>
+			<mx:Button label="" styleName="OkButton" buttonMode="true" click="{onConfirm();}"/>
+		</mx:HBox>
+		<mx:Spacer height="100%"/>
+	</mx:VBox>
+
+</mx:PopupWindow>

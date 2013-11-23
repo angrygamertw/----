@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:CanvasWithPopUp xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  unit:UnitVO;
+        private var  unitStatusPopUpWindow:UnitStatusPopUpWindow;
+
+
+        public function onClick() : void
+        {
+            unitStatusPopUpWindow.unit = unit;
+            this.popupWindow(unitStatusPopUpWindow, false);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:HBox id="nameBox" horizontalAlign="center" horizontalScrollPolicy="horizontalScrollPolicy">
+		<mx:Label id="_UnitDetailLabelRenderer_Label1" buttonMode="true" mouseChildren="false" textDecoration="underline" color="#00bc403a" click="{onClick();}" text="unitName" toolTip="{Utils.i18n("generalShowDetail")}"/>
+	</mx:HBox>
+
+</mx:CanvasWithPopUp>

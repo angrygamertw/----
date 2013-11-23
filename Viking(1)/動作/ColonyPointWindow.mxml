@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="108" height="35" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import flash.display.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+
+        public function init() : void
+        {
+            var _loc_1:* = new BitmapData(width, height, true, 2856596258);
+            var _loc_2:* = new Bitmap(_loc_1);
+            var _loc_3:* = new Image();
+            _loc_3.source = _loc_2;
+            addChildAt(_loc_3, 0);
+            var _loc_4:* = new UIComponent();
+            new UIComponent().addChild(createLine(0, 0, 0, 34));
+            _loc_4.addChild(createLine(107, 0, 107, 34));
+            _loc_4.addChild(createLine(0, 34, 107, 34));
+            _loc_4.addChild(createLine(0, 18, 107, 18));
+            _loc_4.addChild(createLine(53, 18, 53, 34));
+            addChild(_loc_4);
+            return;
+        }// end function
+
+        public function createLine(param1:int, param2:int, param3:int, param4:int) : Shape
+        {
+            var _loc_5:* = new Shape();
+            new Shape().graphics.lineStyle(1, 4206624, 0.66);
+            _loc_5.graphics.moveTo(param1, param2);
+            _loc_5.graphics.lineTo(param3, param4);
+            return _loc_5;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Label id="_ColonyPointWindow_Label1" x="1" y="1" width="25" height="19" fontSize="9" color="#00f6e09c" textAlign="left" text="{Utils.i18n("localize106")}" toolTip="{Utils.i18n("localize104")}"/>
+	<mx:Label id="_ColonyPointWindow_Label2" x="18" y="0" width="92" height="19" fontSize="11" color="#00f6e09c" textAlign="center" text="_ownerName"/>
+	<mx:Label id="_ColonyPointWindow_Label3" x="1" y="19" width="25" height="16" fontSize="9" color="#00f6e09c" textAlign="left" text="{Utils.i18n("localize107")}" toolTip="{_guildName + "" + Utils.i18n("localize108")}"/>
+	<mx:Label id="_ColonyPointWindow_Label4" x="24" y="19" width="30" height="16" fontSize="9" color="#00f6e09c" textAlign="right" text="_point"/>
+	<mx:Label id="_ColonyPointWindow_Label5" x="55" y="19" width="25" height="16" fontSize="9" color="#00f6e09c" textAlign="left" text="{Utils.i18n("localize109")}" toolTip="{Utils.i18n("localize110")}"/>
+	<mx:Label id="_ColonyPointWindow_Label6" x="78" y="19" width="30" height="16" fontSize="9" color="#00f6e09c" textAlign="right" text="_topPoint"/>
+
+</mx:Canvas>

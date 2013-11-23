@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{comp();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  confirmResumeContinuationWindow:ConfirmResumeContinuationWindow;
+        private var  resumeLevels:Array;
+        public static const  NAME:String = "ExpeditionResumeWindow";
+        public static var  EmbedSwfLantern:Class;
+        public static const  SELECT_RESUME_LEVEL:String = NAME + "/selectResumeLevel";
+        public static var  EmbedSwfExpeditionDetail:Class;
+
+
+        public function comp() : void
+        {
+            closeButtonImage.visible = false;
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            return;
+        }// end function
+
+        public function init(param1:int, param2:int) : void
+        {
+            MovieClip(Loader(_swf_bg.getChildAt(0)).content).gotoAndPlay("w_start");
+            _maxLevel = param1;
+            _currentLevel = param2;
+            var _loc_3:String = "";
+            var _loc_4:int = 0;
+            while (_loc_4 < 9)
+            {
+                
+                _loc_3 = "_swf_resume_" + _loc_4;
+                MovieClip(Loader(this[_loc_3].getChildAt(0)).content).gotoAndPlay("on");
+                if (!canResume(getresumeLevel(_loc_4)))
+                {
+                    MovieClip(Loader(this[_loc_3].getChildAt(0)).content).gotoAndPlay("off");
+                }
+                _loc_4++;
+            }
+            Loader(_swf_bg.getChildAt(0)).content.addEventListener("ENLARGE_END", visibleText);
+            return;
+        }// end function
+
+        public function canResume(param1:int) : Boolean
+        {
+            return _maxLevel >= param1 && param1 > _currentLevel;
+        }// end function
+
+        public function getresumeLevel(param1:int) : int
+        {
+            return resumeLevels[param1];
+        }// end function
+
+        public function resumeLevel(param1:int) : void
+        {
+            var index:* = param1;
+            if (!canResume(getresumeLevel(index)))
+            {
+                return;
+            }
+            _resumeLevel = getresumeLevel(index);
+            confirmResumeContinuationWindow.level = _resumeLevel + 1;
+            this.popupWindow(confirmResumeContinuationWindow, false);
+            if (!confirmResumeContinuationWindow.hasEventListener(ConfirmResumeContinuationWindow.CONFIRMED))
+            {
+                confirmResumeContinuationWindow.addEventListener(ConfirmResumeContinuationWindow.CONFIRMED, function (event:Event) : void
+            {
+                dispatchEvent(new PopupEvent(SELECT_RESUME_LEVEL, _resumeLevel));
+                close();
+                return;
+            }// end function
+            );
+            }
+            return;
+        }// end function
+
+        public function visibleText(event:Event) : void
+        {
+            closeButtonImage.visible = true;
+            return;
+        }// end function
+
+        public function notVisibleText() : void
+        {
+            closeButtonImage.visible = false;
+            return;
+        }// end function
+
+        public function close() : void
+        {
+            notVisibleText();
+            this.onClose();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_ContinuationResumeWindow_Image1" source="{_swf_bg}"/>
+	<mx:Label id="titleTextLabel" x="210" y="103" width="340" styleName="PanelBaseTitle" color="#00ffffff" textAlign="center" text="{Utils.i18n("continuationSelect")}"/>
+	<mx:Canvas x="240" y="140">
+		<mx:Image id="resumePoint1" click="{resumeLevel(0);}" source="{_swf_resume_0}"/>
+		<mx:Label id="_ContinuationResumeWindow_Label2" x="60" y="15" fontSize="14" color="#00ffffff" text="{(getresumeLevel(0) + 1) + "" + Utils.i18n("continuationBattleSelected")}"/>
+	</mx:Canvas>
+	<mx:Canvas x="420" y="140">
+		<mx:Image id="resumePoint2" click="{resumeLevel(1);}" source="{_swf_resume_1}"/>
+		<mx:Label id="_ContinuationResumeWindow_Label3" x="60" y="15" fontSize="14" color="#00ffffff" text="{(getresumeLevel(1) + 1) + "" + Utils.i18n("continuationBattleSelected")}"/>
+	</mx:Canvas>
+	<mx:Canvas x="240" y="200">
+		<mx:Image id="resumePoint3" click="{resumeLevel(2);}" source="{_swf_resume_2}"/>
+		<mx:Label id="_ContinuationResumeWindow_Label4" x="60" y="15" fontSize="14" color="#00ffffff" text="{(getresumeLevel(2) + 1) + "" + Utils.i18n("continuationBattleSelected")}"/>
+	</mx:Canvas>
+	<mx:Canvas x="420" y="200">
+		<mx:Image id="resumePoint4" click="{resumeLevel(3);}" source="{_swf_resume_3}"/>
+		<mx:Label id="_ContinuationResumeWindow_Label5" x="60" y="15" fontSize="14" color="#00ffffff" text="{(getresumeLevel(3) + 1) + "" + Utils.i18n("continuationBattleSelected")}"/>
+	</mx:Canvas>
+	<mx:Canvas x="240" y="260">
+		<mx:Image id="resumePoint5" click="{resumeLevel(4);}" source="{_swf_resume_4}"/>
+		<mx:Label id="_ContinuationResumeWindow_Label6" x="60" y="15" fontSize="14" color="#00ffffff" text="{(getresumeLevel(4) + 1) + "" + Utils.i18n("continuationBattleSelected")}"/>
+	</mx:Canvas>
+	<mx:Canvas x="420" y="260">
+		<mx:Image id="resumePoint6" click="{resumeLevel(5);}" source="{_swf_resume_5}"/>
+		<mx:Label id="_ContinuationResumeWindow_Label7" x="60" y="15" fontSize="14" color="#00ffffff" text="{(getresumeLevel(5) + 1) + "" + Utils.i18n("continuationBattleSelected")}"/>
+	</mx:Canvas>
+	<mx:Canvas x="240" y="320">
+		<mx:Image id="resumePoint7" click="{resumeLevel(6);}" source="{_swf_resume_6}"/>
+		<mx:Label id="_ContinuationResumeWindow_Label8" x="60" y="15" fontSize="14" color="#00ffffff" text="{(getresumeLevel(6) + 1) + "" + Utils.i18n("continuationBattleSelected")}"/>
+	</mx:Canvas>
+	<mx:Canvas x="420" y="320">
+		<mx:Image id="resumePoint8" click="{resumeLevel(7);}" source="{_swf_resume_7}"/>
+		<mx:Label id="_ContinuationResumeWindow_Label9" x="60" y="15" fontSize="14" color="#00ffffff" text="{(getresumeLevel(7) + 1) + "" + Utils.i18n("continuationBattleSelected")}"/>
+	</mx:Canvas>
+	<mx:Image id="closeButtonImage" x="325" y="450" click="{close();}" source="{_swf_close}"/>
+
+</mx:PopupWindow>

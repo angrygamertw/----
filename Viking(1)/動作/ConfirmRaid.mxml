@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560">
+	<mx:Script><![CDATA[
+        import flash.events.*;
+        import mx.containers.*;
+        import mx.core.*;
+        import mx.managers.*;
+
+        public static const  CANCELED:String = NAME + "/notes/canceled";
+        public static const  NAME:String = "ConfirmRaid";
+        public static const  CONFIRMED:String = NAME + "/notes/confirmed";
+
+
+        public function onConfirm() : void
+        {
+            dispatchEvent(new Event(CONFIRMED));
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function onClose() : void
+        {
+            dispatchEvent(new Event(CANCELED));
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:HBox top="300" left="290"/>
+
+</mx:Canvas>

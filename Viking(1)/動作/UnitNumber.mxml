@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:CanvasWithPopUp xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import mx.collections.*;
+        import mx.core.*;
+        import mx.events.*;
+
+    ]]></mx:Script>
+
+
+</mx:CanvasWithPopUp>

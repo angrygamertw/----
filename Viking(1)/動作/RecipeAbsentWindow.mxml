@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+
+        public function close() : void
+        {
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas>
+		<mx:Text id="_RecipeAbsentWindow_Text1" x="200" y="60" text="_description"/>
+		<mx:HBox width="100" x="110" y="250">
+			<mx:Button buttonMode="true" mouseChildren="false" overSkin="_embed_mxml__images_home_st_btn_delcancel_on_png_138482313" upSkin="_embed_mxml__images_home_st_btn_delcancel_off_png_818309943" downSkin="_embed_mxml__images_home_st_btn_delcancel_on_png_138482313" click="{close();}"/>
+		</mx:HBox>
+	</mx:Canvas>
+
+</mx:PopupWindow>

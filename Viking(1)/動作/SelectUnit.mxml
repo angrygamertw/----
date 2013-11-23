@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:CanvasWithPopUp xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.view.home.*;
+        import com.kbmj.viking.view.selectUnit.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  fadeInTimer:Timer;
+        private var  _selectUnits:Array;
+        private var  bg_normal:MovieClipLoaderAsset;
+        private var  bg_colony:MovieClipLoaderAsset;
+        private var  _page:int;
+        private var  _waitUnits:Array;
+        private var  _startMovie:Boolean;
+        private var  _canTactics:Boolean = false;
+        private var  _levelUpIcons:Array;
+        private var  bg_invasion:MovieClipLoaderAsset;
+        public static const  ALL_UNIT_RECOVERY:String = "selectUnit/allUnitRecovery";
+        private static const  UNIT_PER_PAGE:int = 15;
+
+
+        public function onReverse() : void
+        {
+            setPage((_page - 1));
+            return;
+        }// end function
+
+        public function getPage(param1:int) : int
+        {
+            return Math.floor(param1 / UNIT_PER_PAGE);
+        }// end function
+
+        public function closeWindow(param1:String) : void
+        {
+            reset();
+            sendEvent(param1);
+            return;
+        }// end function
+
+        public function init(param1:int) : void
+        {
+            var unitSize:* = param1;
+            MovieClip(Loader(_swf_next.getChildAt(0)).content).gotoAndPlay("button_next");
+            MovieClip(Loader(_swf_prev.getChildAt(0)).content).gotoAndPlay("button_prev");
+            sortieNumber = 0;
+            unitLayer.alpha = 0;
+            unitIcon.alpha = 0;
+            sakura.visible = false;
+            _selectUnits = new Array();
+            switch(unitSize)
+            {
+                case 3:
+                {
+                    bg = bg_colony;
+                    break;
+                }
+                case 4:
+                {
+                    bg = bg_invasion;
+                    break;
+                }
+                default:
+                {
+                    bg = bg_normal;
+                    break;
+                    break;
+                }
+            }
+            MovieClip(Loader(bg.getChildAt(0)).content).gotoAndPlay(1);
+            Loader(bg.getChildAt(0)).content.addEventListener("ENLARGE_END", function () : void
+            {
+                arguments = new activation;
+                var arguments:* = arguments;
+                Loader(bg.getChildAt(0)).content.removeEventListener("ENLARGE_END", callee);
+                fadeInTimer.start();
+                fadeInTimer.addEventListener(TimerEvent.TIMER, function () : void
+                {
+                    unitLayer.alpha = unitLayer.alpha + 0.1;
+                    unitIcon.alpha = unitIcon.alpha + 0.1;
+                    if (unitLayer.alpha >= 1)
+                    {
+                        fadeInTimer.removeEventListener(TimerEvent.TIMER, arguments.callee);
+                        unitLayer.alpha = 1;
+                        unitIcon.alpha = 1;
+                        sakura.visible = true;
+                        fadeInTimer.reset();
+                        fadeInTimer.stop();
+                    }
+                    return;
+                }// end function
+                );
+                return;
+            }// end function
+            );
+            return;
+        }// end function
+
+        public function setPage(param1:int) : void
+        {
+            var _loc_2:Boolean = false;
+            var _loc_4:LevelUpIconRenderer = null;
+            var _loc_3:int = 0;
+            while (_loc_3 < _units.length)
+            {
+                
+                _loc_2 = param1 == getPage(_loc_3) || isSelected(_units[_loc_3]);
+                _units[_loc_3].uic.visible = _loc_2;
+                for each (_loc_4 in levelUpIcons)
+                {
+                    
+                    if (_loc_4.iconUnit.unitId == _units[_loc_3].unitId)
+                    {
+                        _loc_4.visible = _loc_2;
+                    }
+                }
+                _loc_3++;
+            }
+            reverseBtn.visible = param1 != 0;
+            forwardBtn.visible = _units.length > UNIT_PER_PAGE * (param1 + 1);
+            _page = param1;
+            return;
+        }// end function
+
+        public function addUnitUic(param1:DisplayObject) : void
+        {
+            unitLayer.addChild(param1);
+            return;
+        }// end function
+
+        public function reset() : void
+        {
+            var _loc_1:int = 0;
+            while (_loc_1 < _units.length)
+            {
+                
+                _units[_loc_1].uic.visible = true;
+                _loc_1++;
+            }
+            return;
+        }// end function
+
+        public function allUnitRecovery() : void
+        {
+            sendEvent(ALL_UNIT_RECOVERY);
+            return;
+        }// end function
+
+        public function removeAllUnitIcon() : void
+        {
+            unitIcon.removeAllChildren();
+            return;
+        }// end function
+
+        public function resetCurrentPage() : void
+        {
+            setPage(_page);
+            return;
+        }// end function
+
+        public function endSelectUnit() : void
+        {
+            if (startMovie)
+            {
+                closeWindow(Viking.SELECT_UNIT_ACTION_START_TACTICS);
+            }
+            else
+            {
+                closeWindow(Viking.SELECT_UNIT_ACTION_START_TACTICS);
+            }
+            return;
+        }// end function
+
+        public function addUnitIcon(param1:DisplayObject) : void
+        {
+            unitIcon.addChild(param1);
+            return;
+        }// end function
+
+        public function onForward() : void
+        {
+            setPage((_page + 1));
+            return;
+        }// end function
+
+        public function isSelected(param1:UnitVO) : Boolean
+        {
+            return selectUnits.indexOf(param1.unitId) != -1;
+        }// end function
+
+        public function removeAllUnitUic() : void
+        {
+            unitLayer.removeAllChildren();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="map" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+		<mx:Image id="mapImage" source="{bg}"/>
+		<mx:Canvas id="unitLayer"/>
+		<mx:Canvas id="unitIcon"/>
+		<mx:Image id="reverseBtn" buttonMode="true" x="385" y="275" click="{onReverse();}" source="{_swf_prev}"/>
+		<mx:Image id="forwardBtn" buttonMode="true" x="460" y="275" click="{onForward();}" source="{_swf_next}"/>
+		<mx:Canvas id="lvUpAnimeCanvas"/>
+	</mx:Canvas>
+	<mx:Sakura id="sakura" visible="false"/>
+	<mx:Label id="_SelectUnit_Label1" x="151" y="268" width="30" fontSize="26" fontWeight="bold" textAlign="right" color="#00666666" text="_sortieNumber"/>
+	<mx:Label id="_SelectUnit_Label2" x="150" y="267" width="30" fontSize="26" fontWeight="bold" textAlign="right" color="#00ff7066" text="_sortieNumber"/>
+	<mx:Image id="startTactics" x="7" y="242" source="_embed_mxml__swf_all_map_button_battle_start_swf_144946677" click="{endSelectUnit();}"/>
+	<mx:Image id="back" x="685" y="7" source="_embed_mxml__swf_all_map_button_back_swf_2104410221" click="{closeWindow(Viking.SELECT_UNIT_ACTION_BACK);}"/>
+	<mx:UnitStatus id="unitStatus" x="2" y="290"/>
+	<mx:Image id="allRecovery" x="15" y="15" source="_embed_mxml__swf_common_button_shikihime_heal_50_swf_1327100791" click="{allUnitRecovery();}"/>
+	<mx:ChangeEquipmentWindow id="changeEquipmentWindow" visible="false"/>
+	<mx:SelectItemListWindow id="selectItemListWindow" visible="false"/>
+
+</mx:CanvasWithPopUp>

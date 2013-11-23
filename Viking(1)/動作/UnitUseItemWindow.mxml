@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _tutMarkItemVisible:Boolean = false;
+        public static const  NAME:String = "unitUseItemWindow";
+        public static const  USE_ITEM:String = NAME + "useItem";
+        public static const  USE_ITEM_WINDOW_CLOSE:String = NAME + "useItemWindowClose";
+        public static const  USE_ITEM_WINDOW_TMARK:String = NAME + "useItemWindowTmark";
+
+
+        public function _UnitUseItemWindow_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UnitUseItemWindow_DataGridColumn6 = _loc_1;
+            _loc_1.width = 78;
+            BindingManager.executeBindings(this, "_UnitUseItemWindow_DataGridColumn6", _UnitUseItemWindow_DataGridColumn6);
+            return _loc_1;
+        }// end function
+
+        public function init() : void
+        {
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            return;
+        }// end function
+
+        public function _UnitUseItemWindow_DataGridColumn10_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UnitUseItemWindow_DataGridColumn10 = _loc_1;
+            _loc_1.dataField = "description";
+            _loc_1.width = 260;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_UnitUseItemWindow_DataGridColumn10", _UnitUseItemWindow_DataGridColumn10);
+            return _loc_1;
+        }// end function
+
+        public function useItem(param1:Object) : void
+        {
+            if (param1.masterId == 12)
+            {
+                sendEvent(USE_ITEM_WINDOW_TMARK);
+            }
+            dispatchEvent(new PopupEvent(USE_ITEM, {unit:_unitVO, item:param1}));
+            close();
+            return;
+        }// end function
+
+        public function _UnitUseItemWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UnitUseItemWindow_DataGridColumn1 = _loc_1;
+            _loc_1.width = 55;
+            _loc_1.sortable = false;
+            BindingManager.executeBindings(this, "_UnitUseItemWindow_DataGridColumn1", _UnitUseItemWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function setTutMarkItemVisible(param1:int, param2:int, param3:int) : void
+        {
+            if (param1 == 2 && param2 == 31 && param3 == 1 || param1 == 3 && param2 == 31 && param3 == 2)
+            {
+                _tutMarkItemVisible = true;
+                tutVisible = true;
+                nonTutVisible = false;
+            }
+            else
+            {
+                _tutMarkItemVisible = false;
+                tutVisible = false;
+                nonTutVisible = true;
+            }
+            return;
+        }// end function
+
+        public function _UnitUseItemWindow_DataGridColumn9_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UnitUseItemWindow_DataGridColumn9 = _loc_1;
+            _loc_1.dataField = "effect";
+            _loc_1.width = 185;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_UnitUseItemWindow_DataGridColumn9", _UnitUseItemWindow_DataGridColumn9);
+            return _loc_1;
+        }// end function
+
+        public function _UnitUseItemWindow_DataGridColumn5_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UnitUseItemWindow_DataGridColumn5 = _loc_1;
+            _loc_1.dataField = "description";
+            _loc_1.width = 260;
+            _loc_1.sortable = false;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_UnitUseItemWindow_DataGridColumn5", _UnitUseItemWindow_DataGridColumn5);
+            return _loc_1;
+        }// end function
+
+        public function idSort(param1:Object, param2:Object) : int
+        {
+            return Utils.sortItem(param1.masterVO.masterId, param2.masterVO.masterId);
+        }// end function
+
+        public function setItems(param1:ResourceVO) : void
+        {
+            var homeResource:* = param1;
+            items = new ArrayCollection(homeResource.items.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                return param1.available == 0;
+            }// end function
+            ).sortOn("effect"));
+            return;
+        }// end function
+
+        public function _UnitUseItemWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UnitUseItemWindow_DataGridColumn4 = _loc_1;
+            _loc_1.dataField = "effect";
+            _loc_1.width = 200;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_UnitUseItemWindow_DataGridColumn4", _UnitUseItemWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function _UnitUseItemWindow_DataGridColumn8_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UnitUseItemWindow_DataGridColumn8 = _loc_1;
+            _loc_1.dataField = "endurance";
+            _loc_1.width = 62;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_UnitUseItemWindow_DataGridColumn8", _UnitUseItemWindow_DataGridColumn8);
+            return _loc_1;
+        }// end function
+
+        public function _UnitUseItemWindow_ClassFactory2_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRendererTutorial = _loc_1;
+            _loc_1.generator = UnitUseItemWindow_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function removeWindow() : void
+        {
+            sendEvent(USE_ITEM_WINDOW_CLOSE);
+            close();
+            return;
+        }// end function
+
+        public function _UnitUseItemWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UnitUseItemWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "endurance";
+            _loc_1.width = 65;
+            _loc_1.sortable = false;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_UnitUseItemWindow_DataGridColumn3", _UnitUseItemWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function showTutMark(param1:Object) : Boolean
+        {
+            if (param1.masterId == 12 && _tutMarkItemVisible)
+            {
+                return visible;
+            }
+            return false;
+        }// end function
+
+        public function _UnitUseItemWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRenderer = _loc_1;
+            _loc_1.generator = UnitUseItemWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _UnitUseItemWindow_DataGridColumn7_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UnitUseItemWindow_DataGridColumn7 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 95;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_UnitUseItemWindow_DataGridColumn7", _UnitUseItemWindow_DataGridColumn7);
+            return _loc_1;
+        }// end function
+
+        public function _UnitUseItemWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _UnitUseItemWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 100;
+            _loc_1.sortCompareFunction = idSort;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_UnitUseItemWindow_DataGridColumn2", _UnitUseItemWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function close() : void
+        {
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            onClose();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Text id="_UnitUseItemWindow_Text1" x="338" styleName="ProductionTitle" y="20" text="{Utils.i18n("unitUseItemTitle")}"/>
+	<mx:Image x="715" y="20" width="20" height="20" source="_embed_mxml__swf_common_button_close_window_swf_1370265653" click="{close();}"/>
+	<mx:Canvas id="skillCanvas" y="30">
+		<mx:Text id="_UnitUseItemWindow_Text2" x="40" y="20" fontSize="11" text="{Utils.i18n("unitUseItemTarget") + ":" + _unitVO.name}"/>
+		<mx:VBox id="_UnitUseItemWindow_VBox1" x="40" y="40" label="{Utils.i18n("generalMaterial")}">
+			<mx:DataGrid id="skill_data_list" styleName="DataGridBase" rowCount="6" selectable="false" includeInLayout="false" columns="{[_UnitUseItemWindow_DataGridColumn1_i(), _UnitUseItemWindow_DataGridColumn2_i(), _UnitUseItemWindow_DataGridColumn3_i(), _UnitUseItemWindow_DataGridColumn4_i(), _UnitUseItemWindow_DataGridColumn5_i()]}" dataProvider='{items}' visible="nonTutVisible"/>
+			<mx:DataGrid id="skill_data_list_tutorial" styleName="DataGridBase" rowCount="6" selectable="false" sortableColumns="false" columns="{[_UnitUseItemWindow_DataGridColumn6_i(), _UnitUseItemWindow_DataGridColumn7_i(), _UnitUseItemWindow_DataGridColumn8_i(), _UnitUseItemWindow_DataGridColumn9_i(), _UnitUseItemWindow_DataGridColumn10_i()]}" dataProvider='{items}' visible="tutVisible"/>
+		</mx:VBox>
+		<mx:Image id="_UnitUseItemWindow_Image2" x="325" y="230" click="{removeWindow();}" source="{_swf_close}"/>
+	</mx:Canvas>
+
+</mx:PopupWindow>

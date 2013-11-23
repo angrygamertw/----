@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  _itemVO:Object;
+
+
+        public function buttanClick() : void
+        {
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Box width="500" height="450" styleName="ItemDetailBg">
+		<mx:Canvas>
+			<mx:Image source="_embed_mxml__images_base_st_icon_battle_png_722824843" x="25" y="16"/>
+			<mx:Label id="_ItemDetail_Label1" styleName="ItemDetailLabel" x="50" y="20" text="{itemVO.masterVO.nameLabel}"/>
+			<mx:Text id="_ItemDetail_Text1" styleName="ItemDetail" width="450" x="30" y="50" text="{itemVO.masterVO.description}"/>
+			<mx:Text id="_ItemDetail_Text2" styleName="ItemDetailText" width="80" x="68" y="120" textAlign="left" text="{itemVO.buyingPrice + "Gold"}"/>
+			<mx:Text id="_ItemDetail_Text3" styleName="ItemDetailText" width="30" x="205" y="120" textAlign="left" text="{itemVO.masterVO.weaponRank}"/>
+			<mx:Text id="_ItemDetail_Text4" styleName="ItemDetailText" width="50" x="323" y="120" textAlign="left" text="{itemVO.masterVO.endurance}"/>
+			<mx:Text id="_ItemDetail_Text5" styleName="ItemDetailText" x="87" y="146" width="50" textAlign="center" text="{itemVO.masterVO.damage}"/>
+			<mx:Text id="_ItemDetail_Text6" styleName="ItemDetailText" x="198" y="146" width="50" textAlign="center" text="{itemVO.masterVO.hit}"/>
+			<mx:Text id="_ItemDetail_Text7" styleName="ItemDetailText" x="310" y="146" width="50" textAlign="center" text="{itemVO.masterVO.attackRangeMax}"/>
+			<mx:Text id="_ItemDetail_Text8" styleName="ItemDetailText" x="423" y="146" width="50" textAlign="center" text="{itemVO.masterVO.attackRangeMin + " ～ " + itemVO.masterVO.attackRangeMax}"/>
+			<mx:Text text=" - " styleName="ItemDetailText" x="87" y="170" width="50" textAlign="center"/>
+			<mx:Text text=" - " styleName="ItemDetailText" x="198" y="170" width="50" textAlign="center"/>
+			<mx:Text text=" - " styleName="ItemDetailText" x="310" y="170" width="50" textAlign="center"/>
+			<mx:Text id="_ItemDetail_Text12" styleName="ItemDetailText" x="67" y="204" width="50" textAlign="center" text="{itemVO.masterVO.strength}"/>
+			<mx:Text id="_ItemDetail_Text13" styleName="ItemDetailText" x="157" y="204" width="50" textAlign="center" text="{itemVO.masterVO.intelligence}"/>
+			<mx:Text id="_ItemDetail_Text14" styleName="ItemDetailText" x="246" y="204" width="50" textAlign="center" text="{itemVO.masterVO.tech}"/>
+			<mx:Text id="_ItemDetail_Text15" styleName="ItemDetailText" x="337" y="204" width="50" textAlign="center" text="{itemVO.masterVO.defense}"/>
+			<mx:Text id="_ItemDetail_Text16" styleName="ItemDetailText" x="426" y="204" width="50" textAlign="center" text="{itemVO.masterVO.agility}"/>
+			<mx:Text id="_ItemDetail_Text17" styleName="ItemDetailText" x="67" y="228" width="50" textAlign="center" text="{itemVO.masterVO.luck}"/>
+			<mx:Text id="_ItemDetail_Text18" styleName="ItemDetailText" x="157" y="228" width="50" textAlign="center" text="{itemVO.masterVO.maxHp}"/>
+			<mx:Text id="_ItemDetail_Text19" styleName="ItemDetailText" x="300" y="228" width="200" textAlign="left" text="{itemVO.masterVO.skillId}"/>
+			<mx:TileList id="_ItemDetail_TileList1" styleName="PossibleClass" x="28" y="290" width="450" direction="horizontal" columnWidth="111" rowHeight="21" columnCount="2" selectable="false" backgroundAlpha="0" useRollOver="false" borderStyle="none" dataProvider='{menu_data}'/>
+			<mx:Button label="" styleName="OnlyOkButton" y="410" x="206" buttonMode="true" click="{buttanClick();}"/>
+		</mx:Canvas>
+	</mx:Box>
+
+</mx:Canvas>

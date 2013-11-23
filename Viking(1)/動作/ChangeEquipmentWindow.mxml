@@ -1,0 +1,1199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" height="560" width="760" creationComplete="{addSwf();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.vo.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _tutMarkEquipFinishVisible:Boolean = false;
+        private var  _armors:Array;
+        private var  _changeBool:Boolean = false;
+        private var  _weapons:Array;
+        private var  _changeType:String = "Weapon";
+        private var  _items:Array;
+        private var  _tutMarkEquipVisible:Boolean = false;
+        public var  itemData:Array;
+        private var  _accessories:Array;
+        private var  equipmentDetail:EquipmentDetail;
+        public var  armorData:Array;
+        public var  weaponDetail:WeaponDetail;
+        public var  accessoryData:Array;
+        public var  weaponData:Array;
+        public static const  CHANGE_EQUIPMENT_WINDOW_TMARK_EQUIP:String = "changeEquipmentWindowTmarkEquip";
+        public static const  CHANGE_HILIGHT:String = "chageHiLight";
+        public static const  CHANGE_EQUIPMENT_WINDOW_CLOSE:String = "changeEquipmentWindowClose";
+        public static const  CHANGE_EQUIPMENT_WINDOW_TMARK_CLOSE:String = "changeEquipmentWindowTmarkClose";
+        public static const  CHANGE_EQUIPMENT_WINDOW_TMARK_FINISH_EQUIP:String = "changeEquipmentWindowTmarkFinishEquip";
+        public static const  CHANGE_EQUIPMENT_FINISH:String = "changeEquipmentFinish";
+        public static const  CHANGE_EQUIPMENT_WINDOW_TMARK:String = "changeEquipmentWindowTmark";
+        public static const  CHANGE_EQUIPMENT_CANCEL:String = "changeEquipmentCancel";
+
+
+        public function _ChangeEquipmentWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            icon_renderer = _loc_1;
+            _loc_1.generator = ChangeEquipmentWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn14_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn14 = _loc_1;
+            _loc_1.dataField = "physicalDefense";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn14", _ChangeEquipmentWindow_DataGridColumn14);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn37_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn37 = _loc_1;
+            _loc_1.dataField = "description";
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn37", _ChangeEquipmentWindow_DataGridColumn37);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn40_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn40 = _loc_1;
+            _loc_1.dataField = "damage";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn40", _ChangeEquipmentWindow_DataGridColumn40);
+            return _loc_1;
+        }// end function
+
+        public function addSwf() : void
+        {
+            Loader(_swf_equip.getChildAt(0)).content.addEventListener("BUTTON_COMPLETE_EQUIPMENT", function (event:Event) : void
+            {
+                equip();
+                return;
+            }// end function
+            );
+            MovieClip(Loader(_swf_equip.getChildAt(0)).content).gotoAndPlay("button_complete_equipment");
+            Loader(_swf_close.getChildAt(0)).content.addEventListener("BUTTON_CANCEL", function (event:Event) : void
+            {
+                close();
+                return;
+            }// end function
+            );
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_cancel");
+            return;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn25_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn25 = _loc_1;
+            _loc_1.dataField = "description";
+            _loc_1.sortable = false;
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn25", _ChangeEquipmentWindow_DataGridColumn25);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn48_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn48 = _loc_1;
+            _loc_1.dataField = "enduranceLabel";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn48", _ChangeEquipmentWindow_DataGridColumn48);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "weaponTypeLabel";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn2", _ChangeEquipmentWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function onClickAccessory(param1:Object) : void
+        {
+            if (_unit.accessory != null)
+            {
+                accessoryData.push(_unit.accessory);
+            }
+            _unit.accessory = param1 as AccessoryVO;
+            accessoryData.splice(accessoryData.indexOf(param1), 1);
+            viewDataAccessory = new ArrayCollection(accessoryData);
+            changeBool = true;
+            return;
+        }// end function
+
+        public function changeHiLigth() : void
+        {
+            var _loc_1:* = myViewStack.selectedIndex;
+            switch(_loc_1)
+            {
+                case 0:
+                {
+                    _changeType = "Weapon";
+                    break;
+                }
+                case 1:
+                {
+                    _changeType = "SubWeapon";
+                    break;
+                }
+                case 2:
+                {
+                    _changeType = "Armor";
+                    break;
+                }
+                case 3:
+                {
+                    _changeType = "Accessory";
+                    break;
+                }
+                case 4:
+                {
+                    _changeType = "Item";
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            dispatchEvent(new Event(CHANGE_HILIGHT));
+            unitViewStack.selectedIndex = myViewStack.selectedIndex;
+            return;
+        }// end function
+
+        public function equip() : void
+        {
+            var _loc_5:WeaponVO = null;
+            var _loc_6:ArmorVO = null;
+            var _loc_7:AccessoryVO = null;
+            var _loc_8:ItemVO = null;
+            unitViewStack.selectedIndex = 0;
+            myViewStack.selectedIndex = 0;
+            _weapons = new Array();
+            _armors = new Array();
+            _accessories = new Array();
+            _items = new Array();
+            var _loc_1:int = 0;
+            while (_loc_1 < weaponData.length)
+            {
+                
+                _loc_5 = new WeaponVO();
+                _loc_5 = weaponData[_loc_1] as WeaponVO;
+                _weapons.push(_loc_5);
+                _loc_1++;
+            }
+            var _loc_2:int = 0;
+            while (_loc_2 < armorData.length)
+            {
+                
+                _loc_6 = new ArmorVO();
+                _loc_6 = armorData[_loc_2] as ArmorVO;
+                _armors.push(_loc_6);
+                _loc_2++;
+            }
+            var _loc_3:int = 0;
+            while (_loc_3 < accessoryData.length)
+            {
+                
+                _loc_7 = new AccessoryVO();
+                _loc_7 = accessoryData[_loc_3] as AccessoryVO;
+                _accessories.push(_loc_7);
+                _loc_3++;
+            }
+            var _loc_4:int = 0;
+            while (_loc_4 < itemData.length)
+            {
+                
+                _loc_8 = new ItemVO();
+                _loc_8 = itemData[_loc_4] as ItemVO;
+                _items.push(_loc_8);
+                _loc_4++;
+            }
+            dispatchEvent(new Event(CHANGE_EQUIPMENT_WINDOW_TMARK_FINISH_EQUIP));
+            dispatchEvent(new Event(CHANGE_EQUIPMENT_FINISH));
+            dispatchEvent(new Event(CHANGE_EQUIPMENT_WINDOW_CLOSE));
+            onClose();
+            return;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn51_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn51 = _loc_1;
+            _loc_1.dataField = "effectLabelAll";
+            _loc_1.width = 100;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn51", _ChangeEquipmentWindow_DataGridColumn51);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn13_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn13 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 170;
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn13", _ChangeEquipmentWindow_DataGridColumn13);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn36_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn36 = _loc_1;
+            _loc_1.dataField = "enduranceLabel";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn36", _ChangeEquipmentWindow_DataGridColumn36);
+            return _loc_1;
+        }// end function
+
+        public function componentTooltip(param1:int) : String
+        {
+            if (param1 == 0)
+            {
+                return Utils.i18n("changeEquipmentEquip");
+            }
+            if (param1 == 1 || param1 == 3)
+            {
+                return Utils.i18n("generalShowDetail");
+            }
+            if (param1 == 2)
+            {
+                return Utils.i18n("changeEquipmentRemove");
+            }
+            return "";
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn24_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn24 = _loc_1;
+            _loc_1.dataField = "enduranceLabel";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn24", _ChangeEquipmentWindow_DataGridColumn24);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn47_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn47 = _loc_1;
+            _loc_1.dataField = "avoidance";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn47", _ChangeEquipmentWindow_DataGridColumn47);
+            return _loc_1;
+        }// end function
+
+        public function onClickWeapon(param1:Object, param2:String) : void
+        {
+            if (param2 == "main")
+            {
+                if (_unit.weapon != null)
+                {
+                    weaponData.push(_unit.weapon);
+                }
+                _unit.weapon = param1 as WeaponVO;
+                weaponData.splice(weaponData.indexOf(param1), 1);
+            }
+            else
+            {
+                if (_unit.subWeapon != null)
+                {
+                    weaponData.push(_unit.subWeapon);
+                }
+                _unit.subWeapon = param1 as WeaponVO;
+                weaponData.splice(weaponData.indexOf(param1), 1);
+            }
+            viewDataWeapon = new ArrayCollection(weaponData);
+            changeBool = true;
+            return;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 170;
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn1", _ChangeEquipmentWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn12_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn12 = _loc_1;
+            _loc_1.dataField = "description";
+            _loc_1.sortable = false;
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn12", _ChangeEquipmentWindow_DataGridColumn12);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn35_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn35 = _loc_1;
+            _loc_1.dataField = "hit";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn35", _ChangeEquipmentWindow_DataGridColumn35);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn23_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn23 = _loc_1;
+            _loc_1.dataField = "effect";
+            _loc_1.width = 170;
+            _loc_1.sortable = false;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn23", _ChangeEquipmentWindow_DataGridColumn23);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn46_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn46 = _loc_1;
+            _loc_1.dataField = "magicalDefense";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn46", _ChangeEquipmentWindow_DataGridColumn46);
+            return _loc_1;
+        }// end function
+
+        public function onClickEquipment(param1:Object) : void
+        {
+            var _loc_2:* = myViewStack.selectedIndex;
+            switch(_loc_2)
+            {
+                case 0:
+                {
+                    onClickWeapon(param1, "main");
+                    if (param1.code == 2058)
+                    {
+                        _tutMarkEquipFinishVisible = true;
+                    }
+                    else
+                    {
+                        _tutMarkEquipFinishVisible = false;
+                    }
+                    dispatchEvent(new Event(CHANGE_EQUIPMENT_WINDOW_TMARK_EQUIP));
+                    break;
+                }
+                case 1:
+                {
+                    onClickWeapon(param1, "sub");
+                    break;
+                }
+                case 2:
+                {
+                    onClickArmor(param1);
+                    break;
+                }
+                case 3:
+                {
+                    onClickAccessory(param1);
+                    break;
+                }
+                case 4:
+                {
+                    onClickItem(param1);
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            unitViewStack.selectedIndex = myViewStack.selectedIndex;
+            return;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn11_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn11 = _loc_1;
+            _loc_1.dataField = "enduranceLabel";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn11", _ChangeEquipmentWindow_DataGridColumn11);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn19_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn19 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 170;
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn19", _ChangeEquipmentWindow_DataGridColumn19);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn50_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn50 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 170;
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn50", _ChangeEquipmentWindow_DataGridColumn50);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn9_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn9 = _loc_1;
+            _loc_1.dataField = "damage";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn9", _ChangeEquipmentWindow_DataGridColumn9);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn45_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn45 = _loc_1;
+            _loc_1.dataField = "physicalDefense";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn45", _ChangeEquipmentWindow_DataGridColumn45);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn34_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn34 = _loc_1;
+            _loc_1.dataField = "damage";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn34", _ChangeEquipmentWindow_DataGridColumn34);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn8_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn8 = _loc_1;
+            _loc_1.dataField = "weaponTypeLabel";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn8", _ChangeEquipmentWindow_DataGridColumn8);
+            return _loc_1;
+        }// end function
+
+        public function getSortFieldName(param1:String) : String
+        {
+            switch(param1)
+            {
+                case "nameLabel":
+                {
+                    return "masterId";
+                }
+                case "weaponTypeLabel":
+                {
+                    return "weaponType";
+                }
+                case "enduranceLabel":
+                {
+                    return "endurance";
+                }
+                default:
+                {
+                    return param1;
+                    break;
+                }
+            }
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn10_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn10 = _loc_1;
+            _loc_1.dataField = "hit";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn10", _ChangeEquipmentWindow_DataGridColumn10);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn33_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn33 = _loc_1;
+            _loc_1.dataField = "weaponTypeLabel";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn33", _ChangeEquipmentWindow_DataGridColumn33);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn56_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn56 = _loc_1;
+            _loc_1.dataField = "description";
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn56", _ChangeEquipmentWindow_DataGridColumn56);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn18_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn18 = _loc_1;
+            _loc_1.dataField = "description";
+            _loc_1.sortable = false;
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn18", _ChangeEquipmentWindow_DataGridColumn18);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn7_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn7 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 170;
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn7", _ChangeEquipmentWindow_DataGridColumn7);
+            return _loc_1;
+        }// end function
+
+        public function onDetail(param1:Object) : void
+        {
+            if (param1.masterType == "WeaponMaster" || param1.masterType == "ArmorMaster" || param1.masterType == "AccessoryMaster")
+            {
+                weaponDetail.viewData = param1;
+                if (weaponDetail.viewData)
+                {
+                    popupWindow(weaponDetail);
+                }
+            }
+            else
+            {
+                equipmentDetail.viewData = param1;
+                if (equipmentDetail.viewData)
+                {
+                    popupWindow(equipmentDetail);
+                }
+            }
+            return;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn22_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn22 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 170;
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn22", _ChangeEquipmentWindow_DataGridColumn22);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn21_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn21 = _loc_1;
+            _loc_1.dataField = "description";
+            _loc_1.sortable = false;
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn21", _ChangeEquipmentWindow_DataGridColumn21);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn44_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn44 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 170;
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn44", _ChangeEquipmentWindow_DataGridColumn44);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn29_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn29 = _loc_1;
+            _loc_1.dataField = "hit";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn29", _ChangeEquipmentWindow_DataGridColumn29);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn17_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn17 = _loc_1;
+            _loc_1.dataField = "enduranceLabel";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn17", _ChangeEquipmentWindow_DataGridColumn17);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn55_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn55 = _loc_1;
+            _loc_1.dataField = "enduranceLabel";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn55", _ChangeEquipmentWindow_DataGridColumn55);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn32_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn32 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 170;
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn32", _ChangeEquipmentWindow_DataGridColumn32);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn6 = _loc_1;
+            _loc_1.dataField = "description";
+            _loc_1.sortable = false;
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn6", _ChangeEquipmentWindow_DataGridColumn6);
+            return _loc_1;
+        }// end function
+
+        public function setEquipment(param1:ResourceVO) : void
+        {
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_cancel");
+            MovieClip(Loader(_swf_equip.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_equip.getChildAt(0)).content).gotoAndPlay("button_complete_equipment");
+            _weapons = param1.weapons;
+            if (weaponData)
+            {
+                weaponData = new Array();
+            }
+            var _loc_2:int = 0;
+            while (_loc_2 < _weapons.length)
+            {
+                
+                weaponData.push(_weapons[_loc_2]);
+                _loc_2++;
+            }
+            viewDataWeapon = new ArrayCollection(weaponData);
+            _armors = param1.armors;
+            if (armorData)
+            {
+                armorData = new Array();
+            }
+            _loc_2 = 0;
+            while (_loc_2 < _armors.length)
+            {
+                
+                armorData.push(_armors[_loc_2]);
+                _loc_2++;
+            }
+            viewDataArmor = new ArrayCollection(armorData);
+            _accessories = param1.accessories;
+            if (accessoryData)
+            {
+                accessoryData = new Array();
+            }
+            _loc_2 = 0;
+            while (_loc_2 < _accessories.length)
+            {
+                
+                accessoryData.push(_accessories[_loc_2]);
+                _loc_2++;
+            }
+            viewDataAccessory = new ArrayCollection(accessoryData);
+            _items = param1.items;
+            if (itemData)
+            {
+                itemData = new Array();
+            }
+            _loc_2 = 0;
+            while (_loc_2 < _items.length)
+            {
+                
+                if (_items[_loc_2].equipment == 0)
+                {
+                    itemData.push(_items[_loc_2]);
+                }
+                _loc_2++;
+            }
+            itemData.sortOn("effect");
+            viewDataItem = new ArrayCollection(itemData);
+            dispatchEvent(new Event(CHANGE_EQUIPMENT_WINDOW_TMARK));
+            return;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn20_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn20 = _loc_1;
+            _loc_1.dataField = "effectLabelAll";
+            _loc_1.width = 100;
+            _loc_1.sortable = false;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn20", _ChangeEquipmentWindow_DataGridColumn20);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn43_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn43 = _loc_1;
+            _loc_1.dataField = "description";
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn43", _ChangeEquipmentWindow_DataGridColumn43);
+            return _loc_1;
+        }// end function
+
+        public function onRemove() : void
+        {
+            var _loc_1:* = myViewStack.selectedIndex;
+            switch(_loc_1)
+            {
+                case 0:
+                {
+                    if (_unit.weapon)
+                    {
+                        weaponData.push(_unit.weapon);
+                        viewDataWeapon = new ArrayCollection(weaponData);
+                        _unit.weapon = null;
+                    }
+                    break;
+                }
+                case 1:
+                {
+                    if (_unit.subWeapon)
+                    {
+                        weaponData.push(_unit.subWeapon);
+                        viewDataWeapon = new ArrayCollection(weaponData);
+                        _unit.subWeapon = null;
+                    }
+                    break;
+                }
+                case 2:
+                {
+                    if (_unit.armor)
+                    {
+                        armorData.push(_unit.armor);
+                        viewDataArmor = new ArrayCollection(armorData);
+                        _unit.armor = null;
+                    }
+                    break;
+                }
+                case 3:
+                {
+                    if (_unit.accessory)
+                    {
+                        accessoryData.push(_unit.accessory);
+                        viewDataAccessory = new ArrayCollection(accessoryData);
+                        _unit.accessory = null;
+                    }
+                    break;
+                }
+                case 4:
+                {
+                    if (_unit.item)
+                    {
+                        itemData.push(_unit.item);
+                        viewDataItem = new ArrayCollection(itemData);
+                        _unit.item = null;
+                    }
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            unitViewStack.selectedIndex = myViewStack.selectedIndex;
+            changeBool = true;
+            _tutMarkEquipFinishVisible = false;
+            dispatchEvent(new Event(CHANGE_EQUIPMENT_WINDOW_TMARK_EQUIP));
+            return;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn5_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn5 = _loc_1;
+            _loc_1.dataField = "enduranceLabel";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn5", _ChangeEquipmentWindow_DataGridColumn5);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn28_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn28 = _loc_1;
+            _loc_1.dataField = "damage";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn28", _ChangeEquipmentWindow_DataGridColumn28);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn16_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn16 = _loc_1;
+            _loc_1.dataField = "avoidance";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn16", _ChangeEquipmentWindow_DataGridColumn16);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn39_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn39 = _loc_1;
+            _loc_1.dataField = "weaponTypeLabel";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn39", _ChangeEquipmentWindow_DataGridColumn39);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_ClassFactory3_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            equipment_icon_renderer = _loc_1;
+            _loc_1.generator = ChangeEquipmentWindow_inlineComponent3;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn31_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn31 = _loc_1;
+            _loc_1.dataField = "description";
+            _loc_1.sortable = false;
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn31", _ChangeEquipmentWindow_DataGridColumn31);
+            return _loc_1;
+        }// end function
+
+        public function onClickItem(param1:Object) : void
+        {
+            if (_unit.item != null)
+            {
+                itemData.push(_unit.item);
+            }
+            _unit.item = param1 as ItemVO;
+            itemData.splice(itemData.indexOf(param1), 1);
+            viewDataItem = new ArrayCollection(itemData);
+            changeBool = true;
+            return;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn42_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn42 = _loc_1;
+            _loc_1.dataField = "enduranceLabel";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn42", _ChangeEquipmentWindow_DataGridColumn42);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn54_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn54 = _loc_1;
+            _loc_1.dataField = "effect";
+            _loc_1.width = 170;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn54", _ChangeEquipmentWindow_DataGridColumn54);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn27_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn27 = _loc_1;
+            _loc_1.dataField = "weaponTypeLabel";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn27", _ChangeEquipmentWindow_DataGridColumn27);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn4 = _loc_1;
+            _loc_1.dataField = "hit";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn4", _ChangeEquipmentWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn30_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn30 = _loc_1;
+            _loc_1.dataField = "enduranceLabel";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn30", _ChangeEquipmentWindow_DataGridColumn30);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn53_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn53 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.headerText = "Utils.i18n(\'changeEquipmentItemName\')";
+            _loc_1.width = 170;
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn53", _ChangeEquipmentWindow_DataGridColumn53);
+            return _loc_1;
+        }// end function
+
+        public function showTutMark(param1:Object) : Boolean
+        {
+            if (param1.code == 2058 && _tutMarkEquipVisible)
+            {
+                return visible;
+            }
+            return false;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn38_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn38 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 170;
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn38", _ChangeEquipmentWindow_DataGridColumn38);
+            return _loc_1;
+        }// end function
+
+        public function fieldSort(event:DataGridEvent, param2:ArrayCollection) : void
+        {
+            var _loc_3:* = getSortFieldName(event.dataField);
+            var _loc_4:Boolean = false;
+            if (event.target.dataProvider && event.target.dataProvider.sort)
+            {
+                _loc_4 = !event.target.dataProvider.sort.fields[0].descending;
+            }
+            var _loc_5:Array = [];
+            [].push(new SortField(_loc_3, true, _loc_4, true));
+            if (event.dataField == "weaponTypeLabel")
+            {
+                _loc_5.push(new SortField("masterId", true, false, true));
+            }
+            setSortFields(param2, _loc_5);
+            return;
+        }// end function
+
+        public function _ChangeEquipmentWindow_ClassFactory2_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            icon_renderer_tutorial = _loc_1;
+            _loc_1.generator = ChangeEquipmentWindow_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn15_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn15 = _loc_1;
+            _loc_1.dataField = "magicalDefense";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn15", _ChangeEquipmentWindow_DataGridColumn15);
+            return _loc_1;
+        }// end function
+
+        public function setTutMarkVisible(param1:int, param2:int) : void
+        {
+            if (param1 == 1 && param2 == 31)
+            {
+                tutVisible = true;
+                nonTutVisible = false;
+                _tutMarkEquipVisible = true;
+            }
+            else
+            {
+                _tutMarkEquipVisible = false;
+                tutVisible = false;
+                nonTutVisible = true;
+            }
+            return;
+        }// end function
+
+        public function onClickArmor(param1:Object) : void
+        {
+            if (_unit.armor != null)
+            {
+                armorData.push(_unit.armor);
+            }
+            _unit.armor = param1 as ArmorVO;
+            armorData.splice(armorData.indexOf(param1), 1);
+            viewDataArmor = new ArrayCollection(armorData);
+            changeBool = true;
+            return;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn26_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn26 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 170;
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn26", _ChangeEquipmentWindow_DataGridColumn26);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn49_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn49 = _loc_1;
+            _loc_1.dataField = "description";
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn49", _ChangeEquipmentWindow_DataGridColumn49);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "damage";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn3", _ChangeEquipmentWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn41_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn41 = _loc_1;
+            _loc_1.dataField = "hit";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn41", _ChangeEquipmentWindow_DataGridColumn41);
+            return _loc_1;
+        }// end function
+
+        public function close() : void
+        {
+            unitViewStack.selectedIndex = 0;
+            myViewStack.selectedIndex = 0;
+            dispatchEvent(new Event(CHANGE_EQUIPMENT_WINDOW_TMARK_CLOSE));
+            dispatchEvent(new Event(CHANGE_EQUIPMENT_CANCEL));
+            dispatchEvent(new Event(CHANGE_EQUIPMENT_WINDOW_CLOSE));
+            onClose();
+            return;
+        }// end function
+
+        public function setSortFields(param1:ArrayCollection, param2:Array) : void
+        {
+            var _loc_3:* = new Sort();
+            _loc_3.fields = param2;
+            param1.sort = _loc_3;
+            param1.refresh();
+            return;
+        }// end function
+
+        public function _ChangeEquipmentWindow_DataGridColumn52_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ChangeEquipmentWindow_DataGridColumn52 = _loc_1;
+            _loc_1.dataField = "description";
+            _loc_1.sortable = false;
+            BindingManager.executeBindings(this, "_ChangeEquipmentWindow_DataGridColumn52", _ChangeEquipmentWindow_DataGridColumn52);
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Text id="_ChangeEquipmentWindow_Text1" styleName="ProductionTitle" x="350" y="20" text="{Utils.i18n("changeEquipmentChangeEquipment")}"/>
+	<mx:VBox id="equipBox" width="735" x="8" y="7" verticalGap="-1">
+		<mx:Canvas width="735">
+			<mx:Canvas id="tabCanvas" x="20" y="40"/>
+			<mx:Image width="20" height="20" source="_embed_mxml__swf_common_button_close_window_swf_1370265653" top="13" right="8" click="{onClose();}"/>
+		</mx:Canvas>
+		<mx:ViewStack id="unitViewStack" height="80" borderStyle="none" paddingLeft="20" paddingTop="29">
+			<mx:VBox>
+				<mx:DataGrid id="unit_weapon_data_list" width="703" rowCount="1" styleName="DataGridBase2" selectable="false" rowHeight="26" columns="{[_ChangeEquipmentWindow_DataGridColumn1_i(), _ChangeEquipmentWindow_DataGridColumn2_i(), _ChangeEquipmentWindow_DataGridColumn3_i(), _ChangeEquipmentWindow_DataGridColumn4_i(), _ChangeEquipmentWindow_DataGridColumn5_i(), _ChangeEquipmentWindow_DataGridColumn6_i()]}" headerRelease="{fieldSort(event, viewDataWeapon);}" dataProvider='{{_unit.weapon}}'/>
+			</mx:VBox>
+			<mx:VBox>
+				<mx:DataGrid id="unit_sub_weapon_data_list" width="703" rowCount="1" styleName="DataGridBase2" selectable="false" rowHeight="26" columns="{[_ChangeEquipmentWindow_DataGridColumn7_i(), _ChangeEquipmentWindow_DataGridColumn8_i(), _ChangeEquipmentWindow_DataGridColumn9_i(), _ChangeEquipmentWindow_DataGridColumn10_i(), _ChangeEquipmentWindow_DataGridColumn11_i(), _ChangeEquipmentWindow_DataGridColumn12_i()]}" headerRelease="{fieldSort(event, viewDataWeapon);}" dataProvider='{{_unit.subWeapon}}'/>
+			</mx:VBox>
+			<mx:VBox>
+				<mx:DataGrid id="unit_armor_data_list" width="703" rowCount="1" styleName="DataGridBase2" selectable="false" rowHeight="26" columns="{[_ChangeEquipmentWindow_DataGridColumn13_i(), _ChangeEquipmentWindow_DataGridColumn14_i(), _ChangeEquipmentWindow_DataGridColumn15_i(), _ChangeEquipmentWindow_DataGridColumn16_i(), _ChangeEquipmentWindow_DataGridColumn17_i(), _ChangeEquipmentWindow_DataGridColumn18_i()]}" headerRelease="{fieldSort(event, viewDataArmor);}" dataProvider='{{_unit.armor}}'/>
+			</mx:VBox>
+			<mx:VBox>
+				<mx:DataGrid id="unit_accessory_data_list" width="703" rowCount="1" styleName="DataGridBase2" selectable="false" rowHeight="26" columns="{[_ChangeEquipmentWindow_DataGridColumn19_i(), _ChangeEquipmentWindow_DataGridColumn20_i(), _ChangeEquipmentWindow_DataGridColumn21_i()]}" headerRelease="{fieldSort(event, viewDataAccessory);}" dataProvider='{{_unit.accessory}}'/>
+			</mx:VBox>
+			<mx:VBox>
+				<mx:DataGrid id="unit_item_data_list" width="703" rowCount="1" styleName="DataGridBase2" selectable="false" rowHeight="26" columns="{[_ChangeEquipmentWindow_DataGridColumn22_i(), _ChangeEquipmentWindow_DataGridColumn23_i(), _ChangeEquipmentWindow_DataGridColumn24_i(), _ChangeEquipmentWindow_DataGridColumn25_i()]}" headerRelease="{fieldSort(event, viewDataItem);}" dataProvider='{{_unit.item}}'/>
+			</mx:VBox>
+		</mx:ViewStack>
+		<mx:ViewStack id="myViewStack" width="725" height="140" borderStyle="none" paddingLeft="20" paddingTop="-1">
+			<mx:VBox id="_ChangeEquipmentWindow_VBox7" width="100%" label="{Utils.i18n("generalEquipWeapon")}">
+				<mx:DataGrid id="weapon_data_list" width="703" showHeaders="false" rowCount="4" styleName="DataGridBase" selectable="false" rowHeight="28" includeInLayout="false" columns="{[_ChangeEquipmentWindow_DataGridColumn26_i(), _ChangeEquipmentWindow_DataGridColumn27_i(), _ChangeEquipmentWindow_DataGridColumn28_i(), _ChangeEquipmentWindow_DataGridColumn29_i(), _ChangeEquipmentWindow_DataGridColumn30_i(), _ChangeEquipmentWindow_DataGridColumn31_i()]}" dataProvider='{viewDataWeapon}' visible="nonTutVisible"/>
+				<mx:DataGrid id="weapon_data_list_tutorial" width="703" showHeaders="false" rowCount="4" styleName="DataGridBase" sortableColumns="false" selectable="false" rowHeight="28" columns="{[_ChangeEquipmentWindow_DataGridColumn32_i(), _ChangeEquipmentWindow_DataGridColumn33_i(), _ChangeEquipmentWindow_DataGridColumn34_i(), _ChangeEquipmentWindow_DataGridColumn35_i(), _ChangeEquipmentWindow_DataGridColumn36_i(), _ChangeEquipmentWindow_DataGridColumn37_i()]}" dataProvider='{viewDataWeapon}' visible="tutVisible"/>
+			</mx:VBox>
+			<mx:VBox id="_ChangeEquipmentWindow_VBox8" width="100%" label="{Utils.i18n("armsSubArms")}">
+				<mx:DataGrid id="subWeapon_data_list" showHeaders="false" width="703" rowCount="4" styleName="DataGridBase" sortableColumns="false" selectable="false" rowHeight="28" columns="{[_ChangeEquipmentWindow_DataGridColumn38_i(), _ChangeEquipmentWindow_DataGridColumn39_i(), _ChangeEquipmentWindow_DataGridColumn40_i(), _ChangeEquipmentWindow_DataGridColumn41_i(), _ChangeEquipmentWindow_DataGridColumn42_i(), _ChangeEquipmentWindow_DataGridColumn43_i()]}" dataProvider='{viewDataWeapon}'/>
+			</mx:VBox>
+			<mx:VBox id="_ChangeEquipmentWindow_VBox9" width="100%" label="{Utils.i18n("generalEquipArmor")}">
+				<mx:DataGrid id="armor_data_list" showHeaders="false" width="703" rowCount="4" styleName="DataGridBase" sortableColumns="false" selectable="false" rowHeight="28" columns="{[_ChangeEquipmentWindow_DataGridColumn44_i(), _ChangeEquipmentWindow_DataGridColumn45_i(), _ChangeEquipmentWindow_DataGridColumn46_i(), _ChangeEquipmentWindow_DataGridColumn47_i(), _ChangeEquipmentWindow_DataGridColumn48_i(), _ChangeEquipmentWindow_DataGridColumn49_i()]}" dataProvider='{viewDataArmor}'/>
+			</mx:VBox>
+			<mx:VBox id="_ChangeEquipmentWindow_VBox10" width="100%" label="{Utils.i18n("generalEquipAccessory")}">
+				<mx:DataGrid id="accessory_data_list" showHeaders="false" width="703" rowCount="4" styleName="DataGridBase" sortableColumns="false" selectable="false" rowHeight="28" columns="{[_ChangeEquipmentWindow_DataGridColumn50_i(), _ChangeEquipmentWindow_DataGridColumn51_i(), _ChangeEquipmentWindow_DataGridColumn52_i()]}" dataProvider='{viewDataAccessory}'/>
+			</mx:VBox>
+			<mx:VBox id="_ChangeEquipmentWindow_VBox11" width="100%" label="{Utils.i18n("generalMaterial")}">
+				<mx:DataGrid id="item_data_list" showHeaders="false" width="703" rowCount="4" styleName="DataGridBase" sortableColumns="false" selectable="false" rowHeight="28" columns="{[_ChangeEquipmentWindow_DataGridColumn53_i(), _ChangeEquipmentWindow_DataGridColumn54_i(), _ChangeEquipmentWindow_DataGridColumn55_i(), _ChangeEquipmentWindow_DataGridColumn56_i()]}" dataProvider='{viewDataItem}'/>
+			</mx:VBox>
+		</mx:ViewStack>
+		<mx:Canvas width="720" height="25">
+			<mx:HBox width="250" label="" height="25" left="260">
+				<mx:Image id="_ChangeEquipmentWindow_Image2" width="120" source="{_swf_equip}"/>
+				<mx:Image id="_ChangeEquipmentWindow_Image3" source="{_swf_close}"/>
+			</mx:HBox>
+		</mx:Canvas>
+	</mx:VBox>
+	<mx:Image id="tutMarkFinishEquip" visible="false" width="78" height="78" y="290" x="305" source="{_arrow_top}"/>
+
+</mx:PopupWindow>

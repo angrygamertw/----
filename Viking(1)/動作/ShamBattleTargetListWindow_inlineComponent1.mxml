@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" verticalAlign="middle">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.styles.*;
+
+        public var  _ShamBattleTargetListWindow_inlineComponent1_Label1:Label;
+
+    ]]></mx:Script>
+
+	<mx:Label id="_ShamBattleTargetListWindow_inlineComponent1_Label1" buttonMode="true" mouseChildren="false" color="#00bc403a" textDecoration="underline" click="{outerDocument.onUnitSelect(data);}" text="{outerDocument.getPlayerName(data)}" toolTip="{Utils.i18n("shamBattleSelect")}"/>
+
+</mx:HBox>

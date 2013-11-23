@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.home.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private static var  powers:Array;
+        public static const  CONFIRMED:String = "ConfirmFinishTaskWindow/Confirmed";
+
+
+        public function init() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_400x180");
+            MovieClip(Loader(_swf_ok.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_ok.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_no");
+            return;
+        }// end function
+
+        public function onConfirm() : void
+        {
+            sendPopupEvent(CONFIRMED, task.taskId);
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_ConfirmFinishTaskWindow_Image1" source="{_swf_window}"/>
+	<mx:VBox x="205" y="225">
+		<mx:Spacer height="100%"/>
+		<mx:VBox horizontalCenter="20" top="100">
+			<mx:HBox horizontalGap="2">
+				<mx:Image source="_embed_mxml__images_icon_power_png_227571469"/>
+				<mx:Label id="_ConfirmFinishTaskWindow_Label1" styleName="UnitSelectText" text="{Utils.i18n("confirmFinishTaskConf", power)}"/>
+			</mx:HBox>
+			<mx:Label id="_ConfirmFinishTaskWindow_Label2" styleName="UnitSelectText" text="" color="#00ff0000"/>
+			<mx:HBox width="100%" horizontalCenter="20" horizontalGap="10">
+				<mx:Spacer width="40"/>
+				<mx:Image id="_ConfirmFinishTaskWindow_Image3" click="{onConfirm();}" source="{_swf_ok}"/>
+				<mx:Spacer width="120"/>
+				<mx:Image id="_ConfirmFinishTaskWindow_Image4" click="{onClose();}" source="{_swf_close}"/>
+			</mx:HBox>
+		</mx:VBox>
+		<mx:Spacer height="100%"/>
+	</mx:VBox>
+
+</mx:PopupWindow>

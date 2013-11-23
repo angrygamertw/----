@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import com.kbmj.viking.vo.home.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _coffin:CoffinVO;
+        public static const  CHANGE_ICE_OK:String = "changeIceOk";
+
+
+        public function closeWindow() : void
+        {
+            onClose();
+            return;
+        }// end function
+
+        public function activateCoffin() : void
+        {
+            closeWindow();
+            sendPopupEvent(CHANGE_ICE_OK, _coffin.coffinId);
+            return;
+        }// end function
+
+        public function awakeUnit() : void
+        {
+            closeWindow();
+            sendPopupEvent(HomeAllSleepUnit.AWAKE_UNIT, {coffin:_coffin});
+            return;
+        }// end function
+
+        public function init(param1:ResourceVO) : void
+        {
+            var _loc_2:String = null;
+            var _loc_3:Object = null;
+            if (_withUnit)
+            {
+                MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_400x270");
+            }
+            else
+            {
+                MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_300x200");
+                _loc_2 = "1900";
+                for each (_loc_3 in param1.materials)
+                {
+                    
+                    if (_loc_3.masterVO.code == _loc_2)
+                    {
+                        _ticket = _loc_3.quantity;
+                    }
+                }
+                if (_ticket > 0)
+                {
+                    viewStack.selectedIndex = 1;
+                }
+                else
+                {
+                    viewStack.selectedIndex = 0;
+                }
+            }
+            MovieClip(Loader(_swf_ok.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_back.getChildAt(0)).content).gotoAndPlay("button_no");
+            MovieClip(Loader(_swf_awake.getChildAt(0)).content).gotoAndPlay("button_take_out ");
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas/>
+	<mx:Image id="_ChengeIceCheckWindow_Image1" source="{_swf_window}"/>
+	<mx:Canvas id="_ChengeIceCheckWindow_Canvas2" x="" y="" width="" height="">
+		<mx:VBox horizontalCenter="0" verticalCenter="0" bottom="30" verticalGap="5">
+			<mx:Spacer height="100%"/>
+			<mx:Label id="_ChengeIceCheckWindow_Label1" styleName="UnitSelectText" text="{Utils.i18n("localize91")}" visible="_withUnit" includeInLayout="_withUnit"/>
+			<mx:Spacer height="100%"/>
+			<mx:ViewStack id="viewStack">
+				<mx:Canvas width="240" minHeight="30">
+					<mx:HBox horizontalGap="2">
+						<mx:Image source="_embed_mxml__images_icon_power_png_227571469"/>
+						<mx:Label id="_ChengeIceCheckWindow_Label2" styleName="UnitSelectText" text="{Utils.i18n("localize92")}"/>
+					</mx:HBox>
+				</mx:Canvas>
+				<mx:Canvas width="240" minHeight="30">
+					<mx:Label id="_ChengeIceCheckWindow_Label3" styleName="UnitSelectText" y="0" text="{Utils.i18n("sleepUnitTicketAmount", _ticket)}"/>
+					<mx:Label id="_ChengeIceCheckWindow_Label4" styleName="UnitSelectText" y="15" text="{Utils.i18n("sleepUnitWithTicket")}"/>
+				</mx:Canvas>
+			</mx:ViewStack>
+			<mx:Spacer height="100%"/>
+			<mx:Label id="_ChengeIceCheckWindow_Label5" styleName="UnitSelectText" text="{Utils.i18n("localize93")}"/>
+			<mx:Spacer height="100%"/>
+			<mx:Label id="_ChengeIceCheckWindow_Label6" styleName="UnitSelectText" text="{Utils.i18n("localize94")}"/>
+			<mx:Spacer height="100%"/>
+			<mx:Spacer height="10"/>
+			<mx:HBox>
+				<mx:Spacer width="100%"/>
+				<mx:Image id="_ChengeIceCheckWindow_Image3" click="{activateCoffin();}" source="{_swf_ok}"/>
+				<mx:Spacer width="120"/>
+				<mx:Image id="_ChengeIceCheckWindow_Image4" click="{closeWindow();}" source="{_swf_back}"/>
+				<mx:Spacer id="_ChengeIceCheckWindow_Spacer9" width="120" includeInLayout="_withUnit"/>
+				<mx:Image id="_ChengeIceCheckWindow_Image5" click="{awakeUnit();}" source="{_swf_awake}" visible="_withUnit" includeInLayout="_withUnit"/>
+				<mx:Spacer width="100%"/>
+			</mx:HBox>
+		</mx:VBox>
+	</mx:Canvas>
+
+</mx:PopupWindow>

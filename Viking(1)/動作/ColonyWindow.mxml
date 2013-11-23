@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _colonyPointWindows:Array;
+        private var  _forcedFactionArea:Boolean = false;
+        private var  _playerVO:PlayerVO;
+        private var  _colonyDescriptionWindow:ColonyDescriptionWindow;
+        private var  _guild:Object;
+        private var  _colonies:Array;
+        public static var  EmbedSwfColony:Class;
+        public static const  COLONY_COUNT:int = 5;
+        public static const  NAME:String = "ColonyWindow";
+        public static const  CLOSE_COLONY_WINDOW:String = NAME + "closeColonyWindow";
+        public static const  SELECT_COLONY_COMPLETE:String = "selectColonyComplete";
+
+
+        public function colonyConfirmed(event:PopupEvent) : void
+        {
+            dispatchEvent(new PopupEvent(SELECT_COLONY_COMPLETE, {colonyId:event.param.colonyId, type:event.param.type}));
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            var _loc_2:String = null;
+            var _loc_3:Array = null;
+            var _loc_4:Array = null;
+            var _loc_5:int = 0;
+            var _loc_6:ColonyPointWindow = null;
+            var _loc_1:Array = ["BUTTON_BACK", "BUTTON_01", "BUTTON_02", "BUTTON_03", "BUTTON_04", "BUTTON_05"];
+            for each (_loc_2 in _loc_1)
+            {
+                
+                Loader(_swf_colony.getChildAt(0)).content.addEventListener(_loc_2, buttonsClicked);
+            }
+            _loc_3 = [465, 497, 411, 108, 113];
+            _loc_4 = [216, 350, 466, 461, 268];
+            _loc_5 = 0;
+            while (_loc_5 < _loc_3.length)
+            {
+                
+                _loc_6 = new ColonyPointWindow();
+                _loc_6.x = _loc_3[_loc_5];
+                _loc_6.y = _loc_4[_loc_5];
+                addChild(_loc_6);
+                _colonyPointWindows.push(_loc_6);
+                _loc_5++;
+            }
+            setColonies();
+            _colonyDescriptionWindow.addEventListener(ColonyDescriptionWindow.COLONY_CONFIRMED, colonyConfirmed);
+            return;
+        }// end function
+
+        public function setColonies() : void
+        {
+            var _loc_2:ColonyVO = null;
+            var _loc_3:int = 0;
+            var _loc_4:ColonyPointWindow = null;
+            var _loc_1:* = _forcedFactionArea ? (6) : (1);
+            for each (_loc_2 in _colonies)
+            {
+                
+                if (_loc_2.colonyId < _loc_1)
+                {
+                    continue;
+                }
+                _loc_3 = _loc_2.colonyId - _loc_1;
+                if (_colonyPointWindows.length > _loc_3)
+                {
+                    _loc_4 = _colonyPointWindows[_loc_3];
+                    _loc_4.ownerName = _loc_2.ownerGuildName;
+                    _loc_4.guildName = _guild ? (_guild.name) : ("自");
+                    _loc_4.point = _guild ? (_loc_2.point.toString()) : ("ー　");
+                    _loc_4.topPoint = _loc_2.topPoint.toString();
+                }
+            }
+            return;
+        }// end function
+
+        public function createLabel() : Label
+        {
+            var _loc_1:Label = null;
+            _loc_1 = new Label();
+            _loc_1.width = 84;
+            _loc_1.height = 22;
+            _loc_1.setStyle("color", "0x2C2419");
+            _loc_1.setStyle("fontSize", "14");
+            _loc_1.setStyle("fontWeight", "bold");
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function getColonyIdFromLocationNum(param1:int) : int
+        {
+            return param1 + (_forcedFactionArea ? (COLONY_COUNT) : (0));
+        }// end function
+
+        public function buttonsClicked(event:Event) : void
+        {
+            if (event.type == "BUTTON_BACK")
+            {
+                dispatchEvent(new Event(CLOSE_COLONY_WINDOW));
+                return;
+            }
+            var _loc_2:Object = {BUTTON_01:1, BUTTON_02:2, BUTTON_03:3, BUTTON_04:4, BUTTON_05:5};
+            var _loc_3:* = _colonies.getOne("colonyId", getColonyIdFromLocationNum(_loc_2[event.type]));
+            _colonyDescriptionWindow.init(_loc_3, _guild, _playerVO);
+            this.popupWindow(_colonyDescriptionWindow, false);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_ColonyWindow_Image1" source="{_swf_colony}"/>
+	<mx:Image id="products" source="_embed_mxml__swf_window_info_products_swf_1304559433" x="363" y="0"/>
+	<mx:Image id="info" source="_embed_mxml__swf_window_info_home_swf_1388347787" x="0" y="0"/>
+	<mx:Canvas id="factionLayer" x="37" y="17"/>
+	<mx:Canvas id="rankLayer" x="58" y="17"/>
+	<mx:PlayerStatus id="playerStatus" x="10"/>
+	<mx:ProductionInfoWindow id="productionInfoWindow" x="380" y="14"/>
+
+</mx:PopupWindow>

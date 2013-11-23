@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{comp();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  locationNum:Object;
+        private var  _evilPoints:Array;
+        private var  _tutMarkSubVisible:Boolean = false;
+        private var  locationName:Object;
+        public static const  SELECT_LEVEL_COMPLETE:String = NAME + "/selectLevelComplete";
+        public static const  NAME:String = "SubjugationSelectLevelWindow";
+
+
+        public function _SubjugationSelectLevelWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SubjugationSelectLevelWindow_DataGridColumn4 = _loc_1;
+            _loc_1.width = 60;
+            BindingManager.executeBindings(this, "_SubjugationSelectLevelWindow_DataGridColumn4", _SubjugationSelectLevelWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function _SubjugationSelectLevelWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRenderer = _loc_1;
+            _loc_1.generator = SubjugationSelectLevelWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function comp() : void
+        {
+            MovieClip(Loader(_swf_bg.getChildAt(0)).content).gotoAndPlay("center_400x270");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_back");
+            return;
+        }// end function
+
+        public function init(param1:String) : void
+        {
+            var location:* = param1;
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_back");
+            viewData = _evilPoints.filter(function (param1, param2:int, param3:Array) : Boolean
+            {
+                return int(param1.topography_id) == locationNum[location];
+            }// end function
+            );
+            titleText = locationName[location];
+            return;
+        }// end function
+
+        public function clicked(param1:Object) : void
+        {
+            trace("topography_id:" + param1.topography_id);
+            trace("level:" + param1.level);
+            dispatchEvent(new PopupEvent(SELECT_LEVEL_COMPLETE, {topographyId:param1.topography_id, level:param1.level}));
+            this.onClose();
+            return;
+        }// end function
+
+        public function _SubjugationSelectLevelWindow_DataGridColumn5_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "level";
+            _loc_1.headerText = "Lv";
+            _loc_1.width = 30;
+            return _loc_1;
+        }// end function
+
+        public function _SubjugationSelectLevelWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SubjugationSelectLevelWindow_DataGridColumn1 = _loc_1;
+            _loc_1.width = 60;
+            BindingManager.executeBindings(this, "_SubjugationSelectLevelWindow_DataGridColumn1", _SubjugationSelectLevelWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _SubjugationSelectLevelWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SubjugationSelectLevelWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "description";
+            BindingManager.executeBindings(this, "_SubjugationSelectLevelWindow_DataGridColumn3", _SubjugationSelectLevelWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function showTutMark(param1:Object) : Boolean
+        {
+            if (param1.topography_id == 2 && param1.level == 1 && _tutMarkSubVisible)
+            {
+                return true;
+            }
+            return false;
+        }// end function
+
+        public function _SubjugationSelectLevelWindow_ClassFactory2_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRendererTutorial = _loc_1;
+            _loc_1.generator = SubjugationSelectLevelWindow_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function setTutMarkVisible(param1:Boolean) : void
+        {
+            if (param1)
+            {
+                tutVisible = true;
+                nonTutVisible = false;
+                _tutMarkSubVisible = true;
+            }
+            else
+            {
+                _tutMarkSubVisible = false;
+                tutVisible = false;
+                nonTutVisible = true;
+            }
+            return;
+        }// end function
+
+        public function _SubjugationSelectLevelWindow_DataGridColumn2_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "level";
+            _loc_1.headerText = "Lv";
+            _loc_1.width = 30;
+            return _loc_1;
+        }// end function
+
+        public function _SubjugationSelectLevelWindow_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SubjugationSelectLevelWindow_DataGridColumn6 = _loc_1;
+            _loc_1.dataField = "description";
+            BindingManager.executeBindings(this, "_SubjugationSelectLevelWindow_DataGridColumn6", _SubjugationSelectLevelWindow_DataGridColumn6);
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_SubjugationSelectLevelWindow_Image1" source="{_swf_bg}"/>
+	<mx:Label id="_SubjugationSelectLevelWindow_Label1" x="180" y="148" width="400" styleName="PanelBaseTitle" color="#00ffffff" textAlign="center" text="titleText"/>
+	<mx:DataGrid id="weapon_data_list" x="190" y="180" width="380" rowCount="3" rowHeight="55" styleName="DataGridBase" selectable="false" sortableColumns="false" includeInLayout="false" columns="{[_SubjugationSelectLevelWindow_DataGridColumn1_i(), _SubjugationSelectLevelWindow_DataGridColumn2_c(), _SubjugationSelectLevelWindow_DataGridColumn3_i()]}" dataProvider='{viewData}' visible="nonTutVisible"/>
+	<mx:DataGrid id="subjugation_data_list_tutorial" x="190" y="180" width="380" rowCount="3" rowHeight="55" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_SubjugationSelectLevelWindow_DataGridColumn4_i(), _SubjugationSelectLevelWindow_DataGridColumn5_c(), _SubjugationSelectLevelWindow_DataGridColumn6_i()]}" dataProvider='{viewData}' visible="tutVisible"/>
+	<mx:Image id="_SubjugationSelectLevelWindow_Image2" x="330" y="370" click="{onClose();}" source="{_swf_close}"/>
+
+</mx:PopupWindow>

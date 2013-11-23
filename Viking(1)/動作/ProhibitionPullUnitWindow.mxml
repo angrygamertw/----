@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.vo.tactics.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  _haveGold:int;
+        public var  unitId:int;
+        public static const  PULL_THIS_UNIT:String = "pullThisUnit";
+
+
+        public function closeWindow() : void
+        {
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function setdata(param1:UnitVO, param2:int) : void
+        {
+            _unit = param1;
+            _haveGold = param2;
+            unitId = param1.unitId;
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas/>
+	<mx:Box width="330" height="180" styleName="DialogBg">
+		<mx:Canvas>
+			<mx:Text width="200" x="75" y="50" text="式姫が一杯のため出せません。" fontSize="14"/>
+		</mx:Canvas>
+	</mx:Box>
+
+</mx:Canvas>

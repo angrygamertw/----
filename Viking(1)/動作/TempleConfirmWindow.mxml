@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{setup();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  _eventName:String;
+        private var  ViewStackIndex:int;
+        private var  create:Boolean = false;
+        public static const  INDEX_GUILD_ADMISSION_FINISH:int = 2;
+        private static const  WINDOW_X:int = 230;
+        private static const  WINDOW_Y:int = 180;
+        private static const  BUTTON_X:int = 325;
+        private static const  BUTTON_Y:int = 330;
+        public static const  INDEX_GUILD_QUIT_FINISH:int = 1;
+        public static const  GUILD_QUIT_FINISH:String = "guildQuitFinish";
+        public static const  INDEX_APPLICATION_CANCEL_FINISH:int = 3;
+        public static const  INDEX_GUILD_LEVEL_UP_FINISH:int = 6;
+        public static const  INDEX_GUILD_MASTER_RESIGN:int = 4;
+        public static const  INDEX_GUILD_DISSOLUTION:int = 5;
+        private static const  WINDOW_HT:int = 200;
+        private static const  WINDOW_WD:int = 300;
+        public static const  INDEX_GUILD_CREATE_FINISH:int = 0;
+
+
+        public function setGuildName(param1:String, param2:int) : void
+        {
+            _guildName = param1;
+            if (create)
+            {
+                messegeViewStack.selectedIndex = param2;
+            }
+            else
+            {
+                ViewStackIndex = param2;
+            }
+            return;
+        }// end function
+
+        public function onOK() : void
+        {
+            if (_eventName)
+            {
+                dispatchEvent(new Event(_eventName));
+            }
+            PopUpManager.removePopUp(this);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_close_window.getChildAt(0)).content).gotoAndPlay(1);
+            return;
+        }// end function
+
+        public function setup() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_300x200");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            messegeViewStack.selectedIndex = ViewStackIndex;
+            create = true;
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_TempleConfirmWindow_Image1" source="{_swf_window}"/>
+	<mx:Text id="_TempleConfirmWindow_Text1" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("generalConfirmation")}"/>
+	<mx:Image id="_TempleConfirmWindow_Image2" click="{onOK();}" x="WINDOW_X + WINDOW_WD - 25" y="WINDOW_Y" source="{_swf_close_window}"/>
+	<mx:Canvas>
+		<mx:ViewStack id="messegeViewStack" selectedIndex="0" x="WINDOW_X + 20" y="WINDOW_Y + 35" width="WINDOW_WD - 40">
+			<mx:Box horizontalAlign="center">
+				<mx:Text id="_TempleConfirmWindow_Text2" styleName="CenterText" text="{Utils.i18n("templeConfirmEstablishment", _guildName)}"/>
+			</mx:Box>
+			<mx:Box horizontalAlign="center">
+				<mx:Text id="_TempleConfirmWindow_Text3" styleName="CenterText" text="{Utils.i18n("templeConfirmWithdrawal", _guildName)}"/>
+			</mx:Box>
+			<mx:Box horizontalAlign="center">
+				<mx:Text id="_TempleConfirmWindow_Text4" styleName="CenterText" text="{Utils.i18n("templeConfirmRequest", _guildName)}"/>
+			</mx:Box>
+			<mx:Box horizontalAlign="center">
+				<mx:Text id="_TempleConfirmWindow_Text5" styleName="CenterText" text="{Utils.i18n("templeConfirmRequestCancel", _guildName)}"/>
+			</mx:Box>
+			<mx:Box horizontalAlign="center">
+				<mx:Text id="_TempleConfirmWindow_Text6" styleName="CenterText" text="{Utils.i18n("templeconfirmResignation", _guildName)}"/>
+			</mx:Box>
+			<mx:Box horizontalAlign="center">
+				<mx:Text id="_TempleConfirmWindow_Text7" styleName="CenterText" text="{Utils.i18n("templeConfirmDismantling", _guildName)}"/>
+			</mx:Box>
+			<mx:Box horizontalAlign="center">
+				<mx:Text id="_TempleConfirmWindow_Text8" styleName="CenterText" text="{Utils.i18n("templeConfirmLevelUp", _guildName)}"/>
+			</mx:Box>
+		</mx:ViewStack>
+		<mx:Image id="_TempleConfirmWindow_Image3" click="{onOK();}" x="BUTTON_X" y="BUTTON_Y" source="{_swf_close}"/>
+	</mx:Canvas>
+
+</mx:Canvas>

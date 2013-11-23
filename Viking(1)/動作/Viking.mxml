@@ -1,0 +1,1030 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" layout="absolute" creationComplete="{start();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+        import mx.styles.*;
+
+        private var  _embed_css_images_button_instant_100_off_png_1757446729:Class;
+        private var  _embed_css_images_vscbar_down_png_336445035:Class;
+        private var  LoadingCursor:Class;
+        private var  facade:ApplicationFacade;
+        private var  _embed_css_images_vscbar_up_png_582051551:Class;
+        private var  _embed__font_Colton_medium_normal_315587977:Class;
+        private var  _embed_css_images_button_instant_50_on_png_1941540573:Class;
+        private var  loading:Boolean = false;
+        private var  _embed_css_images_st_btn_delete_png_692291931:Class;
+        private var  loadingWindow:LoadingWindow;
+        private var  _embed_css_images_button_instant_100_on_png_849915229:Class;
+        private var  _embed_css_images_vscbar_thumb_png_890898163:Class;
+        private var  _embed_css_images_vscbar_thumb_png_890898164:Class;
+        private var  _embed_css_images_button_instant_50_off_png_978280789:Class;
+        private var  _embed_css_images_button_instant_200_on_png_1645818321:Class;
+        private var  _embed_css_images_button_instant_200_off_png_819313217:Class;
+        private var  statsUI:UIComponent;
+        private var  _embed_css_images_vscbar_track_png_275221189:Class;
+        public static const  HOME_CEREMONY:String = NAME + "/home/action/ceremony";
+        public static const  HOME_ACTION_GOTO_EXPEDITION2:String = NAME + "/home/action/gotoExpedition2";
+        public static const  HOME_SAMPLE_BUTTON:String = NAME + "home/action/sumpleButton";
+        public static const  ENTER_ROOM:String = NAME + "/action/enterRoom";
+        public static const  SHOW_UTILITY:String = NAME + "/selectUnit/action/showUtility";
+        public static const  ACTION_GOTO_ALL_MAP:String = NAME + "/actions/gotoAllMap";
+        public static const  HOME_SHOW_TUTORIAL_WINDOW:String = NAME + "/home/action/showTutorialWindow";
+        public static const  HOME_MAIN_VIEW:String = NAME + "/home/action/homeMainView";
+        public static const  HOME_PRODUCTION:String = NAME + "/home/view_ProductionWindow";
+        public static const  ACTION_CLICK:String = NAME + "/actions/click";
+        public static const  ALL_MAP_BATTLE_REPORT_LIST:String = NAME + "/allMap/action/battleReportList";
+        public static const  HOME_ACTION_RESEARCH:String = NAME + "/home/action/research";
+        public static const  CHAT_WINDOW_SIZE_CHANGE:String = NAME + "/home/action/chatWindowSizeChange";
+        public static const  HOME_ACTION_OPEN_RESEARCH_WINDOW:String = NAME + "/home/action/openResearchWindow";
+        public static const  HOME_FINISH_TUTORIAL:String = NAME + "/home/action/finishTutorial";
+        public static const  CITY_ACTION_REMOVE_GUILD_MEMBER:String = NAME + "/city/action/removeGuildMMember";
+        public static const  HOME_ACTION_GOTO_COLONY:String = NAME + "/home/action/gotoColony";
+        public static var  EmbedSwfButtonPower:Class;
+        public static const  VIEW_INDEX_HOME:int = 0;
+        public static const  SELECT_ENEMY_LIST:String = NAME + "/selectUnit/action/view_EnemyList";
+        public static const  CHANGE_ITEM:String = NAME + "/selectUnit/action/changeItem";
+        public static const  CITY_ACTION_SHOW_REMOVE_MEMBER_WINDOW:String = NAME + "/city/action/showRemoveMemberWindow";
+        public static const  HOME_GET_EQUIPABLE_RESOURCE:String = NAME + "/home/action/getEquipableResource";
+        public static const  CREATE_ROOM:String = NAME + "/action/createRoom";
+        public static const  HOME_ACTION_GOTO_EXPEDITION_PORTAL:String = NAME + "/home/action/gotoExpeditionPortal";
+        public static const  CITY_ACTION_SHOW_BUY_GOODS_TO_EDINBURGH:String = NAME + "/city/action/showBuyGoodsToEdinburgh";
+        public static const  LOCATIONWINDOW_GO_CLICK:String = NAME + "/locationwindow/go/click";
+        public static var  EmbedSwfIconRank:Class;
+        public static const  ACTION_ATTACK:String = NAME + "/actions/attack";
+        public static const  CITY_ACTION_GOLD_DEAL:String = NAME + "/city/action/dealGold";
+        public static const  TACTICS_FAST_ON:String = NAME + "/tactics/action/fastOn";
+        public static const  LOCAL_COMMAND_WINDOW_COLONY_BATTLE_CLICK:String = NAME + "/localcommandwindow/colonyBattle/click";
+        public static const  HOME_RAID_COMMAND_SELECT:String = NAME + "/home/view_RaidWindow";
+        public static const  CITY_ACTION_SHOW_MARKET:String = NAME + "/city/action/showMarket";
+        public static const  NAME:String = "Viking";
+        public static const  TACTICS_FAST_OFF:String = NAME + "/tactics/action/fastOff";
+        public static const  HOME_REPORT:String = NAME + "/home/view_ReportWindow";
+        public static const  CITY_ACTION_SHOW_TEMPLE:String = NAME + "/city/action/showTemple";
+        public static const  SELECT_UNIT_ACTION_START_MOVIE:String = NAME + "/selectUnit/actions/startMovie";
+        public static const  ALL_MAP_MAIL_LIST:String = NAME + "/allMap/action/mailList";
+        public static const  HOME_JUDGE_UNITS:String = NAME + "/home/action/judgeUnitsHeart";
+        public static const  HOME_LORDUNIT_SELECT:String = NAME + "/home/lordUnit/select";
+        public static const  HOME_ACTION_GOTO_ALL_MAP:String = NAME + "/home/action/gotoAllMap";
+        public static const  CITY_ACTION_SHOW_BUY_GOODS:String = NAME + "/city/action/showBuyGoods";
+        public static const  HOME_ACTION_GOTO_EXPEDITION:String = NAME + "/home/action/gotoExpedition";
+        public static const  LOCAL_COMMAND_WINDOW_GO_CLICK:String = NAME + "/localcommandwindow/go/click";
+        public static const  LOCATIONWINDOW_BACK_CLICK:String = NAME + "/locationwindow/Back/click";
+        public static const  HOME_ACTION_DEGRADATION:String = NAME + " home/action/degradation";
+        public static const  VIEW_INDEX_CITY:int = 3;
+        public static const  HOME_RESTORE_BUILDING:String = NAME + "/home/action/restoreBuilding";
+        public static const  HOME_MAIL_LIST:String = NAME + "/home/action/homeMailListShow";
+        public static const  SELECT_ITEM_LIST:String = NAME + "/selectUnit/action/view_ItemList";
+        public static const  HOME_SHOW_NEXT_TUTORIAL:String = NAME + "/home/action/showNextTutorial";
+        public static const  CITY_ACTION_BACK_HOME:String = NAME + "/city/action/backHome";
+        public static var  pvpPort:int = 9998;
+        public static const  HOME_EMPLOY_MERCENARY:String = NAME + "/home/action/hireMercenary";
+        public static const  CHANGE_ARMS:String = NAME + "/selectUnit/action/changeArms";
+        public static const  REJUVENATE:String = NAME + "/home/action/rejuvenate";
+        public static const  TACTICS_SOUND_ON:String = NAME + "/tactics/action/soundOn";
+        public static const  HOME_ACTION_GOTO_SUBJUGATION:String = NAME + "/home/action/gotoSubjugation";
+        public static var  version:String = "";
+        public static const  HOME_DESTROY_BUILDING:String = NAME + "/home/action/destroyBuilding";
+        public static const  HOME_LEAVE_FORT:String = NAME + "/home/action/leavefort";
+        public static const  TACTICS_SOUND_OFF:String = NAME + "/tactics/action/soundOff";
+        public static const  SHOW_DETAILS:String = NAME + "/show/details";
+        public static const  HOME_ALL_SLEEP_UNIT_VIEW:String = NAME + "/home/action/homeAllSleepUnitView";
+        public static const  HOME_SUMMON_BRAVE:String = NAME + "/home/action/summonBrave";
+        public static const  HOME_PRODUCE_OK_CLICKED:String = NAME + "/home/action/produceOKClicked";
+        public static const  LEVELUP_WITH_SELECTED_SKILL:String = NAME + "/action/levelUpWithSelectedSkill";
+        public static const  CITY_ACTION_SHOW_BAR:String = NAME + "/city/action/showBar";
+        public static const  HOME_SHOW_GATHERING_WINDOW:String = NAME + "/home/action/showGatheringWindow";
+        public static const  FADE_OUT:String = NAME + "/home/fadeOut";
+        public static const  HOME_SHOW_PRODUCTION_WINDOW:String = NAME + "/home/action/showProductionWindow";
+        public static const  CITY_ACTION_CHANGE_GUILD_INFORMATION:String = NAME + "/city/action/changeGuildInformation:";
+        public static const  HOME_BUILD:String = NAME + "/home/view_BuildWindow";
+        public static const  HOME_ALL_GALLERY_VIEW:String = NAME + "/home/action/homeAllGalleryView";
+        public static var  apiHost:String = "";
+        public static const  HOME_REFRESH_MERCENARY:String = NAME + "/home/action/refreshMercenary";
+        public static const  HOME_CHANGEJOB_SELECT:String = NAME + "/home/action/changeJobSelect";
+        public static const  SELECT_UNIT_LIST:String = NAME + "/selectUnit/action/view_UnitList";
+        public static const  HOME_UPGRADE_BUILDING:String = NAME + "/home/view_BuildWindow";
+        public static const  VIEW_INDEX_ALL_MAP:int = 4;
+        public static var  EmbedSwfIconFaction:Class;
+        public static const  HOME_PLAYERDATA_DELETE:String = NAME + "/home/action/playerDataDelete";
+        public static const  INITIAL_FORM_ACTION_SUBMIT:String = NAME + "/initialForm/action/submit";
+        public static const  LOCAL_COMMAND_WINDOW_BATTLE_CLICK:String = NAME + "/localcommandwindow/battle/click";
+        public static const  CITY_ACTION_DELIVERY_FACTION_GIFT:String = NAME + "/city/action/deliveryFactionGift";
+        public static const  HOME_SAMPLE_BUTTON2:String = NAME + "home/action/sumpleButton2";
+        public static const  CITY_ACTION_MANAGE_GUILD:String = NAME + "/city/action/manageGuild";
+        public static var  EmbedSwfTabCommon:Class;
+        public static const  HOME_DISMISS:String = NAME + "/home/action/unitDismiss";
+        public static const  INITIAL_FORM_ACTION_VALIDATE_NAME:String = NAME + "/initialForm/action/validateName";
+        public static const  ACTION_ITEM_SELECT:String = NAME + "/actions/item/select";
+        public static const  HOME_FORT_UNIT:String = NAME + "/home/action/fortUnit";
+        public static const  HOME_BATTLE_REPORT_LIST:String = NAME + "/home/action/homeBattleReportList";
+        public static const  SELECT_UNIT_ACTION_START_TACTICS:String = NAME + "/selectUnit/actions/startTactics";
+        public static const  CITY_ACTION_SILVER_DEAL:String = NAME + "/city/action/dealSilver";
+        public static const  CITY_ACTION_APPOINT_GUILDMASTER:String = NAME + "/city/action/appointGuildMaster";
+        public static const  CITY_ACTION_SEARCH_GUILD:String = NAME + "/city/action/searchGuild";
+        public static const  IMAGE_CHANGE:String = NAME + "/home/action/imageChange";
+        public static const  HOME_LOAD_LORDUNIT_CANDIDATE:String = NAME + "/home/load/lordUnit/candidate";
+        public static const  DISCARD_SKILL:String = NAME + "/action/discardSkill";
+        public static const  HOME_SUMMON_HERO:String = NAME + "/home/action/summonHero";
+        public static const  HOME_ACTION_GOTO_MATCH_PORTAL:String = NAME + "/home/action/gotoMatchPortal";
+        public static var  EmbedSwfButtonPaginator:Class;
+        public static const  RENAME:String = NAME + "/home/action/rename";
+        public static const  HOME_ACTION_OPEN_SHAM_BATTLE_WINDOW:String = NAME + "/home/action/openShamBattleWindow";
+        public static const  VIEW_INDEX_INITIAL_FORM:int = 5;
+        public static const  CITY_ACTION_FOOD_DEAL:String = NAME + "/city/action/dealFood";
+        public static const  CITY_ACTION_ADMISSION_GUILD:String = NAME + "/city/action/admissionGuild";
+        public static const  CITY_ACTION_SOUL_CRYSTAL_DEAL:String = NAME + "/city/action/buySoulCrystal";
+        public static const  HOME_ESTABLISHMENT_VIEW:String = NAME + "/home/action/homeEstablishmentView";
+        public static const  ACTION_BACK:String = NAME + "/actions/back";
+        public static const  ACTION_ITEM_CLOSE:String = NAME + "/actions/item/close";
+        public static const  FINISH_TASK_IMMEDIATELY:String = NAME + "/home/action/finishTaskImmediately";
+        public static const  ACTION_RETURN:String = NAME + "/actions/gotoReturn";
+        public static const  HOME_GATHER:String = NAME + "/home/action/gather";
+        public static const  TACTICS_UNIT_LIST:String = NAME + "/tactics/action/view_UnitList";
+        public static const  MOVE_RETURN:String = NAME + "/selectUnit/action/returnUnit";
+        public static const  HOME_PRODUCE:String = NAME + "/home/action/produce";
+        public static const  HOME_ACTION_OPEN_CEREMONY_WINDOW:String = NAME + "/home/action/openCeremonyWindow";
+        public static const  START_BATTLE:String = NAME + "/action/startBattle";
+        public static const  LEVEL_UP:String = NAME + "/selectUnit/action/levelUp";
+        public static const  MOVE_SORTIE:String = NAME + "/selectUnit/action/selectUnit";
+        public static const  ASSISTANT_UPDATE:String = NAME + "/home/assistantUpdate";
+        public static const  CITY_ACTION_APPLICATION_CANCEL:String = NAME + "/city/action/applicationCancel";
+        public static const  CITY_ACTION_CREATE_GUILD:String = NAME + "/city/action/createGuild";
+        public static var  EmbedSwfButtonCommon:Class;
+        public static const  PROTECT_FROM_RAID:String = NAME + "/home/action/protectFromRaid";
+        public static const  VIEW_INDEX_TACTICS:int = 2;
+        public static const  ACTION_ITEM:String = NAME + "/actions/item";
+        public static const  ENTER_LOBBY:String = NAME + "/action/enterLobby";
+        public static const  START_GUILD_BATTLE:String = NAME + "/action/startGuildBattle";
+        public static const  ARM_EQUIPPED:String = NAME + "/actions/armEquipped";
+        public static const  HOME_EQUIPMENT_DUMP:String = NAME + "/home/action/equipmentDump";
+        public static const  REINCARNATE:String = NAME + "/home/action/reincarnate";
+        private static var  _staticBindingEventDispatcher:EventDispatcher;
+        public static const  HOME_ACTION_START_SEND_ARMY:String = NAME + "/home/action/startSendArmy";
+        public static const  CITY_ACTION_BUY_INDULGENCE:String = NAME + "/city/action/buyIndulgence";
+        public static var  EmbedSwfButtonCloseWindow:Class;
+        public static const  HOME_LEAVE_UNIT:String = NAME + "/home/action/leaveUnit";
+        public static const  HOME_INCREASE_MAX_UNIT:String = NAME + "/home/action/homeIncreaseMaxUnit";
+        public static const  HOME_COLLECT:String = NAME + "/home/view_CollectWindow";
+        public static const  ACTION_RESTART_GAME:String = NAME + "/actions/restartGame";
+        public static const  CITY_ACTION_BUY_GOODS:String = NAME + "/city/action/buyGoods";
+        public static const  HOME_BUILD_START:String = NAME + "/home/buildStart";
+        public static const  HOME_ALL_ITEM_VIEW:String = NAME + "/home/action/homeAllItemView";
+        public static const  CITY_ACTION_SHOW_PAYMENT_COMMODITY_WINDOW:String = NAME + "/city/action/showPaymentCommodityWindow";
+        public static const  CITY_ACTION_QUIT_GUILD:String = NAME + "/city/action/quitGuild";
+        public static const  CITY_ACTION_GUILD_ARMYES_BACK:String = NAME + "/city/action/guildArmyesBack";
+        public static var  EmbedSwfTmark:Class;
+        public static const  HOME_CLOSE_NOW_WINDOW:String = NAME + "/home/action/closeNowWindow";
+        public static const  VIEW_INDEX_SELECT_UNIT:int = 1;
+        public static const  FADE_IN_COMPLETE:String = NAME + "expedition/actions/dafeInComplete";
+        public static const  ASSISTANT_FACE_CHANGE:String = NAME + "/home/assistantFaceChange";
+        public static const  HOME_UPDATE_TASK:String = NAME + "/home/action/updateTask";
+        public static const  CITY_ACTION_SHOW_SELL_GOODS:String = NAME + "/city/action/showSellGoods";
+        public static const  ACTION_WAIT:String = NAME + "/actions/wait";
+        public static const  HOME_ALL_UNIT_VIEW:String = NAME + "/home/action/homeAllUnitView";
+        public static const  CITY_ACTION_SELL_GOODS:String = NAME + "/city/action/sellGoods";
+        public static const  HOME_SHOW_ANNOUNCEMENT:String = NAME + "/home/action/finishActivity";
+        public static var  EmbedSwfWindowCommon:Class;
+        public static var  sessionKey:String = "";
+        public static var  pvpHost:String = "";
+        public static const  INCREMENT_MAX_TASK_CONFIRM:String = "incrementMaxTaskConfirm";
+        public static const  HOME_ENTER_CITY:String = NAME + "/home/action/enterCity";
+        public static const  HOME_LIVING_UNIT:String = NAME + "/home/action/livingUnit";
+        public static const  SELECT_UNIT_ACTION_BACK:String = NAME + "/selectUnit/actions/back";
+
+
+        public function removeLoadingWindow() : void
+        {
+            if (loading)
+            {
+                loading = false;
+                cursorManager.removeCursor(CursorManager.currentCursorID);
+                PopUpManager.removePopUp(loadingWindow);
+            }
+            return;
+        }// end function
+
+        public function popupWindow(param1:Canvas, param2:Boolean = true, param3:Boolean = false) : void
+        {
+            if (!this.systemManager.contains(DisplayObject(param1)))
+            {
+                param1.setStyle("modalTransparencyBlur", 0);
+                param1.setStyle("modalTransparency", param3 ? (0) : (0.4));
+                param1.setStyle("modalTransparencyColor", 16777215);
+                param1.setStyle("modalTransparencyDuration", param3 ? (0) : (10));
+                PopUpManager.addPopUp(param1, this, true);
+                if (param2)
+                {
+                    PopUpManager.centerPopUp(param1);
+                }
+            }
+            return;
+        }// end function
+
+        public function showLoadingWindow(param1:Boolean = true) : void
+        {
+            if (!loading)
+            {
+                loading = true;
+                cursorManager.setCursor(LoadingCursor);
+                loadingWindow.setStyle("modalTransparencyBlur", 0);
+                loadingWindow.setStyle("modalTransparency", param1 ? (0) : (0.4));
+                loadingWindow.setStyle("modalTransparencyColor", 16777215);
+                loadingWindow.setStyle("modalTransparencyDuration", param1 ? (0) : (10));
+                PopUpManager.addPopUp(loadingWindow, this, true);
+                PopUpManager.centerPopUp(loadingWindow);
+            }
+            return;
+        }// end function
+
+        public function start() : void
+        {
+            init();
+            facade.startup(this);
+            return;
+        }// end function
+
+        public function sendEvent(param1:String) : void
+        {
+            this.dispatchEvent(new Event(param1));
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:VBox>
+		<mx:ViewStack id="gameViewStack" width="760" height="560" selectedIndex="7" creationPolicy="all" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+			<mx:Home id="home" horizontalScrollPolicy="off" verticalScrollPolicy="off"/>
+			<mx:SelectUnit id="selectUnit" horizontalScrollPolicy="off" verticalScrollPolicy="off"/>
+			<mx:Tactics id="tactics" horizontalScrollPolicy="off" verticalScrollPolicy="off"/>
+			<mx:City id="city" horizontalScrollPolicy="off" verticalScrollPolicy="off"/>
+			<mx:AllMap id="allMap" horizontalScrollPolicy="off" verticalScrollPolicy="off"/>
+			<mx:InitialForm id="initialForm" horizontalScrollPolicy="off" verticalScrollPolicy="off"/>
+			<mx:Canvas>
+				<mx:Image source="{Viking__embed_mxml__images_black_jpg_491440297}"/>
+			</mx:Canvas>
+			<mx:Canvas>
+				<mx:Image id="tutMarkEquipment" source="{Viking__embed_mxml_images_tutorialMarkRight_png_932702652}" visible="false" width="25" height="32" y="150"/>
+			</mx:Canvas>
+		</mx:ViewStack>
+	</mx:VBox>
+
+	<mx:Style>
+        .DealText2
+        {
+            color : 0;
+            textAlign : right;
+            fontSize : 12;
+        }
+    
+        .mailText
+        {
+            color : 0;
+            fontSize : 14;
+        }
+    
+        .ClickStructureBody
+        {
+            leading : 4;
+            letterSpacing : 0.6;
+            color : 0;
+            fontSize : 12;
+        }
+    
+        .AllyDataTitle
+        {
+            fontWeight : bold;
+            color : 16777215;
+            textAlign : center;
+            fontSize : 14;
+        }
+    
+        .DealText3
+        {
+            color : 0;
+            textAlign : left;
+            fontSize : 14;
+            textIndent : 8;
+        }
+    
+        .ConditionsBtn
+        {
+            paddingTop : 4;
+        }
+    
+        .FinishTask200Button
+        {
+            upSkin : ClassReference("Viking__embed_css_images_button_instant_200_off_png_819313217");
+            downSkin : ClassReference("Viking__embed_css_images_button_instant_200_on_png_1645818321");
+            overSkin : ClassReference("Viking__embed_css_images_button_instant_200_on_png_1645818321");
+        }
+    
+        .cancelBtn
+        {
+            upSkin : ClassReference("Viking__embed_css_images_st_btn_delete_png_692291931");
+            downSkin : ClassReference("Viking__embed_css_images_st_btn_delete_png_692291931");
+            overSkin : ClassReference("Viking__embed_css_images_st_btn_delete_png_692291931");
+        }
+    
+        .BuildingPrice
+        {
+            color : 16777215;
+            fontSize : 12;
+        }
+    
+        .GildWindowInfo
+        {
+            color : 0;
+            fontSize : 14;
+        }
+    
+        .PanelBaseTitle
+        {
+            fontWeight : bold;
+            color : 16777215;
+            textAlign : center;
+            fontSize : 14;
+        }
+    
+        .VacantlotName
+        {
+            fontWeight : bold;
+            color : 16776960;
+            fontSize : 13;
+        }
+    
+        .ProcuctionQtyBg
+        {
+            upSkin : ClassReference("Viking__embed_css_images_button_instant_50_off_png_978280789");
+            downSkin : ClassReference("Viking__embed_css_images_button_instant_50_on_png_1941540573");
+            overSkin : ClassReference("Viking__embed_css_images_button_instant_50_on_png_1941540573");
+        }
+    
+        .BaseTit
+        {
+            textAlign : center;
+            fontSize : 14;
+        }
+    
+        .GatheringName
+        {
+            paddingTop : 5;
+            color : 16777215;
+            paddingBottom : 5;
+            paddingLeft : 5;
+            paddingRight : 5;
+        }
+    
+        .CostMaterial
+        {
+            borderSides : bottom right;
+            borderStyle : outset;
+            borderColor : 2829099;
+            backgroundColor : 14803650;
+        }
+    
+        .ItemDetailLabel
+        {
+            fontWeight : bold;
+            color : 0;
+            fontSize : 16;
+        }
+    
+        .DialogText
+        {
+            color : 0;
+            fontSize : 14;
+        }
+    
+        .BuildingButtonMouseOver
+        {
+            borderStyle : none;
+            backgroundColor : 6179904;
+            cornerRadius : 20;
+            backgroundAlpha : 0.85;
+        }
+    
+        .BuildingMouseOverText
+        {
+            paddingTop : 5;
+            color : 16777215;
+            fontSize : 12;
+            paddingLeft : 5;
+            paddingBottom : 5;
+            paddingRight : 5;
+        }
+    
+        .ProductionPanel
+        {
+            titleStyleName : ProductionTitle;
+            borderStyle : none;
+            dropShadowEnabled : false;
+            headerHeight : 40;
+            highlightAlphas : 0, 0;
+            fontSize : 12;
+            backgroundAlpha : 0;
+        }
+    
+        .UnitBuildingHeaderStyle
+        {
+            fontWeight : bold;
+            textDecoration : none;
+            color : 16777215;
+            textAlign : center;
+            fontSize : 12;
+            selectionColor : 16771259;
+        }
+    
+        .BuildingName
+        {
+            fontWeight : bold;
+            color : 0;
+            textAlign : center;
+            fontSize : 14;
+        }
+    
+        .ChangeEquipmentBtn
+        {
+            height : 22;
+            width : 84;
+        }
+    
+        .GuildComboBox
+        {
+            fontWeight : normal;
+            color : 0;
+            cornerRadius : 0;
+            fontSize : 12;
+            themeColor : 10066329;
+        }
+    
+        .TempleText2
+        {
+            color : 0;
+            textAlign : right;
+            fontSize : 12;
+        }
+    
+        ToolTip
+        {
+            paddingTop : 5;
+            color : 16777215;
+            backgroundColor : 3163220;
+            cornerRadius : 0;
+            textAlign : center;
+            fontSize : 12;
+            paddingBottom : 4;
+            paddingLeft : 10;
+            backgroundAlpha : 0.85;
+            paddingRight : 10;
+        }
+    
+        .DataGridBase
+        {
+            borderColor : 993820;
+            backgroundColor : 14803650;
+            horizontalGridLines : true;
+            horizontalGridLineColor : 7567467;
+            rollOverColor : 993820;
+            useRollOver : false;
+            headerStyleName : AllyDataHeader;
+            iconColor : 16777215;
+            verticalAlign : middle;
+            fontSize : 11;
+            selectionColor : 16624526;
+            verticalGridLineColor : 7567467;
+            alternatingItemColors : 14803650, 16119005;
+            headerColors : 2115121, 993820;
+        }
+    
+        VScrollBar
+        {
+            trackSkin : ClassReference("Viking__embed_css_images_vscbar_track_png_275221189");
+            downArrowSkin : ClassReference("Viking__embed_css_images_vscbar_down_png_336445035");
+            upArrowSkin : ClassReference("Viking__embed_css_images_vscbar_up_png_582051551");
+            thumbSkin : ClassReference("Viking__embed_css_images_vscbar_thumb_png_890898163");
+        }
+    
+        .UnitBuilding
+        {
+            borderColor : 993820;
+            backgroundColor : 14803650;
+            horizontalGridLines : true;
+            horizontalGridLineColor : 7567467;
+            rollOverColor : 993820;
+            useRollOver : false;
+            headerStyleName : UnitBuildingHeaderStyle;
+            iconColor : 16777215;
+            fontSize : 11;
+            selectionColor : 16624526;
+            verticalGridLineColor : 7567467;
+            alternatingItemColors : 14803650, 16119005;
+            headerColors : 2115121, 993820;
+        }
+    
+        .InfoTxt
+        {
+            color : 16777215;
+            fontSize : 13;
+        }
+    
+        .GetItemListHeader
+        {
+            useRollOver : false;
+            borderThickness : 0.2;
+            verticalGridLines : false;
+            backgroundAlpha : 0;
+        }
+    
+        .BaseVacantLot
+        {
+            height : 32;
+            width : 64;
+        }
+    
+        .ClickStructureName
+        {
+            fontWeight : bold;
+            paddingTop : 20;
+            letterSpacing : -2;
+            color : 0;
+            fontSize : 15;
+            paddingLeft : 160;
+        }
+    
+        .GulidEstablishmentText
+        {
+            color : 0;
+            fontSize : 12;
+        }
+    
+        .ProductionTitle
+        {
+            fontWeight : bold;
+            color : 16777215;
+            textAlign : center;
+            fontSize : 14;
+        }
+    
+        .PanelBase
+        {
+            titleStyleName : PanelBaseTitle;
+            borderStyle : none;
+            dropShadowEnabled : false;
+            headerHeight : 40;
+            highlightAlphas : 0, 0;
+            backgroundAlpha : 0;
+        }
+    
+        .BiginnerTitle
+        {
+            fontWeight : bold;
+            fontSize : 14;
+        }
+    
+        .CostQuantity
+        {
+            borderSides : bottom right;
+            borderStyle : outset;
+            borderColor : 2829099;
+            backgroundColor : 16119005;
+        }
+    
+        HScrollBar
+        {
+            trackSkin : ClassReference("Viking__embed_css_images_vscbar_track_png_275221189");
+            downArrowSkin : ClassReference("Viking__embed_css_images_vscbar_down_png_336445035");
+            upArrowSkin : ClassReference("Viking__embed_css_images_vscbar_up_png_582051551");
+            thumbSkin : ClassReference("Viking__embed_css_images_vscbar_thumb_png_890898164");
+        }
+    
+        .ProcuctionConditionsBg
+        {
+            color : 0;
+            fontSize : 12;
+        }
+    
+        .ProductionGrid
+        {
+            borderColor : 993820;
+            backgroundColor : 14803650;
+            horizontalGridLines : true;
+            horizontalGridLineColor : 7567467;
+            rollOverColor : 993820;
+            useRollOver : false;
+            headerStyleName : ProductionGridHeaderStyle;
+            iconColor : 16777215;
+            fontSize : 11;
+            selectionColor : 16624526;
+            verticalGridLineColor : 7567467;
+            alternatingItemColors : 14803650, 16119005;
+            headerColors : 2115121, 993820;
+        }
+    
+        .GuildApprovalTxt
+        {
+            color : 0;
+            fontSize : 13;
+        }
+    
+        .OvStarLevel
+        {
+            letterSpacing : -1;
+            color : 0;
+            fontSize : 13;
+            paddingLeft : 18;
+        }
+    
+        .GuildSearchText
+        {
+            color : 0;
+            fontSize : 12;
+        }
+    
+        .PossibleClass
+        {
+            color : 0;
+            fontSize : 12;
+        }
+    
+        .DealText
+        {
+            fontWeight : bold;
+            color : 0;
+            textAlign : left;
+            fontSize : 14;
+        }
+    
+        .ScrollBar
+        {
+            borderColor : 5588792;
+            trackColors : 8611652, 11177836;
+            fillColors : 12625797, 13408614, 13408614, 15260092;
+            fillAlphas : 1, 1, 1, 1;
+            themeColor : 16299345;
+        }
+    
+        .DataGridBaseHeader
+        {
+            fontWeight : bold;
+            textDecoration : none;
+            color : 16777215;
+            textAlign : center;
+            fontSize : 12;
+            selectionColor : 16771259;
+        }
+    
+        .Gathering
+        {
+            fontWeight : bold;
+            color : 16777215;
+            headerHeight : 40;
+            textAlign : center;
+            verticalAlign : bottom;
+            fontSize : 14;
+        }
+    
+        .BuildingButtonMouseOverTitle
+        {
+            fontWeight : bold;
+            paddingTop : 5;
+            color : 16776960;
+            fontSize : 14;
+            paddingLeft : 5;
+            paddingBottom : 5;
+            paddingRight : 5;
+        }
+    
+        .ProductionBtn
+        {
+            fontWeight : bold;
+            color : 16777215;
+            textAlign : center;
+            fontSize : 14;
+        }
+    
+        .UnitListGrid
+        {
+            borderColor : 993820;
+            backgroundColor : 14803650;
+            horizontalGridLines : true;
+            horizontalGridLineColor : 7567467;
+            rollOverColor : 993820;
+            useRollOver : false;
+            headerStyleName : AllyDataHeader;
+            iconColor : 16777215;
+            fontSize : 11;
+            selectionColor : 16624526;
+            verticalGridLineColor : 7567467;
+            alternatingItemColors : 14803650, 16119005;
+            headerColors : 2115121, 993820;
+        }
+    
+        .LevelUpBtn
+        {
+            height : 22;
+            width : 84;
+        }
+    
+        .TempleText
+        {
+            fontWeight : bold;
+            color : 0;
+            textAlign : left;
+            fontSize : 14;
+        }
+    
+        .DealTitle
+        {
+            fontWeight : bold;
+            color : 16777215;
+            textAlign : center;
+            fontSize : 16;
+        }
+    
+        .BuildingMouseOver
+        {
+            borderStyle : none;
+            backgroundColor : 6179904;
+            cornerRadius : 20;
+            backgroundAlpha : 0.85;
+        }
+    
+        .GetItemList
+        {
+            headerStyleName : GetItemListHeader;
+            useRollOver : false;
+            borderThickness : 0;
+            verticalGridLines : false;
+            fontSize : 13;
+            paddingBottom : 1;
+            backgroundAlpha : 0;
+        }
+    
+        .CenterText
+        {
+            color : 0;
+            textAlign : center;
+            fontSize : 14;
+        }
+    
+        .InfoBoxTab
+        {
+            borderStyle : none;
+            backgroundColor : 3484453;
+            tabWidth : 68;
+            tabHeight : 20;
+            horizontalGap : 2;
+            backgroundAlpha : 0.6;
+        }
+    
+        .BuildingDetail
+        {
+            backgroundColor : 9273720;
+            horizontalGridLines : true;
+            horizontalGridLineColor : 12040892;
+            useRollOver : true;
+            headerStyleName : BuildingDetailHeaderStyle;
+            verticalGridLines : true;
+            fontSize : 12;
+            verticalGridLineColor : 12040892;
+            fontWeight : normal;
+            color : 0;
+            alternatingItemColors : 14539222, 14539222;
+            borderThickness : 0;
+            headerColors : 15921391, 15921391;
+        }
+    
+        .ItemName
+        {
+            fontWeight : bold;
+            color : 0;
+            fontSize : 16;
+        }
+    
+        .GulidMembershipText
+        {
+            color : 0;
+            fontSize : 12;
+        }
+    
+        .ItemDetail
+        {
+            leading : 4;
+            letterSpacing : 2;
+            color : 0;
+            fontSize : 12;
+        }
+    
+        .SkillAndTime
+        {
+            color : 16777215;
+            fontSize : 12;
+        }
+    
+        .OvStarName
+        {
+            fontWeight : bold;
+            paddingTop : 11;
+            color : 16776960;
+            letterSpacing : -1;
+            fontSize : 13;
+            paddingLeft : 13;
+            paddingBottom : 10;
+        }
+    
+        .SortieEqpTab
+        {
+            firstTabStyleName : SortieEqpTabBg;
+            borderStyle : none;
+            tabStyleName : SortieEqpTabBg;
+            color : 16777215;
+            lastTabStyleName : SortieEqpTabBg;
+            tabWidth : 105;
+            tabHeight : 30;
+            fontSize : 12;
+            horizontalGap : 3;
+            paddingBottom : 0;
+        }
+    
+        .ProductionQtyText
+        {
+            color : 0;
+            fontSize : 13;
+        }
+    
+        .GildWindowPanel
+        {
+            titleStyleName : GildWindowTitle;
+            borderStyle : none;
+            dropShadowEnabled : false;
+            headerHeight : 40;
+            highlightAlphas : 0, 0;
+            backgroundAlpha : 0;
+        }
+    
+        .InfoTxtBox
+        {
+            paddingTop : -5;
+            paddingLeft : 5;
+        }
+    
+        .ProductionTab
+        {
+            firstTabStyleName : ProductionTabBg;
+            borderStyle : none;
+            tabStyleName : ProductionTabBg;
+            color : 16777215;
+            lastTabStyleName : ProductionTabBg;
+            tabWidth : 89;
+            tabHeight : 30;
+            fontSize : 12;
+            horizontalGap : 3;
+            paddingBottom : 0;
+        }
+    
+        .GuildAreaList
+        {
+            borderColor : 993820;
+            alternatingItemColors : 14343083, 16119005, 14343083, 16119005, 14343083, 16119005;
+            rollOverColor : 993820;
+            headerStyleName : AllyDataHeader;
+            useRollOver : false;
+            iconColor : 16777215;
+            verticalAlign : middle;
+            selectionColor : 16624526;
+        }
+    
+        .JobName
+        {
+            fontWeight : bold;
+            fontSize : 14;
+        }
+    
+        .TownDescriptionText
+        {
+            color : 0;
+            fontSize : 12;
+        }
+    
+        .NameTextArea
+        {
+            paddingTop : 7;
+            focusAlpha : 0;
+            fontSize : 14;
+            paddingLeft : 6;
+            backgroundAlpha : 0;
+        }
+    
+        .AllyDataHeader
+        {
+            fontWeight : bold;
+            color : 16777215;
+            textAlign : center;
+            fontSize : 12;
+            selectionColor : 16771259;
+            paddingLeft : 0;
+            paddingRight : 0;
+        }
+    
+        .closeBtn
+        {
+            fontWeight : normal;
+            textDecoration : none;
+            color : 0;
+            fontStyle : normal;
+            fontSize : 12;
+        }
+    
+        .ProductionGridHeaderStyle
+        {
+            color : 16777215;
+            textAlign : center;
+            fontSize : 14;
+            selectionColor : 16771259;
+        }
+    
+        .CrystalQtyBg
+        {
+            paddingTop : 5;
+            backgroundColor : 6179904;
+            cornerRadius : 0;
+            textAlign : center;
+            fontSize : 13;
+            paddingBottom : 4;
+            paddingLeft : 10;
+            backgroundAlpha : 0.7;
+            paddingRight : 10;
+        }
+    
+        .GuildListDataGrid
+        {
+            borderColor : 993820;
+            horizontalGridLines : true;
+            horizontalGridLineColor : 7567467;
+            rollOverColor : 993820;
+            useRollOver : false;
+            headerStyleName : AllyDataHeader;
+            iconColor : 16777215;
+            fontSize : 10;
+            verticalAlign : middle;
+            selectionColor : 16624526;
+            backgroundAlpha : 0;
+            verticalGridLineColor : 7567467;
+            headerColors : 2115121, 993820;
+        }
+    
+        .Info
+        {
+            color : 0;
+            fontSize : 13;
+        }
+    
+        .FinishTask100Button
+        {
+            upSkin : ClassReference("Viking__embed_css_images_button_instant_100_off_png_1757446729");
+            downSkin : ClassReference("Viking__embed_css_images_button_instant_100_on_png_849915229");
+            overSkin : ClassReference("Viking__embed_css_images_button_instant_100_on_png_849915229");
+        }
+    
+        .UnitSelectText
+        {
+            color : 0;
+            fontSize : 11;
+        }
+    
+        .DataGridBase2
+        {
+            borderColor : 993820;
+            backgroundColor : 14803650;
+            horizontalGridLines : true;
+            horizontalGridLineColor : 7567467;
+            rollOverColor : 993820;
+            useRollOver : false;
+            headerStyleName : AllyDataHeader;
+            iconColor : 16777215;
+            verticalAlign : middle;
+            fontSize : 11;
+            selectionColor : 16624526;
+            verticalGridLineColor : 7567467;
+            alternatingItemColors : 16624526, 14803650;
+            headerColors : 2115121, 993820;
+        }
+    
+        .UnitListPanel
+        {
+            titleStyleName : AllyDataTitle;
+            borderStyle : none;
+            dropShadowEnabled : false;
+            headerHeight : 40;
+            highlightAlphas : 0, 0;
+            backgroundAlpha : 0;
+        }
+    </mx:Style>
+</mx:Application>

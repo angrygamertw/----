@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{setup();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  tempNotoriety:int;
+        private var  buyBool:Boolean;
+        private var  _quantity:int = 0;
+        public static const  BUY_INDULGENCE:String = "buyIndulgence";
+        public static const  INDULGENCE_PRICE:int = 100;
+        public static const  CLOSE_BUY_INDULGENCE:String = "closeBuyIndulgence";
+
+
+        public function init(param1:PlayerVO, param2:int) : void
+        {
+            playerVO = param1;
+            this.indulgencePrice = param2;
+            maxLimit = _playerVO.gold / _indulgencePrice;
+            if (maxLimit > 99)
+            {
+                maxLimit = 99;
+            }
+            if (tempNotoriety == 0)
+            {
+                buyBool = false;
+            }
+            else
+            {
+                buyBool = true;
+            }
+            afterNotoriety = tempNotoriety;
+            return;
+        }// end function
+
+        public function onBuy() : void
+        {
+            _quantity = numStepper.value;
+            if (numStepper.value == 0)
+            {
+                onAlert("個数を入力して下さい。");
+            }
+            else if (!buyBool)
+            {
+                onAlert("悪名値が0なので、免罪符を購入出来ません。");
+            }
+            else
+            {
+                dispatchEvent(new Event(BUY_INDULGENCE));
+                close();
+            }
+            MovieClip(Loader(_swf_buy.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_buy.getChildAt(0)).content).gotoAndPlay("button_buy");
+            return;
+        }// end function
+
+        public function calcSumGold() : void
+        {
+            sumGold = numStepper.value * _indulgencePrice;
+            var _loc_1:* = tempNotoriety;
+            _loc_1 = _loc_1 - numStepper.value * 10;
+            if (_loc_1 < 0)
+            {
+                _loc_1 = 0;
+            }
+            afterNotoriety = _loc_1;
+            return;
+        }// end function
+
+        public function onCancel() : void
+        {
+            numStepper.value = 0;
+            close();
+            MovieClip(Loader(_swf_cancel.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_cancel.getChildAt(0)).content).gotoAndPlay("button_cancel");
+            MovieClip(Loader(_swf_close_window.getChildAt(0)).content).gotoAndPlay(1);
+            return;
+        }// end function
+
+        public function onAlert(param1:String) : void
+        {
+            var _loc_2:* = AlertWindow.show(param1);
+            popupWindow(_loc_2, false);
+            return;
+        }// end function
+
+        public function close() : void
+        {
+            dispatchEvent(new Event(CLOSE_BUY_INDULGENCE));
+            onClose();
+            return;
+        }// end function
+
+        public function setup() : void
+        {
+            MovieClip(Loader(_swf_buy.getChildAt(0)).content).gotoAndPlay("button_buy");
+            MovieClip(Loader(_swf_cancel.getChildAt(0)).content).gotoAndPlay("button_cancel");
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Canvas id="indulgenceCanvas">
+		<mx:NumericStepper id="numStepper" x="370" y="270" minimum="0" value="0" cornerRadius="0" borderColor="10058583" iconColor="5318420" color="#000b333c" themeColor="16737843" change="{calcSumGold();}" maximum="maxLimit"/>
+		<mx:Text id="_BuyIndulgenceWindow_Text1" styleName="TempleText2" x="320" y="290" text=""購入額：" + sumGold"/>
+		<mx:HBox x="260" y="360" horizontalGap="130">
+			<mx:Image id="_BuyIndulgenceWindow_Image1" click="{onCancel();}" source="{_swf_cancel}"/>
+			<mx:Image id="_BuyIndulgenceWindow_Image2" click="{onBuy();}" source="{_swf_buy}"/>
+		</mx:HBox>
+		<mx:Image id="_BuyIndulgenceWindow_Image3" x="555" y="145" click="{onCancel();}" source="{_swf_close_window}"/>
+	</mx:Canvas>
+
+</mx:PopupWindow>

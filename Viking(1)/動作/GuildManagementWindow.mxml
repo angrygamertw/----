@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{setup();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import com.kbmj.viking.vo.city.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private static const  WINDOW_X:int = 20;
+        private static const  WINDOW_Y:int = 80;
+        private static const  BUTTON_X:int = 245;
+        private static const  BUTTON_Y:int = 490;
+        public static const  GUILD_LEVEL_UP:String = "guildLevelRankUp";
+        public static const  CLOSE_GUILD_MANAGEMENT_WINDOW:String = "closeGuildManagementWindow";
+        private static const  WINDOW_HT:int = 460;
+        private static const  WINDOW_WD:int = 560;
+
+
+        public function closeWindow() : void
+        {
+            dispatchEvent(new Event(CLOSE_GUILD_MANAGEMENT_WINDOW));
+            onClose();
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_close_window.getChildAt(0)).content).gotoAndPlay(1);
+            return;
+        }// end function
+
+        public function setup() : void
+        {
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            return;
+        }// end function
+
+        public function drawSquare(param1:int, param2:int, param3:int, param4:int, param5:uint) : Sprite
+        {
+            var _loc_6:* = new Sprite();
+            new Sprite().graphics.beginFill(param5, 0.4);
+            _loc_6.graphics.drawRect(param1, param2, param3, param4);
+            _loc_6.graphics.endFill();
+            return _loc_6;
+        }// end function
+
+        public function guildLevelUp() : void
+        {
+            if (canLevelUp)
+            {
+                trace("GuildManagementWindow:guildLevelUp()");
+                sendEvent(GUILD_LEVEL_UP);
+            }
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Text id="_GuildManagementWindow_Text1" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("guildManagementManagement")}"/>
+	<mx:Image id="_GuildManagementWindow_Image1" click="{closeWindow();}" x="WINDOW_X + WINDOW_WD - 25" y="WINDOW_Y" source="{_swf_close_window}"/>
+	<mx:Grid id="_GuildManagementWindow_Grid1" horizontalGap="0" verticalGap="0" x="WINDOW_X + 20" y="WINDOW_Y + 60">
+		<mx:GridRow>
+			<mx:GridItem borderStyle="solid" borderColor="2829099" borderSides="top bottom left right" backgroundColor="#00204631">
+				<mx:Image source="_embed_mxml__swf_home_city_button_guild_withdraw_swf_1285950597" click="{sendEvent(Viking.CITY_ACTION_QUIT_GUILD);}"/>
+			</mx:GridItem>
+			<mx:GridItem borderStyle="solid" borderColor="2829099" borderSides="top bottom right" backgroundColor="#00e1e2c2">
+				<mx:Text id="_GuildManagementWindow_Text2" styleName="DealText3" width="WINDOW_WD - 40 - 80" text="{Utils.i18n("guildManagementWithdrawal")}"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow>
+			<mx:GridItem borderStyle="solid" borderColor="2829099" borderSides="bottom left right" backgroundColor="#00204631">
+				<mx:Image source="_embed_mxml__swf_home_city_button_guild_appoint_swf_54321453" click="{sendEvent(Viking.CITY_ACTION_APPOINT_GUILDMASTER);}"/>
+			</mx:GridItem>
+			<mx:GridItem borderStyle="solid" borderColor="2829099" borderSides="bottom right" backgroundColor="#00f5f4dd">
+				<mx:Text id="_GuildManagementWindow_Text3" styleName="DealText3" width="WINDOW_WD - 40 - 80" text="{Utils.i18n("guildManagementAppointManagerAndResignation")}"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow>
+			<mx:GridItem borderStyle="solid" borderColor="2829099" borderSides="bottom left right" backgroundColor="#00204631">
+				<mx:Image source="_embed_mxml__swf_home_city_button_guild_info_swf_348601741" click="{sendEvent(Viking.CITY_ACTION_CHANGE_GUILD_INFORMATION);}"/>
+			</mx:GridItem>
+			<mx:GridItem borderStyle="solid" borderColor="2829099" borderSides="bottom right" backgroundColor="#00e1e2c2">
+				<mx:Text id="_GuildManagementWindow_Text4" styleName="DealText3" width="WINDOW_WD - 40 - 80" text="{Utils.i18n("guildManagemenatChangeInfo")}"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow>
+			<mx:GridItem borderStyle="solid" borderColor="2829099" borderSides="bottom left right" backgroundColor="#00204631">
+				<mx:Image source="_embed_mxml__swf_home_city_button_guild_dismiss_swf_1933349709" click="{sendEvent(Viking.CITY_ACTION_SHOW_REMOVE_MEMBER_WINDOW);}"/>
+			</mx:GridItem>
+			<mx:GridItem borderStyle="solid" borderColor="2829099" borderSides="bottom right" backgroundColor="#00f5f4dd">
+				<mx:Text id="_GuildManagementWindow_Text5" styleName="DealText3" width="WINDOW_WD - 40 - 80" text="{Utils.i18n("guildManagementExpulsion")}"/>
+			</mx:GridItem>
+		</mx:GridRow>
+	</mx:Grid>
+	<mx:Grid id="_GuildManagementWindow_Grid2" horizontalGap="0" verticalGap="0" x="WINDOW_X + 20" y="WINDOW_Y + 240" width="WINDOW_WD - 40">
+		<mx:GridRow>
+			<mx:GridItem rowSpan="4" borderStyle="solid" borderColor="2829099" borderSides="top bottom left right" backgroundColor="#00204631" verticalAlign="middle">
+				<mx:Image source="_embed_mxml__swf_home_city_button_guild_be_promoted_swf_974574999" click="{guildLevelUp();}"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow>
+			<mx:GridItem id="_GuildManagementWindow_GridItem10" colSpan="2" borderStyle="solid" borderColor="2829099" borderSides="top bottom right" backgroundColor="#00e1e2c2" width="WINDOW_WD - 40 - 80">
+				<mx:Text id="_GuildManagementWindow_Text6" styleName="DealText3" text="{Utils.i18n("guildManagementLevelUp")}"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow>
+			<mx:GridItem width="24%" borderStyle="solid" borderColor="2829099" borderSides="bottom right" backgroundColor="#00204631">
+				<mx:Label id="_GuildManagementWindow_Label1" fontSize="14" textIndent="8" color="#00eeeeee" text="{Utils.i18n("guildManagementNecessaryRank")}"/>
+			</mx:GridItem>
+			<mx:GridItem width="80%" borderStyle="solid" borderColor="2829099" borderSides="bottom right" backgroundColor="#00f5f4dd">
+				<mx:Text id="_GuildManagementWindow_Text7" styleName="DealText3" text="needsRankText"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow>
+			<mx:GridItem width="24%" borderStyle="solid" borderColor="2829099" borderSides="bottom right" backgroundColor="#00204631">
+				<mx:Label id="_GuildManagementWindow_Label2" fontSize="14" textIndent="8" color="#00eeeeee" text="{Utils.i18n("guildManagementNecessaryProperty")}"/>
+			</mx:GridItem>
+			<mx:GridItem width="80%" borderStyle="solid" borderColor="2829099" borderSides="bottom right" backgroundColor="#00e1e2c2">
+				<mx:Text id="_GuildManagementWindow_Text8" width="100" styleName="DealText3" text="needsTerritoryText"/>
+			</mx:GridItem>
+		</mx:GridRow>
+	</mx:Grid>
+	<mx:Image id="_GuildManagementWindow_Image7" x="WINDOW_X + 20" y="WINDOW_Y + 240" source="{levelUpMask}" visible="!canLevelUp"/>
+	<mx:Image id="_GuildManagementWindow_Image8" click="{closeWindow();}" x="BUTTON_X" y="BUTTON_Y" source="{_swf_close}"/>
+	<mx:Canvas id="masterCanvas"/>
+
+</mx:PopupWindow>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private static const  PRICES:Array = [0, 600, 900, 1200];
+        public static const  CONFIRMED:String = "ConfirmAddAreaWindow/Confirmed";
+
+
+        public function onConfirm() : void
+        {
+            if (_confirmEnabled)
+            {
+                _confirmEnabled = false;
+                sendPopupEvent(CONFIRMED, _tier);
+                PopUpManager.removePopUp(this);
+            }
+            return;
+        }// end function
+
+        public function show(param1:CanvasWithPopUp, param2:int) : void
+        {
+            _tier = param2;
+            _power = PRICES[_tier];
+            _confirmEnabled = true;
+            param1.popupWindow(this);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:VBox>
+		<mx:Spacer height="100%"/>
+		<mx:VBox horizontalCenter="20" top="100">
+			<mx:HBox horizontalGap="2">
+				<mx:Image source="_embed_mxml__images_icon_power_png_227571469"/>
+				<mx:Label id="_ConfirmAddAreaWindow_Label1" styleName="UnitSelectText" text="神力" + _power + "を消費して本拠地に空き地を追加しますか？"/>
+			</mx:HBox>
+			<mx:Spacer height="50"/>
+			<mx:HBox width="100%" horizontalGap="10">
+				<mx:Spacer width="65"/>
+				<mx:Button label="" styleName="CancelCanaButton" buttonMode="true" click="{onClose();}"/>
+				<mx:Button label="" styleName="OkButton" buttonMode="true" click="{onConfirm();}"/>
+			</mx:HBox>
+		</mx:VBox>
+		<mx:Spacer height="100%"/>
+	</mx:VBox>
+
+</mx:PopupWindow>

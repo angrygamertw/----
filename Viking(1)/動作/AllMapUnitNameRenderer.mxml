@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:UnitDetailLabelRenderer xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import mx.core.*;
+
+    ]]></mx:Script>
+
+
+</mx:UnitDetailLabelRenderer>

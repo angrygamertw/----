@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  EmbedSwfStrangeEffect:Class;
+        private var  _magicWand:Class;
+        private var  _sword:Class;
+        private static var  HP_BAR_WD:int = 62;
+        private static var  HP_BAR_BOLD:int = 1;
+        private static var  HP_BAR_HT:int = 10;
+
+
+        public function drawSquare(param1:int, param2:int, param3:int, param4:int, param5:uint) : Sprite
+        {
+            var _loc_6:* = new Sprite();
+            new Sprite().graphics.beginFill(param5);
+            _loc_6.graphics.drawRect(param1, param2, param3, param4);
+            _loc_6.graphics.endFill();
+            return _loc_6;
+        }// end function
+
+        public function factionBossHpBar(param1:int, param2:int, param3:int) : Number
+        {
+            if (_unit.factionBossFlag == false && param3 == 1)
+            {
+                return param1 / param2;
+            }
+            if (_unit.factionBossFlag == false)
+            {
+                return 0;
+            }
+            if (param1 >= param2 * param3 / 10)
+            {
+                return 1;
+            }
+            if (param1 <= param2 * (param3 - 1) / 10)
+            {
+                return 0;
+            }
+            return (param1 - param2 * (param3 - 1) / 10) / (param2 / 10);
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="_TargetStatusWindow_Canvas2" x="410" y="435" width="200" height="108" visible="visibleFlag">
+		<mx:Label id="_TargetStatusWindow_Label1" x="0" y="0" fontSize="18" color="#00ffffff" text="{_unit.name}"/>
+		<mx:Label id="_TargetStatusWindow_Label2" x="0" y="24" fontSize="14" color="#00ffffff" text="{Utils.i18n("generalJob") + ":" + _unit.jobName + "  Lv." + _unit.level}"/>
+		<mx:Label id="_TargetStatusWindow_Label3" x="0" y="42" fontSize="14" color="#00ffffff" text=""/>
+		<mx:Label id="_TargetStatusWindow_Label4" x="0" y="60" fontSize="14" color="#00ffffff" text=""/>
+		<mx:Image id="_TargetStatusWindow_Image1" x="108" y="66" source="{hpbar_base}"/>
+		<mx:Image id="_TargetStatusWindow_Image2" x="108" y="66" source="{hpbar_max}"/>
+		<mx:Image id="_TargetStatusWindow_Image3" x="108" y="66" source="{hpbar1}" scaleX="{factionBossHpBar(_unit.displayHp, _unit.realMaxHp, 1)}"/>
+		<mx:Image id="_TargetStatusWindow_Image4" x="108" y="66" source="{hpbar2}" scaleX="{factionBossHpBar(_unit.displayHp, _unit.realMaxHp, 2)}"/>
+		<mx:Image id="_TargetStatusWindow_Image5" x="108" y="66" source="{hpbar3}" scaleX="{factionBossHpBar(_unit.displayHp, _unit.realMaxHp, 3)}"/>
+		<mx:Image id="_TargetStatusWindow_Image6" x="108" y="66" source="{hpbar4}" scaleX="{factionBossHpBar(_unit.displayHp, _unit.realMaxHp, 4)}"/>
+		<mx:Image id="_TargetStatusWindow_Image7" x="108" y="66" source="{hpbar5}" scaleX="{factionBossHpBar(_unit.displayHp, _unit.realMaxHp, 5)}"/>
+		<mx:Image id="_TargetStatusWindow_Image8" x="108" y="66" source="{hpbar6}" scaleX="{factionBossHpBar(_unit.displayHp, _unit.realMaxHp, 6)}"/>
+		<mx:Image id="_TargetStatusWindow_Image9" x="108" y="66" source="{hpbar7}" scaleX="{factionBossHpBar(_unit.displayHp, _unit.realMaxHp, 7)}"/>
+		<mx:Image id="_TargetStatusWindow_Image10" x="108" y="66" source="{hpbar8}" scaleX="{factionBossHpBar(_unit.displayHp, _unit.realMaxHp, 8)}"/>
+		<mx:Image id="_TargetStatusWindow_Image11" x="108" y="66" source="{hpbar9}" scaleX="{factionBossHpBar(_unit.displayHp, _unit.realMaxHp, 9)}"/>
+		<mx:Image id="_TargetStatusWindow_Image12" x="108" y="66" source="{hpbar10}" scaleX="{factionBossHpBar(_unit.displayHp, _unit.realMaxHp, 10)}"/>
+		<mx:Image id="_TargetStatusWindow_Image13" x="0" y="79" source="{weaponIcon}"/>
+		<mx:Label id="_TargetStatusWindow_Label5" x="15" y="78" fontSize="14" color="#00ffffff" textAlign="right" text="baseDamage"/>
+		<mx:Image id="_TargetStatusWindow_Image14" x="50" y="79" source="{atkDefIcon}"/>
+		<mx:Label id="_TargetStatusWindow_Label6" x="65" y="78" fontSize="14" color="#00ffffff" textAlign="right" text="{_unit.baseDefense}"/>
+		<mx:Image id="_TargetStatusWindow_Image15" x="100" y="79" source="{magDefIcon}"/>
+		<mx:Label id="_TargetStatusWindow_Label7" x="115" y="78" fontSize="14" color="#00ffffff" textAlign="right" text="{_unit.baseMagicalDefense}"/>
+	</mx:Canvas>
+	<mx:Canvas id="_TargetStatusWindow_Canvas3" x="{_unit.face2OffsetX}" y="{_unit.face2OffsetY}" visible="visibleFlag">
+		<mx:Image id="_TargetStatusWindow_Image16" x="610" y="320" source="{_unit.face2Uic}"/>
+		<mx:Image id="strange0" x="586" y="510" source="{_swf_strange_effect_0}"/>
+		<mx:Image id="strange1" x="616" y="510" source="{_swf_strange_effect_1}"/>
+		<mx:Image id="strange2" x="646" y="510" source="{_swf_strange_effect_2}"/>
+		<mx:Image id="strange3" x="676" y="510" source="{_swf_strange_effect_3}"/>
+		<mx:Image id="strange4" x="706" y="510" source="{_swf_strange_effect_4}"/>
+	</mx:Canvas>
+
+</mx:Canvas>

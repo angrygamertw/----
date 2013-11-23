@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{createComp();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public static const  ADD_UNIT_SWF:String = NAME + "addUnitSwf";
+        public static const  REMOVE_UNIT_SWF:String = NAME + "subUnitSwf";
+        public static const  NAME:String = "sacrificeWindow";
+        public static const  SACRIFICE_WINDOW_END:String = NAME + "/sacrificeEnd";
+        public static const  SACRIFICE_UNIT_RUN:String = NAME + "/sacrificeStart";
+
+
+        public function _SacrificeUnitWindow_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SacrificeUnitWindow_DataGridColumn6 = _loc_1;
+            _loc_1.dataField = "strength";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SacrificeUnitWindow_DataGridColumn6", _SacrificeUnitWindow_DataGridColumn6);
+            return _loc_1;
+        }// end function
+
+        public function _SacrificeUnitWindow_DataGridColumn10_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SacrificeUnitWindow_DataGridColumn10 = _loc_1;
+            _loc_1.dataField = "intelligence";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SacrificeUnitWindow_DataGridColumn10", _SacrificeUnitWindow_DataGridColumn10);
+            return _loc_1;
+        }// end function
+
+        public function init(param1:Array) : void
+        {
+            _sacrificeUnits = param1;
+            return;
+        }// end function
+
+        public function createComp() : void
+        {
+            MovieClip(Loader(_swf_cancel.getChildAt(0)).content).gotoAndPlay("button_back");
+            MovieClip(Loader(_swf_sacrifice.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_back.getChildAt(0)).content).gotoAndPlay("button_no");
+            return;
+        }// end function
+
+        public function _SacrificeUnitWindow_DataGridColumn5_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "hp";
+            _loc_1.headerText = "HP";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _SacrificeUnitWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SacrificeUnitWindow_DataGridColumn1 = _loc_1;
+            _loc_1.width = 50;
+            BindingManager.executeBindings(this, "_SacrificeUnitWindow_DataGridColumn1", _SacrificeUnitWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _SacrificeUnitWindow_DataGridColumn9_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SacrificeUnitWindow_DataGridColumn9 = _loc_1;
+            _loc_1.dataField = "defense";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SacrificeUnitWindow_DataGridColumn9", _SacrificeUnitWindow_DataGridColumn9);
+            return _loc_1;
+        }// end function
+
+        public function _SacrificeUnitWindow_ClassFactory2_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRenderer = _loc_1;
+            _loc_1.generator = SacrificeUnitWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function closeSacrificeWindow() : void
+        {
+            viewStack.selectedIndex = 0;
+            sendEvent(SACRIFICE_WINDOW_END);
+            return;
+        }// end function
+
+        public function _SacrificeUnitWindow_DataGridColumn4_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "level";
+            _loc_1.headerText = "Lv";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _SacrificeUnitWindow_DataGridColumn8_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SacrificeUnitWindow_DataGridColumn8 = _loc_1;
+            _loc_1.dataField = "agility";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SacrificeUnitWindow_DataGridColumn8", _SacrificeUnitWindow_DataGridColumn8);
+            return _loc_1;
+        }// end function
+
+        public function _SacrificeUnitWindow_ClassFactory1_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = UnitDetailLabelRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _SacrificeUnitWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SacrificeUnitWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "jobMasterVO.nameLabel";
+            _loc_1.width = 80;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SacrificeUnitWindow_DataGridColumn3", _SacrificeUnitWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _SacrificeUnitWindow_DataGridColumn7_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SacrificeUnitWindow_DataGridColumn7 = _loc_1;
+            _loc_1.dataField = "tech";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SacrificeUnitWindow_DataGridColumn7", _SacrificeUnitWindow_DataGridColumn7);
+            return _loc_1;
+        }// end function
+
+        public function _SacrificeUnitWindow_DataGridColumn11_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SacrificeUnitWindow_DataGridColumn11 = _loc_1;
+            _loc_1.dataField = "luck";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SacrificeUnitWindow_DataGridColumn11", _SacrificeUnitWindow_DataGridColumn11);
+            return _loc_1;
+        }// end function
+
+        public function addSelectIndex(param1:Object) : void
+        {
+            _sacrificeUnit = param1 as UnitVO;
+            viewStack.selectedIndex = 1;
+            sendPopupEvent(ADD_UNIT_SWF, {unit:_sacrificeUnit, type:"sacrifice"});
+            return;
+        }// end function
+
+        public function subSelectIndex() : void
+        {
+            viewStack.selectedIndex = 0;
+            sendPopupEvent(REMOVE_UNIT_SWF, {unit:_sacrificeUnit});
+            return;
+        }// end function
+
+        public function startSacrifice() : void
+        {
+            viewStack.selectedIndex = 0;
+            sendPopupEvent(SACRIFICE_UNIT_RUN, {unit:_sacrificeUnit});
+            return;
+        }// end function
+
+        public function _SacrificeUnitWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SacrificeUnitWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "name";
+            _loc_1.itemRenderer = _SacrificeUnitWindow_ClassFactory1_c();
+            _loc_1.width = 80;
+            BindingManager.executeBindings(this, "_SacrificeUnitWindow_DataGridColumn2", _SacrificeUnitWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="unitLayer"/>
+	<mx:Text id="_SacrificeUnitWindow_Text1" x="350" y="302" styleName="PanelBaseTitle" text="{Utils.i18n("ceremonyTypeSelectAscension")}"/>
+	<mx:ViewStack id="viewStack" width="570" height="200" x="100" y="335">
+		<mx:VBox>
+			<mx:Text id="_SacrificeUnitWindow_Text2" fontSize="11" text="{Utils.i18n("localize233")}"/>
+			<mx:DataGrid id="sacrifice_data_list" rowCount="4" width="560" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_SacrificeUnitWindow_DataGridColumn1_i(), _SacrificeUnitWindow_DataGridColumn2_i(), _SacrificeUnitWindow_DataGridColumn3_i(), _SacrificeUnitWindow_DataGridColumn4_c(), _SacrificeUnitWindow_DataGridColumn5_c(), _SacrificeUnitWindow_DataGridColumn6_i(), _SacrificeUnitWindow_DataGridColumn7_i(), _SacrificeUnitWindow_DataGridColumn8_i(), _SacrificeUnitWindow_DataGridColumn9_i(), _SacrificeUnitWindow_DataGridColumn10_i(), _SacrificeUnitWindow_DataGridColumn11_i()]}" dataProvider='{_sacrificeUnits}'/>
+			<mx:HBox>
+				<mx:Spacer width="210"/>
+				<mx:Image id="_SacrificeUnitWindow_Image1" click="{closeSacrificeWindow();}" source="{_swf_cancel}"/>
+			</mx:HBox>
+		</mx:VBox>
+		<mx:VBox>
+			<mx:Spacer height="20"/>
+			<mx:HBox>
+				<mx:Spacer width="180"/>
+				<mx:Text id="_SacrificeUnitWindow_Text3" textAlign="center" fontSize="14" text="{Utils.i18n("localize234", _sacrificeUnit.name)}"/>
+			</mx:HBox>
+			<mx:HBox>
+				<mx:Spacer width="180"/>
+				<mx:Text id="_SacrificeUnitWindow_Text4" textAlign="center" fontSize="14" text="{Utils.i18n("normalSummonCreateConfirm3")}"/>
+			</mx:HBox>
+			<mx:Spacer height="50"/>
+			<mx:HBox horizontalGap="120">
+				<mx:Spacer width="40"/>
+				<mx:Image id="_SacrificeUnitWindow_Image2" click="{startSacrifice();}" source="{_swf_sacrifice}"/>
+				<mx:Image id="_SacrificeUnitWindow_Image3" click="{subSelectIndex();}" source="{_swf_back}"/>
+			</mx:HBox>
+		</mx:VBox>
+	</mx:ViewStack>
+
+</mx:PopupWindow>

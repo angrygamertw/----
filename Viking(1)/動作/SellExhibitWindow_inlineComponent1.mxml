@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import flash.events.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+    ]]></mx:Script>
+
+	<mx:Image source="_embed_mxml__swf_home_buttons_button_list_withdraw_swf_1878042729" click="{outerDocument.onExhibitCancel(data);}"/>
+
+</mx:Box>

@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _sellableResource:ResourceVO;
+        private var  numericStepper:NumericStepper;
+        private var  _sellMaterialQuantity:int;
+        private var  _sellData:Object;
+        private var  equipmentDetail:EquipmentDetail;
+        public var  weaponDetail:WeaponDetail;
+        private var  _sellPrice:int;
+        private static const  WINDOW_X:int = 20;
+        private static const  WINDOW_Y:int = 20;
+        private static const  BUTTON_X:int = 325;
+        private static const  BUTTON_Y:int = 490;
+        public static const  GOODS_SELL:String = "goodsSell";
+        public static const  NAME:String = "SellTradeGoodsWindow";
+        private static const  WINDOW_HT:int = 520;
+        private static const  WINDOW_WD:int = 720;
+
+
+        public function _SellTradeGoodsWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellTradeGoodsWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "hit";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SellTradeGoodsWindow_DataGridColumn3", _SellTradeGoodsWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _SellTradeGoodsWindow_DataGridColumn15_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellTradeGoodsWindow_DataGridColumn15 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 170;
+            BindingManager.executeBindings(this, "_SellTradeGoodsWindow_DataGridColumn15", _SellTradeGoodsWindow_DataGridColumn15);
+            return _loc_1;
+        }// end function
+
+        public function componentToolTip() : String
+        {
+            return Utils.i18n("generalShowDetail");
+        }// end function
+
+        public function _SellTradeGoodsWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellTradeGoodsWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "damage";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SellTradeGoodsWindow_DataGridColumn2", _SellTradeGoodsWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _SellTradeGoodsWindow_DataGridColumn14_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellTradeGoodsWindow_DataGridColumn14 = _loc_1;
+            _loc_1.dataField = "description";
+            BindingManager.executeBindings(this, "_SellTradeGoodsWindow_DataGridColumn14", _SellTradeGoodsWindow_DataGridColumn14);
+            return _loc_1;
+        }// end function
+
+        public function _SellTradeGoodsWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellTradeGoodsWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 170;
+            BindingManager.executeBindings(this, "_SellTradeGoodsWindow_DataGridColumn1", _SellTradeGoodsWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _SellTradeGoodsWindow_DataGridColumn9_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellTradeGoodsWindow_DataGridColumn9 = _loc_1;
+            _loc_1.dataField = "avoidance";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SellTradeGoodsWindow_DataGridColumn9", _SellTradeGoodsWindow_DataGridColumn9);
+            return _loc_1;
+        }// end function
+
+        public function _SellTradeGoodsWindow_DataGridColumn13_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellTradeGoodsWindow_DataGridColumn13 = _loc_1;
+            _loc_1.dataField = "effectLabelAll";
+            _loc_1.width = 180;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SellTradeGoodsWindow_DataGridColumn13", _SellTradeGoodsWindow_DataGridColumn13);
+            return _loc_1;
+        }// end function
+
+        public function _SellTradeGoodsWindow_DataGridColumn8_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellTradeGoodsWindow_DataGridColumn8 = _loc_1;
+            _loc_1.dataField = "magicalDefense";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SellTradeGoodsWindow_DataGridColumn8", _SellTradeGoodsWindow_DataGridColumn8);
+            return _loc_1;
+        }// end function
+
+        public function _SellTradeGoodsWindow_DataGridColumn12_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellTradeGoodsWindow_DataGridColumn12 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 170;
+            BindingManager.executeBindings(this, "_SellTradeGoodsWindow_DataGridColumn12", _SellTradeGoodsWindow_DataGridColumn12);
+            return _loc_1;
+        }// end function
+
+        public function onClick(param1:String) : void
+        {
+            _sellData = new Object();
+            switch(param1)
+            {
+                case "weapon":
+                {
+                    if (weaponDataGrid.selectedItem)
+                    {
+                        _sellData = weaponDataGrid.selectedItem;
+                        sellItemName = _sellData.nameLabel;
+                    }
+                    break;
+                }
+                case "armor":
+                {
+                    if (armorDataGrid.selectedItem)
+                    {
+                        _sellData = armorDataGrid.selectedItem;
+                        sellItemName = _sellData.nameLabel;
+                    }
+                    break;
+                }
+                case "accessory":
+                {
+                    if (accessoryDataGrid.selectedItem)
+                    {
+                        _sellData = accessoryDataGrid.selectedItem;
+                        sellItemName = _sellData.nameLabel;
+                    }
+                    break;
+                }
+                case "item":
+                {
+                    if (itemDataGrid.selectedItem)
+                    {
+                        _sellData = itemDataGrid.selectedItem;
+                        sellItemName = _sellData.nameLabel;
+                    }
+                    break;
+                }
+                case "material":
+                {
+                    if (materialDataGrid.selectedItem)
+                    {
+                        _sellData = materialDataGrid.selectedItem;
+                        sellItemName = _sellData.nameLabel;
+                        materialQuantity.maximum = _sellData.quantity;
+                    }
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            resetValue();
+            return;
+        }// end function
+
+        public function _SellTradeGoodsWindow_DataGridColumn7_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellTradeGoodsWindow_DataGridColumn7 = _loc_1;
+            _loc_1.dataField = "physicalDefense";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SellTradeGoodsWindow_DataGridColumn7", _SellTradeGoodsWindow_DataGridColumn7);
+            return _loc_1;
+        }// end function
+
+        public function init() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_720x520");
+            MovieClip(Loader(_swf_tab.getChildAt(0)).content).gotoAndPlay("tab_item_arms");
+            MovieClip(Loader(_swf_exhibit.getChildAt(0)).content).gotoAndPlay("button_exhibit");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            Loader(_swf_tab.getChildAt(0)).content.addEventListener("TAB_ITEM_ARMS", function (event:Event) : void
+            {
+                itemList.selectedIndex = 0;
+                onTabClick();
+                return;
+            }// end function
+            );
+            Loader(_swf_tab.getChildAt(0)).content.addEventListener("TAB_ITEM_GUARDS", function (event:Event) : void
+            {
+                itemList.selectedIndex = 1;
+                onTabClick();
+                return;
+            }// end function
+            );
+            Loader(_swf_tab.getChildAt(0)).content.addEventListener("TAB_ITEM_ACCESSORIES", function (event:Event) : void
+            {
+                itemList.selectedIndex = 2;
+                onTabClick();
+                return;
+            }// end function
+            );
+            Loader(_swf_tab.getChildAt(0)).content.addEventListener("TAB_ITEM_ITEMS", function (event:Event) : void
+            {
+                itemList.selectedIndex = 3;
+                onTabClick();
+                return;
+            }// end function
+            );
+            Loader(_swf_tab.getChildAt(0)).content.addEventListener("TAB_ITEM_MATERIALS", function (event:Event) : void
+            {
+                itemList.selectedIndex = 4;
+                onTabClick();
+                return;
+            }// end function
+            );
+            return;
+        }// end function
+
+        public function _SellTradeGoodsWindow_DataGridColumn11_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellTradeGoodsWindow_DataGridColumn11 = _loc_1;
+            _loc_1.dataField = "description";
+            BindingManager.executeBindings(this, "_SellTradeGoodsWindow_DataGridColumn11", _SellTradeGoodsWindow_DataGridColumn11);
+            return _loc_1;
+        }// end function
+
+        public function _SellTradeGoodsWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRenderer = _loc_1;
+            _loc_1.generator = SellTradeGoodsWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function onDetail(param1:Object) : void
+        {
+            if (param1.masterType == "WeaponMaster" || param1.masterType == "ArmorMaster" || param1.masterType == "AccessoryMaster")
+            {
+                weaponDetail.viewData = param1;
+                if (weaponDetail.viewData)
+                {
+                    popupWindow(weaponDetail);
+                }
+            }
+            else
+            {
+                equipmentDetail.viewData = param1;
+                if (equipmentDetail.viewData)
+                {
+                    popupWindow(equipmentDetail);
+                }
+            }
+            return;
+        }// end function
+
+        public function clearValue() : void
+        {
+            _sellPrice = 0;
+            _sellMaterialQuantity = 0;
+            return;
+        }// end function
+
+        public function _SellTradeGoodsWindow_DataGridColumn19_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellTradeGoodsWindow_DataGridColumn19 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 170;
+            BindingManager.executeBindings(this, "_SellTradeGoodsWindow_DataGridColumn19", _SellTradeGoodsWindow_DataGridColumn19);
+            return _loc_1;
+        }// end function
+
+        public function onCancel() : void
+        {
+            resetValue();
+            sellItemName = new String();
+            onClose();
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_close_window.getChildAt(0)).content).gotoAndPlay(1);
+            return;
+        }// end function
+
+        public function _SellTradeGoodsWindow_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellTradeGoodsWindow_DataGridColumn6 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 160;
+            BindingManager.executeBindings(this, "_SellTradeGoodsWindow_DataGridColumn6", _SellTradeGoodsWindow_DataGridColumn6);
+            return _loc_1;
+        }// end function
+
+        public function _SellTradeGoodsWindow_DataGridColumn18_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellTradeGoodsWindow_DataGridColumn18 = _loc_1;
+            _loc_1.dataField = "description";
+            BindingManager.executeBindings(this, "_SellTradeGoodsWindow_DataGridColumn18", _SellTradeGoodsWindow_DataGridColumn18);
+            return _loc_1;
+        }// end function
+
+        public function resetValue() : void
+        {
+            if (goodsPrice)
+            {
+                goodsPrice.value = 0;
+            }
+            if (materialQuantity)
+            {
+                materialQuantity.value = 0;
+            }
+            if (materialPrice)
+            {
+                materialPrice.value = 0;
+            }
+            return;
+        }// end function
+
+        public function _SellTradeGoodsWindow_DataGridColumn10_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellTradeGoodsWindow_DataGridColumn10 = _loc_1;
+            _loc_1.dataField = "endurance";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SellTradeGoodsWindow_DataGridColumn10", _SellTradeGoodsWindow_DataGridColumn10);
+            return _loc_1;
+        }// end function
+
+        public function _SellTradeGoodsWindow_DataGridColumn21_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellTradeGoodsWindow_DataGridColumn21 = _loc_1;
+            _loc_1.dataField = "description";
+            BindingManager.executeBindings(this, "_SellTradeGoodsWindow_DataGridColumn21", _SellTradeGoodsWindow_DataGridColumn21);
+            return _loc_1;
+        }// end function
+
+        public function _SellTradeGoodsWindow_DataGridColumn5_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellTradeGoodsWindow_DataGridColumn5 = _loc_1;
+            _loc_1.dataField = "description";
+            BindingManager.executeBindings(this, "_SellTradeGoodsWindow_DataGridColumn5", _SellTradeGoodsWindow_DataGridColumn5);
+            return _loc_1;
+        }// end function
+
+        public function _SellTradeGoodsWindow_DataGridColumn20_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellTradeGoodsWindow_DataGridColumn20 = _loc_1;
+            _loc_1.dataField = "quantity";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SellTradeGoodsWindow_DataGridColumn20", _SellTradeGoodsWindow_DataGridColumn20);
+            return _loc_1;
+        }// end function
+
+        public function _SellTradeGoodsWindow_DataGridColumn17_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellTradeGoodsWindow_DataGridColumn17 = _loc_1;
+            _loc_1.dataField = "effect";
+            _loc_1.width = 180;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SellTradeGoodsWindow_DataGridColumn17", _SellTradeGoodsWindow_DataGridColumn17);
+            return _loc_1;
+        }// end function
+
+        public function _SellTradeGoodsWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellTradeGoodsWindow_DataGridColumn4 = _loc_1;
+            _loc_1.dataField = "endurance";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SellTradeGoodsWindow_DataGridColumn4", _SellTradeGoodsWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function onSell() : void
+        {
+            switch(itemList.selectedIndex)
+            {
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                {
+                    if (goodsPrice && sellItemName)
+                    {
+                        if (goodsPrice.value != 0)
+                        {
+                            _sellPrice = goodsPrice.value;
+                            onCancel();
+                            dispatchEvent(new Event(GOODS_SELL));
+                        }
+                    }
+                    break;
+                }
+                case 4:
+                {
+                    if (materialQuantity.value != 0 && materialPrice.value != 0 && sellItemName)
+                    {
+                        _sellPrice = materialPrice.value;
+                        _sellMaterialQuantity = materialQuantity.value;
+                        onCancel();
+                        dispatchEvent(new Event(GOODS_SELL));
+                    }
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function getPhonetic(param1:Object) : String
+        {
+            return String(param1.phonetic);
+        }// end function
+
+        public function _SellTradeGoodsWindow_DataGridColumn16_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SellTradeGoodsWindow_DataGridColumn16 = _loc_1;
+            _loc_1.dataField = "endurance";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SellTradeGoodsWindow_DataGridColumn16", _SellTradeGoodsWindow_DataGridColumn16);
+            return _loc_1;
+        }// end function
+
+        public function onTabClick() : void
+        {
+            switch(itemList.selectedIndex)
+            {
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                {
+                    textList.selectedIndex = 0;
+                    break;
+                }
+                case 4:
+                {
+                    textList.selectedIndex = 1;
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            resetValue();
+            sellItemName = new String();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_SellTradeGoodsWindow_Image1" source="{_swf_window}"/>
+	<mx:Text id="_SellTradeGoodsWindow_Text1" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("SellTradeGoodsTitle")}"/>
+	<mx:ViewStack id="itemList" width="760" height="560">
+		<mx:Canvas id="_SellTradeGoodsWindow_Canvas1" label="{Utils.i18n("generalWeapon")}">
+			<mx:Box id="_SellTradeGoodsWindow_Box1" y="108" x="WINDOW_X + 20">
+				<mx:DataGrid id="weaponDataGrid" rowCount="12" rowHeight="26" styleName="DataGridBase" sortableColumns="false" columns="{[_SellTradeGoodsWindow_DataGridColumn1_i(), _SellTradeGoodsWindow_DataGridColumn2_i(), _SellTradeGoodsWindow_DataGridColumn3_i(), _SellTradeGoodsWindow_DataGridColumn4_i(), _SellTradeGoodsWindow_DataGridColumn5_i()]}" click="{onClick('weapon');}" dataProvider='{_weapons}' width="WINDOW_WD - 40"/>
+			</mx:Box>
+		</mx:Canvas>
+		<mx:Canvas id="_SellTradeGoodsWindow_Canvas2" label="{Utils.i18n("generalEquipArmor")}">
+			<mx:Box id="_SellTradeGoodsWindow_Box2" y="108" x="WINDOW_X + 20">
+				<mx:DataGrid id="armorDataGrid" rowCount="12" rowHeight="26" styleName="DataGridBase" sortableColumns="false" columns="{[_SellTradeGoodsWindow_DataGridColumn6_i(), _SellTradeGoodsWindow_DataGridColumn7_i(), _SellTradeGoodsWindow_DataGridColumn8_i(), _SellTradeGoodsWindow_DataGridColumn9_i(), _SellTradeGoodsWindow_DataGridColumn10_i(), _SellTradeGoodsWindow_DataGridColumn11_i()]}" click="{onClick('armor');}" dataProvider='{_armors}' width="WINDOW_WD - 40"/>
+			</mx:Box>
+		</mx:Canvas>
+		<mx:Canvas id="_SellTradeGoodsWindow_Canvas3" label="{Utils.i18n("generalEquipAccessory")}">
+			<mx:Box id="_SellTradeGoodsWindow_Box3" y="108" x="WINDOW_X + 20">
+				<mx:DataGrid id="accessoryDataGrid" rowCount="12" rowHeight="26" styleName="DataGridBase" sortableColumns="false" columns="{[_SellTradeGoodsWindow_DataGridColumn12_i(), _SellTradeGoodsWindow_DataGridColumn13_i(), _SellTradeGoodsWindow_DataGridColumn14_i()]}" click="{onClick('accessory');}" dataProvider='{_accessories}' width="WINDOW_WD - 40"/>
+			</mx:Box>
+		</mx:Canvas>
+		<mx:Canvas id="_SellTradeGoodsWindow_Canvas4" label="{Utils.i18n("generalMaterial")}">
+			<mx:Box id="_SellTradeGoodsWindow_Box4" y="108" x="WINDOW_X + 20">
+				<mx:DataGrid id="itemDataGrid" styleName="DataGridBase" rowHeight="26" rowCount="12" sortableColumns="false" columns="{[_SellTradeGoodsWindow_DataGridColumn15_i(), _SellTradeGoodsWindow_DataGridColumn16_i(), _SellTradeGoodsWindow_DataGridColumn17_i(), _SellTradeGoodsWindow_DataGridColumn18_i()]}" click="{onClick('item');}" dataProvider='{_items}' width="WINDOW_WD - 40"/>
+			</mx:Box>
+		</mx:Canvas>
+		<mx:Canvas id="_SellTradeGoodsWindow_Canvas5" label="{Utils.i18n("confirmBuildMaterial")}">
+			<mx:Box id="_SellTradeGoodsWindow_Box5" y="108" x="WINDOW_X + 20">
+				<mx:DataGrid id="materialDataGrid" rowCount="12" rowHeight="26" styleName="DataGridBase" sortableColumns="false" columns="{[_SellTradeGoodsWindow_DataGridColumn19_i(), _SellTradeGoodsWindow_DataGridColumn20_i(), _SellTradeGoodsWindow_DataGridColumn21_i()]}" click="{onClick('material');}" dataProvider='{_materials}' width="WINDOW_WD - 40"/>
+			</mx:Box>
+		</mx:Canvas>
+	</mx:ViewStack>
+	<mx:Text id="_SellTradeGoodsWindow_Text2" fontSize="14" text="{Utils.i18n("generalPossessionMoney") + ":" + _gold}" x="WINDOW_X + 20" y="WINDOW_Y + 35"/>
+	<mx:Image id="_SellTradeGoodsWindow_Image2" click="{onSell();}" x="BUTTON_X - 65" y="BUTTON_Y" source="{_swf_exhibit}"/>
+	<mx:Image id="_SellTradeGoodsWindow_Image3" click="{onCancel();}" x="BUTTON_X + 65" y="BUTTON_Y" source="{_swf_close}"/>
+	<mx:ViewStack id="textList" y="450" creationPolicy="all" x="WINDOW_X + 20" width="WINDOW_WD - 40" visible="">
+		<mx:HBox horizontalAlign="center">
+			<mx:Label id="_SellTradeGoodsWindow_Label1" fontSize="14" text="{Utils.i18n("SellTradeGoodsConf1", sellItemName)}"/>
+			<mx:NumericStepper id="goodsPrice" minimum="0" maximum="9999999" value="0" width="80" textAlign="right" cornerRadius="0" borderColor="10058583" iconColor="5318420" color="#000b333c" themeColor="16737843"/>
+			<mx:Label id="_SellTradeGoodsWindow_Label2" fontSize="14" text="{Utils.i18n("SellTradeGoodsConf2")}"/>
+		</mx:HBox>
+		<mx:HBox horizontalAlign="center">
+			<mx:Label id="_SellTradeGoodsWindow_Label3" fontSize="14" text="sellItemName"/>
+			<mx:Label text="を" fontSize="14"/>
+			<mx:NumericStepper id="materialQuantity" minimum="0" maximum="9999" value="0" width="64" textAlign="right" cornerRadius="0" borderColor="10058583" iconColor="5318420" color="#000b333c" themeColor="16737843"/>
+			<mx:Label text="個" fontSize="14"/>
+			<mx:NumericStepper id="materialPrice" minimum="0" maximum="9999999" value="0" width="80" textAlign="right" cornerRadius="0" borderColor="10058583" iconColor="5318420" color="#000b333c" themeColor="16737843"/>
+			<mx:Label id="_SellTradeGoodsWindow_Label6" fontSize="14" text="{Utils.i18n("SellTradeGoodsConf2")}"/>
+		</mx:HBox>
+	</mx:ViewStack>
+	<mx:Label id="_SellTradeGoodsWindow_Label7" y="470" textAlign="center" fontSize="14" x="WINDOW_X + 20" width="WINDOW_WD - 40" text="{Utils.i18n("SellTradeGoodsCaution")}"/>
+	<mx:Image id="_SellTradeGoodsWindow_Image4" y="80" x="WINDOW_X + 20" source="{_swf_tab}"/>
+	<mx:Image id="_SellTradeGoodsWindow_Image5" click="{onCancel();}" x="WINDOW_X + WINDOW_WD - 25" y="WINDOW_Y" source="{_swf_close_window}"/>
+
+</mx:PopupWindow>

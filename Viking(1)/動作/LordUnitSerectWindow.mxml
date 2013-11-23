@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" height="570" width="750" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  _defArray:Array;
+        public var  selectedIndex:int;
+        public static const  CLOSE:String = "LordUnitSerectWinodw/close";
+        public static const  UNIT_SELECTED:String = "LordUnitSerectWinodw/UnitSelected";
+
+
+        public function _LordUnitSerectWindow_ClassFactory2_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = UnitDetailLabelRenderer;
+            return _loc_1;
+        }// end function
+
+        public function init() : void
+        {
+            return;
+        }// end function
+
+        public function okButtonClicked(param1:Object) : void
+        {
+            dispatchEvent(new PopupEvent(UNIT_SELECTED, {unit:param1}));
+            return;
+        }// end function
+
+        public function setUnits() : void
+        {
+            var _loc_2:UnitVO = null;
+            if (_defArray)
+            {
+                _defArray = new Array();
+            }
+            var _loc_1:int = 0;
+            while (_loc_1 < _units.length)
+            {
+                
+                _loc_2 = _units[_loc_1];
+                _defArray.push(_units[_loc_1]);
+                _loc_1++;
+            }
+            _unitArray = new ArrayCollection(_defArray);
+            return;
+        }// end function
+
+        public function _LordUnitSerectWindow_DataGridColumn2_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "name";
+            _loc_1.headerText = "名前";
+            _loc_1.itemRenderer = _LordUnitSerectWindow_ClassFactory2_c();
+            return _loc_1;
+        }// end function
+
+        public function _LordUnitSerectWindow_DataGridColumn4_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "level";
+            _loc_1.headerText = "Lv";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _LordUnitSerectWindow_DataGridColumn6_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "gender";
+            _loc_1.headerText = "性別";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _LordUnitSerectWindow_DataGridColumn8_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "strength";
+            _loc_1.headerText = "力";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function gridToolTip(param1:Object) : String
+        {
+            return "詳細を見る";
+        }// end function
+
+        public function _LordUnitSerectWindow_ClassFactory1_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = SelectLordButtonRenderer;
+            return _loc_1;
+        }// end function
+
+        public function onClose() : void
+        {
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function _LordUnitSerectWindow_DataGridColumn3_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "jobName";
+            _loc_1.headerText = "種族";
+            _loc_1.width = 120;
+            return _loc_1;
+        }// end function
+
+        public function _LordUnitSerectWindow_DataGridColumn5_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "age";
+            _loc_1.headerText = "年齢";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _LordUnitSerectWindow_DataGridColumn1_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "button";
+            _loc_1.headerText = "決定";
+            _loc_1.width = 50;
+            _loc_1.itemRenderer = _LordUnitSerectWindow_ClassFactory1_c();
+            return _loc_1;
+        }// end function
+
+        public function _LordUnitSerectWindow_DataGridColumn9_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "intelligence";
+            _loc_1.headerText = "賢さ";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _LordUnitSerectWindow_DataGridColumn7_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "hp";
+            _loc_1.headerText = "HP";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Text styleName="UnitSelectText" text="新しい首領にする式姫を選択して下さい。" top="55" left="25"/>
+	<mx:DataGrid id="unitList" styleName="UnitListGrid" selectable="false" y="90" width="700" rowCount="10" sortableColumns="false" columns="{[_LordUnitSerectWindow_DataGridColumn1_c(), _LordUnitSerectWindow_DataGridColumn2_c(), _LordUnitSerectWindow_DataGridColumn3_c(), _LordUnitSerectWindow_DataGridColumn4_c(), _LordUnitSerectWindow_DataGridColumn5_c(), _LordUnitSerectWindow_DataGridColumn6_c(), _LordUnitSerectWindow_DataGridColumn7_c(), _LordUnitSerectWindow_DataGridColumn8_c(), _LordUnitSerectWindow_DataGridColumn9_c()]}" right="18" dataProvider='{_unitArray}'/>
+	<mx:Button label="" width="87" height="28" styleName="CancelCanaButton" buttonMode="true" horizontalCenter="0" bottom="15" click="{onClose();}"/>
+	<mx:Button width="26" height="26" styleName="closeBtn" buttonMode="true" fontSize="30" top="10" right="15" click="{onClose();}"/>
+
+</mx:Canvas>

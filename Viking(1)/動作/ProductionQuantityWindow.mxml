@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 99030nameLabels="new ArrayCollection()" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.vo.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  _reproduction:ReproductionVO;
+        private var  _maxProductQuantity:int;
+        private var  _production:ProductionVO;
+        private var  create:Boolean = false;
+        public static const  PRODUCE:String = "ProductionQuantityWindow/Produce";
+
+
+        public function init() : void
+        {
+            quantity.value = 1;
+            create = true;
+            return;
+        }// end function
+
+        public function _ProductionQuantityWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionQuantityWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "vo.nameLabel";
+            _loc_1.width = 135;
+            BindingManager.executeBindings(this, "_ProductionQuantityWindow_DataGridColumn1", _ProductionQuantityWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function judgeQuantityMax(param1:ProductionVO) : Boolean
+        {
+            maxQuantity = param1.requirement.maxQuantity;
+            maxCreateQuantity = _maxProductQuantity - param1.resourceQuantity;
+            if (maxCreateQuantity < maxQuantity)
+            {
+                maxQuantity = maxCreateQuantity;
+            }
+            if (maxCreateQuantity <= 0)
+            {
+                return false;
+            }
+            return true;
+        }// end function
+
+        public function quantityLendererFunction(param1:Object) : int
+        {
+            return param1.required;
+        }// end function
+
+        public function onClose() : void
+        {
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function _ProductionQuantityWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionQuantityWindow_DataGridColumn4 = _loc_1;
+            _loc_1.dataField = "quantity";
+            _loc_1.width = 90;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ProductionQuantityWindow_DataGridColumn4", _ProductionQuantityWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function adjustLayout(param1:Boolean) : void
+        {
+            if (param1)
+            {
+                currentQuantityLabel.x = 25;
+                currentQuantityLabel.y = 30;
+                _showStepper = false;
+                quantity.value = 1;
+                dataList.height = 144;
+            }
+            else
+            {
+                currentQuantityLabel.x = 65;
+                currentQuantityLabel.y = 260;
+                _showStepper = true;
+                dataList.height = 199;
+            }
+            return;
+        }// end function
+
+        public function _ProductionQuantityWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionQuantityWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "current";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ProductionQuantityWindow_DataGridColumn3", _ProductionQuantityWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _ProductionQuantityWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            quantityLenderer = _loc_1;
+            _loc_1.generator = ProductionQuantityWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function produce() : void
+        {
+            var _loc_1:Object = {production:production, quantity:quantity.value};
+            if (production.reproduction)
+            {
+                _loc_1.instance_id = _reproduction.belongingVO.belongingId;
+            }
+            this.dispatchEvent(new PopupEvent(PRODUCE, _loc_1));
+            return;
+        }// end function
+
+        public function _ProductionQuantityWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ProductionQuantityWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "vo.masterTypeLabel";
+            _loc_1.width = 55;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_ProductionQuantityWindow_DataGridColumn2", _ProductionQuantityWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Box id="bigbox" width="400" height="360" x="180" y="100">
+		<mx:Canvas id="smallerCanvas">
+			<mx:Label id="_ProductionQuantityWindow_Label1" styleName="ItemName" x="30" y="13" text="{production.masterVO.product.nameLabel}"/>
+			<mx:Label id="_ProductionQuantityWindow_Label2" styleName="ItemDetail" x="30" y="33" text="buildingLabel" visible="{!production.isCrystal}"/>
+			<mx:DataGrid id="dataList" styleName="ProductionGrid" x="30" y="53" height="303" headerHeight="29" rowHeight="28" sortableColumns="false" columns="{[_ProductionQuantityWindow_DataGridColumn1_i(), _ProductionQuantityWindow_DataGridColumn2_i(), _ProductionQuantityWindow_DataGridColumn3_i(), _ProductionQuantityWindow_DataGridColumn4_i()]}" verticalAlign="middle" dataProvider='{requirements}'/>
+			<mx:Label id="currentQuantityLabel" styleName="ProductionQtyText" x="65" y="260" text="resourceQuantityLabel"/>
+			<mx:Label id="_ProductionQuantityWindow_Label4" styleName="ProductionQtyText" x="45" y="200" text="{Utils.i18n("productionConditionSuccessProbability", production.successRate)}" visible="{production.isCrystal}"/>
+			<mx:Label id="_ProductionQuantityWindow_Label5" styleName="ProductionQtyText" x="225" y="260" text="{Utils.i18n("generalQuantity")}" visible="_showStepper"/>
+			<mx:NumericStepper id="quantity" x="258" y="260" minimum="1" value="1" cornerRadius="0" borderColor="10058583" iconColor="5318420" color="#000b333c" themeColor="16737843" maximum="maxQuantity" visible="_showStepper"/>
+			<mx:Canvas id="buttonLayer"/>
+		</mx:Canvas>
+	</mx:Box>
+	<mx:Image id="_ProductionQuantityWindow_Image1" x="555" y="80" click="{onClose();}" source="{_swf_close_window}"/>
+
+</mx:Canvas>

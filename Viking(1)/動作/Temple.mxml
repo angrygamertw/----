@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:CanvasWithPopUp xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  toDay:Date;
+
+
+        public function init() : void
+        {
+            if (_playerVO.guildMaster)
+            {
+                guildButtonViewStack.selectedIndex = 0;
+            }
+            else if (_playerVO.guild)
+            {
+                guildButtonViewStack.selectedIndex = 1;
+            }
+            else if (_playerVO.application)
+            {
+                guildButtonViewStack.selectedIndex = 2;
+            }
+            else
+            {
+                guildButtonViewStack.selectedIndex = 3;
+            }
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Box>
+		<mx:Canvas label="Base" width="760" height="560">
+			<mx:Image id="base" source="_embed_mxml__images_city_onmyo_guild_jpg_1561510005"/>
+			<mx:Image id="menuBar2" x="599" y="176" source="{_menu2}"/>
+			<mx:Image id="menuBar1" x="599" y="256" source="{_menu1}"/>
+			<mx:ViewStack id="guildButtonViewStack" width="168" height="113" selectedIndex="0" x="599" y="70">
+				<mx:VBox id="_Temple_VBox1" y="64" width="100%" height="113" right="30" horizontalAlign="center" verticalAlign="middle" backgroundImage="_menu3">
+					<mx:Button label="" styleName="ManagementButton" buttonMode="true" right="30" click="{sendEvent(Viking.CITY_ACTION_MANAGE_GUILD);}"/>
+					<mx:Button label="" styleName="SearchButton" buttonMode="true" right="30" click="{sendEvent(Viking.CITY_ACTION_SEARCH_GUILD);}"/>
+					<mx:Button label="" styleName="IndulgenceButton" buttonMode="true" right="30" click="{sendEvent(Viking.CITY_ACTION_BUY_INDULGENCE);}"/>
+				</mx:VBox>
+				<mx:VBox id="_Temple_VBox2" y="64" width="100%" height="113" right="30" horizontalAlign="center" verticalAlign="middle" backgroundImage="_menu3">
+					<mx:Button label="" styleName="QuitGuildButton" buttonMode="true" right="30" click="{sendEvent(Viking.CITY_ACTION_QUIT_GUILD);}"/>
+					<mx:Button label="" styleName="SearchButton" buttonMode="true" right="30" click="{sendEvent(Viking.CITY_ACTION_SEARCH_GUILD);}"/>
+					<mx:Button label="" styleName="IndulgenceButton" buttonMode="true" right="30" click="{sendEvent(Viking.CITY_ACTION_BUY_INDULGENCE);}"/>
+				</mx:VBox>
+				<mx:VBox id="_Temple_VBox3" y="64" width="100%" height="113" right="30" horizontalAlign="center" verticalAlign="middle" backgroundImage="_menu3">
+					<mx:Button label="" styleName="CancelAdmissionButton" buttonMode="true" right="30" click="{sendEvent(Viking.CITY_ACTION_APPLICATION_CANCEL);}"/>
+					<mx:Button label="" styleName="SearchButton" buttonMode="true" right="30" click="{sendEvent(Viking.CITY_ACTION_SEARCH_GUILD);}"/>
+					<mx:Button label="" styleName="IndulgenceButton" buttonMode="true" right="30" click="{sendEvent(Viking.CITY_ACTION_BUY_INDULGENCE);}"/>
+				</mx:VBox>
+				<mx:VBox id="_Temple_VBox4" y="64" width="100%" height="113" right="30" horizontalAlign="center" verticalAlign="middle" backgroundImage="_menu3">
+					<mx:Button label="" styleName="EstablishmentButton" buttonMode="true" right="30" click="{sendEvent(Viking.CITY_ACTION_CREATE_GUILD);}"/>
+					<mx:Button label="" styleName="AdmissionButton" buttonMode="true" right="30" click="{sendEvent(Viking.CITY_ACTION_SEARCH_GUILD);}"/>
+					<mx:Button label="" styleName="IndulgenceButton" buttonMode="true" right="30" click="{sendEvent(Viking.CITY_ACTION_BUY_INDULGENCE);}"/>
+				</mx:VBox>
+			</mx:ViewStack>
+			<mx:VBox y="191" right="30">
+				<mx:Button label="" styleName="MarketButton" buttonMode="true" click="{sendEvent(Viking.CITY_ACTION_SHOW_MARKET);}"/>
+				<mx:Button label="" styleName="BarButton" buttonMode="true" click="{sendEvent(Viking.CITY_ACTION_SHOW_BAR);}"/>
+				<mx:Button label="" styleName="ColosseumButton" buttonMode="true" click="{sendEvent(Viking.ENTER_LOBBY);}"/>
+			</mx:VBox>
+			<mx:Button label="" styleName="Home" y="272" buttonMode="true" right="30" click="{sendEvent(Viking.CITY_ACTION_BACK_HOME);}"/>
+		</mx:Canvas>
+	</mx:Box>
+
+</mx:CanvasWithPopUp>

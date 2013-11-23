@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{createComp();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  unitStatusPopUpWindow:UnitStatusPopUpWindow;
+        public var  checkUnionWindow:ConfirmWindow;
+        public static const  AWAKE_UNION_RUN:String = NAME + "awakeUnion";
+        public static const  ADD_UNIT_SWF:String = NAME + "addUnitSwf";
+        public static const  REMOVE_UNIT_SWF:String = NAME + "subUnitSwf";
+        public static const  NAME:String = "awakeUnionWindow";
+        public static const  AWAKE_UNION_END:String = NAME + "awakeUnionEnd";
+
+
+        public function _AwakeUnionWindow_DataGridColumn5_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "hp";
+            _loc_1.headerText = "HP";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _AwakeUnionWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _AwakeUnionWindow_DataGridColumn1 = _loc_1;
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_AwakeUnionWindow_DataGridColumn1", _AwakeUnionWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function init(param1:Array, param2:Array, param3:ResourceVO) : void
+        {
+            _selectUnit = null;
+            description = Utils.i18n("awakeUnionSelectUnit");
+            awakeMasters = param2;
+            resource = param3;
+            listUnits = param1;
+            return;
+        }// end function
+
+        public function _AwakeUnionWindow_DataGridColumn9_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _AwakeUnionWindow_DataGridColumn9 = _loc_1;
+            _loc_1.dataField = "defense";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_AwakeUnionWindow_DataGridColumn9", _AwakeUnionWindow_DataGridColumn9);
+            return _loc_1;
+        }// end function
+
+        public function _AwakeUnionWindow_ClassFactory1_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = UnitDetailLabelRenderer;
+            return _loc_1;
+        }// end function
+
+        public function createComp() : void
+        {
+            MovieClip(Loader(_swf_back.getChildAt(0)).content).gotoAndPlay("button_back");
+            return;
+        }// end function
+
+        public function _AwakeUnionWindow_DataGridColumn4_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "level";
+            _loc_1.headerText = "Lv";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _AwakeUnionWindow_DataGridColumn8_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _AwakeUnionWindow_DataGridColumn8 = _loc_1;
+            _loc_1.dataField = "agility";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_AwakeUnionWindow_DataGridColumn8", _AwakeUnionWindow_DataGridColumn8);
+            return _loc_1;
+        }// end function
+
+        public function selectUnionUnit(param1:Object) : void
+        {
+            if (!hasAwakeMaterialItem(param1 as UnitVO))
+            {
+                return;
+            }
+            if (_selectUnit)
+            {
+                sendPopupEvent(REMOVE_UNIT_SWF, {unit:listUnits.find("unitId", _selectUnit.unitId)[0]});
+            }
+            _selectUnit = UnitVO(param1);
+            sendPopupEvent(ADD_UNIT_SWF, {unit:_selectUnit, type:"center"});
+            description = "";
+            this.popupWindow(checkUnionWindow, false);
+            checkUnionWindow.x = 250;
+            checkUnionWindow.y = 250;
+            checkUnionWindow.confirmText = Utils.i18n("awakeUnionDescription", _selectUnit.name);
+            checkUnionWindow.addEventListener(ConfirmWindow.CONFIRMED, unionCeremony);
+            return;
+        }// end function
+
+        public function _AwakeUnionWindow_DataGridColumn11_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _AwakeUnionWindow_DataGridColumn11 = _loc_1;
+            _loc_1.dataField = "luck";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_AwakeUnionWindow_DataGridColumn11", _AwakeUnionWindow_DataGridColumn11);
+            return _loc_1;
+        }// end function
+
+        public function unionCeremony(event:PopupEvent) : void
+        {
+            checkUnionWindow.removeEventListener(ConfirmWindow.CONFIRMED, unionCeremony);
+            sendPopupEvent(REMOVE_UNIT_SWF, {unit:_selectUnit});
+            sendPopupEvent(AWAKE_UNION_RUN, {unit:_selectUnit});
+            return;
+        }// end function
+
+        public function setSelectUnitButton(param1:Object) : Class
+        {
+            if (!hasAwakeMaterialItem(param1 as UnitVO))
+            {
+                return selectOffImage;
+            }
+            return selectImage;
+        }// end function
+
+        public function hasAwakeMaterialItem(param1:UnitVO) : Boolean
+        {
+            var _loc_2:* = awakeMasters.getOne("beforeGalleryCode", param1.galleryCode);
+            if (resource.accessories.getOne("code", _loc_2.itemCode))
+            {
+                return true;
+            }
+            return false;
+        }// end function
+
+        public function _AwakeUnionWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _AwakeUnionWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "jobMasterVO.nameLabel";
+            _loc_1.width = 80;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_AwakeUnionWindow_DataGridColumn3", _AwakeUnionWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _AwakeUnionWindow_DataGridColumn7_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _AwakeUnionWindow_DataGridColumn7 = _loc_1;
+            _loc_1.dataField = "tech";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_AwakeUnionWindow_DataGridColumn7", _AwakeUnionWindow_DataGridColumn7);
+            return _loc_1;
+        }// end function
+
+        public function _AwakeUnionWindow_DataGridColumn10_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _AwakeUnionWindow_DataGridColumn10 = _loc_1;
+            _loc_1.dataField = "intelligence";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_AwakeUnionWindow_DataGridColumn10", _AwakeUnionWindow_DataGridColumn10);
+            return _loc_1;
+        }// end function
+
+        public function closeRecipeUnion() : void
+        {
+            if (_selectUnit)
+            {
+                sendPopupEvent(REMOVE_UNIT_SWF, {unit:_selectUnit});
+            }
+            _selectUnit = null;
+            sendEvent(AWAKE_UNION_END);
+            return;
+        }// end function
+
+        public function _AwakeUnionWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _AwakeUnionWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "name";
+            _loc_1.itemRenderer = _AwakeUnionWindow_ClassFactory1_c();
+            _loc_1.width = 80;
+            BindingManager.executeBindings(this, "_AwakeUnionWindow_DataGridColumn2", _AwakeUnionWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _AwakeUnionWindow_ClassFactory2_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRenderer1 = _loc_1;
+            _loc_1.generator = AwakeUnionWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _AwakeUnionWindow_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _AwakeUnionWindow_DataGridColumn6 = _loc_1;
+            _loc_1.dataField = "strength";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_AwakeUnionWindow_DataGridColumn6", _AwakeUnionWindow_DataGridColumn6);
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="unitLayer" x="-35" y="-100"/>
+	<mx:Text id="_AwakeUnionWindow_Text1" styleName="PanelBaseTitle" x="300" y="201" text="{Utils.i18n("awakeUnionTitle")}"/>
+	<mx:Text id="descriptionText" x="55" y="230" fontSize="11" text="description"/>
+	<mx:Canvas height="470" width="680" x="55" y="255">
+		<mx:VBox>
+			<mx:DataGrid id="unitList" rowCount="4" width="590" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_AwakeUnionWindow_DataGridColumn1_i(), _AwakeUnionWindow_DataGridColumn2_i(), _AwakeUnionWindow_DataGridColumn3_i(), _AwakeUnionWindow_DataGridColumn4_c(), _AwakeUnionWindow_DataGridColumn5_c(), _AwakeUnionWindow_DataGridColumn6_i(), _AwakeUnionWindow_DataGridColumn7_i(), _AwakeUnionWindow_DataGridColumn8_i(), _AwakeUnionWindow_DataGridColumn9_i(), _AwakeUnionWindow_DataGridColumn10_i(), _AwakeUnionWindow_DataGridColumn11_i()]}" dataProvider='{listUnits}'/>
+			<mx:HBox>
+				<mx:Spacer width="230"/>
+				<mx:Image id="_AwakeUnionWindow_Image1" click="{closeRecipeUnion();}" source="{_swf_back}"/>
+			</mx:HBox>
+		</mx:VBox>
+	</mx:Canvas>
+
+</mx:PopupWindow>

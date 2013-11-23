@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{setup();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.utils.*;
+
+        private var  _admissionComment:String;
+        private static const  WINDOW_X:int = 230;
+        private static const  WINDOW_Y:int = 180;
+        private static const  BUTTON_X:int = 325;
+        private static const  BUTTON_Y:int = 330;
+        public static const  ADMISSION:String = "admission";
+        private static const  WINDOW_HT:int = 200;
+        private static const  WINDOW_WD:int = 300;
+
+
+        public function closeWindow() : void
+        {
+            onClose();
+            MovieClip(Loader(_swf_no.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_no.getChildAt(0)).content).gotoAndPlay("button_no");
+            MovieClip(Loader(_swf_close_window.getChildAt(0)).content).gotoAndPlay(1);
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            return;
+        }// end function
+
+        public function onRequest() : void
+        {
+            _admissionComment = "";
+            dispatchEvent(new Event(ADMISSION));
+            onClose();
+            MovieClip(Loader(_swf_yes.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_yes.getChildAt(0)).content).gotoAndPlay("button_yes");
+            return;
+        }// end function
+
+        public function _AdmissionGuildWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            listRenderer = _loc_1;
+            _loc_1.generator = AdmissionGuildWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function featureNameList(param1:int) : String
+        {
+            var _loc_2:* = new String();
+            switch(param1)
+            {
+                case 1:
+                {
+                    _loc_2 = GuildWindow.FEATURE_1;
+                    break;
+                }
+                case 2:
+                {
+                    _loc_2 = GuildWindow.FEATURE_2;
+                    break;
+                }
+                case 3:
+                {
+                    _loc_2 = GuildWindow.FEATURE_3;
+                    break;
+                }
+                case 4:
+                {
+                    _loc_2 = GuildWindow.FEATURE_4;
+                    break;
+                }
+                case 5:
+                {
+                    _loc_2 = GuildWindow.FEATURE_5;
+                    break;
+                }
+                case 6:
+                {
+                    _loc_2 = GuildWindow.FEATURE_6;
+                    break;
+                }
+                case 7:
+                {
+                    _loc_2 = GuildWindow.FEATURE_7;
+                    break;
+                }
+                case 8:
+                {
+                    _loc_2 = GuildWindow.FEATURE_8;
+                    break;
+                }
+                case 9:
+                {
+                    _loc_2 = GuildWindow.FEATURE_9;
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return _loc_2;
+        }// end function
+
+        public function setup() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_300x200");
+            MovieClip(Loader(_swf_yes.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_no.getChildAt(0)).content).gotoAndPlay("button_no");
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_AdmissionGuildWindow_Image1" source="{_swf_window}"/>
+	<mx:Text id="_AdmissionGuildWindow_Text1" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("admissionGuildRequest")}"/>
+	<mx:Image id="_AdmissionGuildWindow_Image2" click="{closeWindow();}" x="WINDOW_X + WINDOW_WD - 25" y="WINDOW_Y" source="{_swf_close_window}"/>
+	<mx:Box id="_AdmissionGuildWindow_Box1" horizontalAlign="center" x="WINDOW_X + 20" y="WINDOW_Y + 35" width="WINDOW_WD - 40">
+		<mx:Text id="_AdmissionGuildWindow_Text2" styleName="CenterText" textAlign="center" text="{Utils.i18n("admissionGuildSendRequest", _guildData.name)}"/>
+	</mx:Box>
+	<mx:Image id="_AdmissionGuildWindow_Image3" click="{onRequest();}" x="BUTTON_X - 65" y="BUTTON_Y" source="{_swf_yes}"/>
+	<mx:Image id="_AdmissionGuildWindow_Image4" click="{closeWindow();}" x="BUTTON_X + 65" y="BUTTON_Y" source="{_swf_no}"/>
+
+</mx:PopupWindow>

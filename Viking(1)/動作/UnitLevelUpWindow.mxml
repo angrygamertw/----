@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _runLevelUp:Boolean = false;
+        public static const  CLOSED_UNITLEVELUP_WINDOW:String = "closedUnitLevelUpWindow";
+        public static const  NAME:String = "unitLevelUpWindow";
+
+
+        public function init() : void
+        {
+            preUnit = new UnitVO();
+            afterUnit = new UnitVO();
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_300x270");
+            MovieClip(Loader(_swf_button.getChildAt(0)).content).gotoAndPlay("button_ok");
+            return;
+        }// end function
+
+        public function getColor(param1:Number, param2:Number) : uint
+        {
+            if (param1 == param2)
+            {
+                return 0;
+            }
+            return 255;
+        }// end function
+
+        public function getExpLabel() : String
+        {
+            if (_afterUnit.level >= _afterUnit.jobMasterVO.levelCap)
+            {
+                return "--/--";
+            }
+            return _afterUnit.exp + "/" + _afterUnit.nextExp;
+        }// end function
+
+        public function close() : void
+        {
+            onClose();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_UnitLevelUpWindow_Image1" source="{_swf_window}"/>
+	<mx:Canvas id="statusCanvas" x="190" y="120">
+		<mx:Text id="_UnitLevelUpWindow_Text1" styleName="BiginnerTitle" x="145" y="26" color="#00ffffff" text="{Utils.i18n("generalLevelUp")}"/>
+		<mx:Text id="_UnitLevelUpWindow_Text2" styleName="BiginnerTitle" x="80" y="62" textDecoration="underline" text="{_preUnit.name}"/>
+		<mx:Text id="_UnitLevelUpWindow_Text3" styleName="BiginnerTitle" x="200" y="62" textDecoration="underline" text="{Utils.i18n("generalJob") + ": " + _preUnit.jobName}"/>
+		<mx:Text id="_UnitLevelUpWindow_Text4" styleName="BiginnerTitle" x="80" y="82" textDecoration="underline" text="{"Lv. " + _preUnit.level + " → " + _afterUnit.level}"/>
+		<mx:Text id="_UnitLevelUpWindow_Text5" styleName="BiginnerTitle" x="200" y="82" textDecoration="underline" text=""EXP: " + getExpLabel()"/>
+		<mx:Canvas x="70" y="110">
+			<mx:Grid width="40" horizontalGap="30" verticalGap="0">
+				<mx:GridRow>
+					<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00204631">
+						<mx:Label id="_UnitLevelUpWindow_Label1" width="30" fontSize="14" textAlign="center" color="#00eeeeee" text="{Utils.i18n("generalStrength")}"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow>
+					<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00204631">
+						<mx:Label id="_UnitLevelUpWindow_Label2" width="30" fontSize="14" textAlign="center" color="#00eeeeee" text="{Utils.i18n("generalTech")}"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow>
+					<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00204631">
+						<mx:Label id="_UnitLevelUpWindow_Label3" width="30" fontSize="14" textAlign="center" color="#00eeeeee" text="{Utils.i18n("generalAgility")}"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow>
+					<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00204631">
+						<mx:Label text="HP" width="30" fontSize="14" textAlign="center" color="#00eeeeee"/>
+					</mx:GridItem>
+				</mx:GridRow>
+			</mx:Grid>
+			<mx:Grid width="100" x="30" horizontalGap="30" verticalGap="0">
+				<mx:GridRow>
+					<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00e1e2c2">
+						<mx:Label id="_UnitLevelUpWindow_Label5" width="90" fontSize="14" textAlign="center" color="#00000000" text="{_preUnit.strength + " → " + _afterUnit.strength}"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow>
+					<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00f5f4dd">
+						<mx:Label id="_UnitLevelUpWindow_Label6" width="90" fontSize="14" textAlign="center" color="#00000000" text="{_preUnit.tech + " → " + _afterUnit.tech}"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow>
+					<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00e1e2c2">
+						<mx:Label id="_UnitLevelUpWindow_Label7" width="90" fontSize="14" textAlign="center" color="#00000000" text="{_preUnit.agility + " → " + _afterUnit.agility}"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow>
+					<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00f5f4dd">
+						<mx:Label id="_UnitLevelUpWindow_Label8" width="90" fontSize="14" textAlign="center" color="#00000000" text="{_preUnit.maxHp + " → " + _afterUnit.maxHp}"/>
+					</mx:GridItem>
+				</mx:GridRow>
+			</mx:Grid>
+			<mx:Grid width="40" x="120" horizontalGap="30" verticalGap="0">
+				<mx:GridRow>
+					<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00204631">
+						<mx:Label id="_UnitLevelUpWindow_Label9" width="30" fontSize="14" textAlign="center" color="#00eeeeee" text="{Utils.i18n("generalDefense")}"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow>
+					<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00204631">
+						<mx:Label id="_UnitLevelUpWindow_Label10" width="30" fontSize="14" textAlign="center" color="#00eeeeee" text="{Utils.i18n("generalIntelligence")}"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow>
+					<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00204631">
+						<mx:Label id="_UnitLevelUpWindow_Label11" width="30" fontSize="14" textAlign="center" color="#00eeeeee" text="{Utils.i18n("generalLuck")}"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow>
+					<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00204631">
+						<mx:Label text="SP" width="30" fontSize="14" textAlign="center" color="#00eeeeee"/>
+					</mx:GridItem>
+				</mx:GridRow>
+			</mx:Grid>
+			<mx:Grid width="100" x="150" horizontalGap="30" verticalGap="0">
+				<mx:GridRow>
+					<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00e1e2c2">
+						<mx:Label id="_UnitLevelUpWindow_Label13" width="90" fontSize="14" textAlign="center" color="#00000000" text="{_preUnit.defense + " → " + _afterUnit.defense}"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow>
+					<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00f5f4dd">
+						<mx:Label id="_UnitLevelUpWindow_Label14" width="90" fontSize="14" textAlign="center" color="#00000000" text="{_preUnit.intelligence + " → " + _afterUnit.intelligence}"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow>
+					<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00e1e2c2">
+						<mx:Label id="_UnitLevelUpWindow_Label15" width="90" fontSize="14" textAlign="center" color="#00000000" text="{_preUnit.luck + " → " + _afterUnit.luck}"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow>
+					<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00f5f4dd">
+						<mx:Label id="_UnitLevelUpWindow_Label16" width="90" fontSize="14" textAlign="center" color="#00000000" text="{_preUnit.skillPoint + " → " + _afterUnit.skillPoint}"/>
+					</mx:GridItem>
+				</mx:GridRow>
+			</mx:Grid>
+		</mx:Canvas>
+		<mx:HBox width="360" x="142" y="250">
+			<mx:Image id="_UnitLevelUpWindow_Image2" click="{close();}" source="{_swf_button}"/>
+		</mx:HBox>
+	</mx:Canvas>
+
+</mx:PopupWindow>

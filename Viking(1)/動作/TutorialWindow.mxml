@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  flg_swfArray:Array;
+        private var  forcedFactionArea:Boolean = true;
+        private var  clearFourthTutorial:Boolean = false;
+        private var  factionId:int = 0;
+        private var  incapableAdmission:int = 0;
+        private var  factionCheckWindow:FactionCheckWindow;
+        private var  nowPage:int = 1;
+        private var  max_pageNum:int = 0;
+        private var  _playerVO:PlayerVO;
+        private var  currentLabel:String = "";
+        public static const  REMOVE_SWF:String = NAME + "/RemoveSwf";
+        public static const  NAME:String = "TutorialWindow";
+        public static const  CHANGE_SWF:String = NAME + "/ChangeSwf";
+        public static const  SELECT_FACTION:String = NAME + "selectFaction";
+        private static var  EmbedSwfFaction:Class;
+        public static const  CLOSED_TUTORIAL_WINDOW:String = "closedTutorialWindow";
+        private static var  EmbedSwfTutorial:Class;
+
+
+        public function destructSWF() : void
+        {
+            sendEvent(REMOVE_SWF);
+            return;
+        }// end function
+
+        public function popupEntryForm() : void
+        {
+            MovieClip(Loader(_swf_entry_window.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_entry_window.getChildAt(0)).content).gotoAndPlay("center_300x200");
+            MovieClip(Loader(_swf_entry_ok.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_entry_ok.getChildAt(0)).content).gotoAndPlay("button_ok");
+            MovieClip(Loader(_swf_entry_cancel.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_entry_cancel.getChildAt(0)).content).gotoAndPlay("button_cancel");
+            entryFormCanvas.visible = true;
+            errorText.visible = false;
+            return;
+        }// end function
+
+        public function init(param1:Object) : void
+        {
+            if (currentLabel == "")
+            {
+                currentLabel = "tutorial" + param1.id + "_1";
+            }
+            Loader(_swf_tutorial.getChildAt(0)).content.addEventListener("BUTTON_CLOSE", close);
+            MovieClip(Loader(_swf_tutorial.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_tutorial.getChildAt(0)).content).gotoAndPlay(currentLabel);
+            MovieClip(Loader(_swf_clear.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_clear.getChildAt(0)).content).gotoAndPlay("button_tutorial_clear");
+            MovieClip(Loader(_swf_entry.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_entry.getChildAt(0)).content).gotoAndPlay("button_tutorial_input");
+            MovieClip(Loader(_swf_select_faction.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_select_faction.getChildAt(0)).content).gotoAndPlay("button_tutorial_select_faction");
+            if (param1.id <= 16)
+            {
+                tutMarkClearTutorial.visible = param1.flg;
+            }
+            clearButton.visible = param1.flg;
+            inputButton.visible = false;
+            selectFactionButton.visible = false;
+            this.visible = true;
+            if (param1.id == 7 && !clearFourthTutorial)
+            {
+                clearButton.visible = false;
+                inputButton.visible = true;
+            }
+            if (param1.id == 15)
+            {
+                setNonSelectFactionName(param1.incapableAdmission);
+                incapableAdmission = param1.incapableAdmission;
+                forcedFactionArea = param1.forcedFactionArea;
+                selectFactionButton.visible = true;
+            }
+            return;
+        }// end function
+
+        public function finishTutorial() : void
+        {
+            sendEvent(Viking.HOME_FINISH_TUTORIAL);
+            return;
+        }// end function
+
+        public function initClear() : void
+        {
+            clearButton.visible = false;
+            var _loc_1:* = new String();
+            var _loc_2:int = 0;
+            while (_loc_2 < (currentLabel.length - 1))
+            {
+                
+                _loc_1 = _loc_1 + currentLabel.charAt(_loc_2);
+                _loc_2++;
+            }
+            _loc_1 = _loc_1 + "clear";
+            MovieClip(Loader(_swf_tutorial.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_tutorial.getChildAt(0)).content).gotoAndPlay(_loc_1);
+            Loader(_swf_tutorial.getChildAt(0)).content.addEventListener("BUTTON_NEXT_TUTORIAL", nextTutorial);
+            Loader(_swf_tutorial.getChildAt(0)).content.addEventListener("BUTTON_CLOSE", onCloseByClear);
+            currentLabel = "";
+            return;
+        }// end function
+
+        public function popupSelectFaction() : void
+        {
+            if (forcedFactionArea)
+            {
+                dispatchEvent(new PopupEvent(SELECT_FACTION, 0));
+                return;
+            }
+            MovieClip(Loader(_swf_faction_window.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_faction_window.getChildAt(0)).content).gotoAndPlay("center_720x460");
+            MovieClip(Loader(_swf_faction.getChildAt(0)).content).gotoAndPlay(0);
+            if (incapableAdmission < 2)
+            {
+                incapableAdmission = 2;
+            }
+            MovieClip(Loader(_swf_faction.getChildAt(0)).content).gotoAndPlay("w_faction_0" + incapableAdmission);
+            Loader(_swf_faction.getChildAt(0)).content.addEventListener("BUTTON_CLOSE", factionClose);
+            Loader(_swf_faction.getChildAt(0)).content.addEventListener("FACTION_02", admissionFaction);
+            Loader(_swf_faction.getChildAt(0)).content.addEventListener("FACTION_03", admissionFaction);
+            Loader(_swf_faction.getChildAt(0)).content.addEventListener("FACTION_04", admissionFaction);
+            Loader(_swf_faction.getChildAt(0)).content.addEventListener("FACTION_05", admissionFaction);
+            selectFactionCanvas.visible = true;
+            return;
+        }// end function
+
+        public function factionClose(event:Event) : void
+        {
+            Loader(_swf_faction.getChildAt(0)).content.removeEventListener("BUTTON_CLOSE", factionClose);
+            Loader(_swf_faction.getChildAt(0)).content.removeEventListener("FACTION_02", admissionFaction);
+            Loader(_swf_faction.getChildAt(0)).content.removeEventListener("FACTION_03", admissionFaction);
+            Loader(_swf_faction.getChildAt(0)).content.removeEventListener("FACTION_04", admissionFaction);
+            Loader(_swf_faction.getChildAt(0)).content.removeEventListener("FACTION_05", admissionFaction);
+            selectFactionCanvas.visible = false;
+            return;
+        }// end function
+
+        public function closeEntryForm() : void
+        {
+            entryFormCanvas.visible = false;
+            if (clearFourthTutorial)
+            {
+                clearButton.visible = true;
+                inputButton.visible = false;
+            }
+            return;
+        }// end function
+
+        public function setNonSelectFactionName(param1:int) : void
+        {
+            switch(param1)
+            {
+                case 2:
+                {
+                    nonSelectFactionName = "青龍";
+                    break;
+                }
+                case 3:
+                {
+                    nonSelectFactionName = "朱雀";
+                    break;
+                }
+                case 4:
+                {
+                    nonSelectFactionName = "白虎";
+                    break;
+                }
+                case 5:
+                {
+                    nonSelectFactionName = "玄武";
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function nextTutorial(event:Event) : void
+        {
+            Loader(_swf_tutorial.getChildAt(0)).content.removeEventListener("BUTTON_NEXT_TUTORIAL", nextTutorial);
+            Loader(_swf_tutorial.getChildAt(0)).content.removeEventListener("BUTTON_CLOSE", onCloseByClear);
+            this.visible = false;
+            dispatchEvent(new Event(Viking.HOME_SHOW_NEXT_TUTORIAL));
+            currentLabel = "";
+            return;
+        }// end function
+
+        public function sizeCheck() : void
+        {
+            var _loc_1:String = "";
+            if (_playerVO.spiritOfFireOutput == int(input.text) && input.text.length > 0)
+            {
+                clearFourthTutorial = true;
+            }
+            else if (input.text.length < 1)
+            {
+                _loc_1 = Utils.i18n("tutorialInputNum");
+            }
+            else
+            {
+                _loc_1 = Utils.i18n("tutorialInputNumDiffer");
+            }
+            if (_loc_1.length > 0)
+            {
+                errorText.visible = true;
+                errorText.text = _loc_1;
+            }
+            else
+            {
+                closeEntryForm();
+            }
+            return;
+        }// end function
+
+        public function onCloseByClear(event:Event) : void
+        {
+            Loader(_swf_tutorial.getChildAt(0)).content.removeEventListener("BUTTON_NEXT_TUTORIAL", nextTutorial);
+            Loader(_swf_tutorial.getChildAt(0)).content.removeEventListener("BUTTON_CLOSE", onCloseByClear);
+            currentLabel = "";
+            destructSWF();
+            return;
+        }// end function
+
+        public function admissionFaction(event:Event) : void
+        {
+            var e:* = event;
+            switch(e.type)
+            {
+                case "FACTION_02":
+                {
+                    factionId = 2;
+                    break;
+                }
+                case "FACTION_03":
+                {
+                    factionId = 3;
+                    break;
+                }
+                case "FACTION_04":
+                {
+                    factionId = 4;
+                    break;
+                }
+                case "FACTION_05":
+                {
+                    factionId = 5;
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            factionCheckWindow.init(factionId);
+            this.popupWindow(factionCheckWindow, false);
+            if (!factionCheckWindow.hasEventListener(FactionCheckWindow.SELECT_FACTION))
+            {
+                factionCheckWindow.addEventListener(FactionCheckWindow.SELECT_FACTION, function () : void
+            {
+                dispatchEvent(new PopupEvent(SELECT_FACTION, factionId));
+                factionClose(e);
+                return;
+            }// end function
+            );
+            }
+            return;
+        }// end function
+
+        public function close(event:Event) : void
+        {
+            Loader(_swf_tutorial.getChildAt(0)).content.removeEventListener("BUTTON_CLOSE", close);
+            destructSWF();
+            currentLabel = MovieClip(Loader(_swf_tutorial.getChildAt(0)).content).currentLabel;
+            dispatchEvent(new PopupEvent(CLOSED_TUTORIAL_WINDOW, {window:this}));
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Canvas id="tutorialCanvas">
+		<mx:Image id="_TutorialWindow_Image1" source="{_swf_tutorial}"/>
+		<mx:Image id="clearButton" x="435" y="452" click="{finishTutorial();}" source="{_swf_clear}"/>
+		<mx:Image id="inputButton" x="435" y="452" click="{popupEntryForm();}" source="{_swf_entry}"/>
+		<mx:Image id="selectFactionButton" x="435" y="452" click="{popupSelectFaction();}" source="{_swf_select_faction}"/>
+		<mx:Canvas id="entryFormCanvas" visible="false" width="760" height="560">
+			<mx:Image source="_embed_mxml__images_black_jpg_491440297" alpha="0.2" width="100%" height="100%"/>
+			<mx:Image id="_TutorialWindow_Image6" source="{_swf_entry_window}"/>
+			<mx:TextInput id="input" width="100" restrict="[0-9]" maxChars="7" x="260" y="290" enter="{sizeCheck();}"/>
+			<mx:Text id="errorText" text="" x="260" y="270" visible="false" color="#00dd0000" fontSize="12"/>
+			<mx:Text id="_TutorialWindow_Text2" x="260" y="230" fontSize="12" text="{Utils.i18n("tutorialInputSpiritOfFireNum")}"/>
+			<mx:Image id="_TutorialWindow_Image7" x="260" y="330" click="{sizeCheck();}" source="{_swf_entry_ok}"/>
+			<mx:Image id="_TutorialWindow_Image8" x="390" y="330" click="{closeEntryForm();}" source="{_swf_entry_cancel}"/>
+		</mx:Canvas>
+		<mx:Canvas id="selectFactionCanvas" visible="false" width="760" height="560">
+			<mx:Image source="_embed_mxml__images_black_jpg_491440297" alpha="0.2" width="100%" height="100%"/>
+			<mx:Image id="_TutorialWindow_Image10" source="{_swf_faction_window}"/>
+			<mx:Image id="_TutorialWindow_Image11" source="{_swf_faction}"/>
+			<mx:Text id="_TutorialWindow_Text3" x="40" y="112" color="#00000000" fontSize="13" text="{Utils.i18n("localize157")}"/>
+		</mx:Canvas>
+		<mx:Image id="tutMarkClearTutorial" source="_embed_mxml__swf_common_arrow_top_swf_788233961" visible="false" y="480" x="470" width="75" height="75"/>
+	</mx:Canvas>
+
+</mx:PopupWindow>

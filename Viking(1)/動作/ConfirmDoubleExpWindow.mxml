@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+
+        public static const  NAME:String = "ConfirmDoubleExpWindow";
+        public static const  CONFIRMED:String = NAME + "/confirmed";
+
+
+        public function onConfirm() : void
+        {
+            sendPopupEvent(CONFIRMED, 0);
+            onClose();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:VBox>
+		<mx:Spacer height="100%"/>
+		<mx:VBox horizontalCenter="20" top="100">
+			<mx:HBox horizontalGap="2">
+				<mx:Image source="_embed_mxml__images_icon_power_png_227571469"/>
+				<mx:Label id="_ConfirmDoubleExpWindow_Label1" styleName="UnitSelectText" text="{Utils.i18n("confirmDoubleExpConf")}"/>
+			</mx:HBox>
+			<mx:Spacer height="50"/>
+			<mx:HBox width="100%" horizontalGap="10">
+				<mx:Spacer width="65"/>
+				<mx:Button label="" styleName="CancelCanaButton" buttonMode="true" click="{onClose();}"/>
+				<mx:Button label="" styleName="OkButton" buttonMode="true" click="{onConfirm();}"/>
+			</mx:HBox>
+		</mx:VBox>
+		<mx:Spacer height="100%"/>
+	</mx:VBox>
+
+</mx:PopupWindow>

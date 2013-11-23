@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  iconUnit:UnitVO;
+        public static var  EmbedSwfCommandTaskIcon:Class;
+        public static var  EmbedSwfCommandFortIcon:Class;
+        public static var  EmbedSwfCommandGuildIcon:Class;
+
+
+        public function init() : void
+        {
+            unitIcon.x = iconUnit.loader.x;
+            unitIcon.y = iconUnit.loader.y;
+            return;
+        }// end function
+
+        public function unitStatusIcon(param1:UnitVO) : Boolean
+        {
+            var unit:* = param1;
+            iconUnit = unit;
+            var bool:Boolean;
+            switch(unit.status)
+            {
+                case 1:
+                {
+                    _swf_icon = new EmbedSwfCommandTaskIcon();
+                    break;
+                }
+                case 5:
+                {
+                    _swf_icon = new EmbedSwfCommandFortIcon();
+                    break;
+                }
+                case 6:
+                {
+                    _swf_icon = new EmbedSwfCommandGuildIcon();
+                    break;
+                }
+                default:
+                {
+                    bool;
+                    break;
+                    break;
+                }
+            }
+            if (_swf_icon)
+            {
+                Loader(_swf_icon.getChildAt(0)).contentLoaderInfo.addEventListener(Event.COMPLETE, function () : void
+            {
+                Loader(_swf_icon.getChildAt(0)).contentLoaderInfo.removeEventListener(Event.COMPLETE, arguments.callee);
+                MovieClip(Loader(_swf_icon.getChildAt(0)).content).gotoAndPlay(0);
+                return;
+            }// end function
+            );
+            }
+            return bool;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="unitIcon" source="{_swf_icon}"/>
+
+</mx:Canvas>

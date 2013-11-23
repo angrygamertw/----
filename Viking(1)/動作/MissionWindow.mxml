@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="320" height="70">
+	<mx:Script><![CDATA[
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  numberImages:Array;
+
+    ]]></mx:Script>
+
+	<mx:Image source="_embed_mxml__swf_battle_info_window_info_battle_swf_91087661"/>
+	<mx:ViewStack id="groupIcon">
+		<mx:Canvas>
+			<mx:Image x="26" y="12" source="_embed_mxml__swf_battle_info_icon_fort_swf_1355865291"/>
+		</mx:Canvas>
+		<mx:Canvas>
+			<mx:Image x="26" y="12" source="_embed_mxml__swf_battle_info_icon_skull_swf_121990859"/>
+		</mx:Canvas>
+	</mx:ViewStack>
+	<mx:Label id="_MissionWindow_Label1" x="46" y="13" fontSize="12" color="#7fffffff" text="_stageName"/>
+	<mx:Label id="_MissionWindow_Label2" x="26" y="32" fontSize="10" color="#7fffffff" text="_missionStatement"/>
+	<mx:Image id="secondDigitImage" x="251" y="25" source="_embed_mxml__images_number_0_png_546287991"/>
+	<mx:Image id="firstDigitImage" x="270" y="25" source="_embed_mxml__images_number_1_png_546307659"/>
+
+</mx:Canvas>

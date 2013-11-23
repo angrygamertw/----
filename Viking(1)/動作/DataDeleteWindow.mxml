@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:CanvasWithPopUp xmlns:mx="http://www.adobe.com/2006/mxml" height="300" width="600">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.managers.*;
+
+        public static const  DELETE_CONFIRMATION:String = "deleteConfirmation";
+
+
+        public function onDelete() : void
+        {
+            sendEvent(DELETE_CONFIRMATION);
+            onClose();
+            return;
+        }// end function
+
+        public function onClose() : void
+        {
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Text id="_DataDeleteWindow_Text1" x="15" y="45" fontSize="16" fontWeight="bold" text="\n      このサーバーでのプレイヤーデータ（課金ポイント含む）を削除します。" + "" + "\n      " + "" + "\n      　・プレイヤーデータは2日後に削除されます。" + "" + "\n      　・それまでの間は削除を取り消すことが出来ます。" + "" + "\n      　・削除後、このサーバーにログインするとゲームの最初から始まります。" + "" + "\n      　・市場で出品している商品はすべて取り下げられます。" + ""/>
+	<mx:HBox bottom="20" horizontalCenter="0">
+		<mx:Button label="" styleName="DeleteCancelBtn" buttonMode="true" click="{onClose();}"/>
+		<mx:Button label="" styleName="PlayerDeleteBtn" buttonMode="true" click="{onDelete();}"/>
+	</mx:HBox>
+
+</mx:CanvasWithPopUp>

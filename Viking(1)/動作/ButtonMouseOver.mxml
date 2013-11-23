@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml" width="200" height="220">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private static const  ABILITY_LABELS:Object = {strength:Utils.i18n("generalStrength"), intelligence:Utils.i18n("generalIntelligence"), tech:Utils.i18n("generalTech"), agility:Utils.i18n("generalAgility"), defense:Utils.i18n("generalDefense"), luck:Utils.i18n("generalLuck")};
+
+
+        public function _ButtonMouseOver_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ButtonMouseOver_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "vo.nameLabel";
+            _loc_1.width = 90;
+            _loc_1.setStyle("textAlign", "left");
+            BindingManager.executeBindings(this, "_ButtonMouseOver_DataGridColumn1", _ButtonMouseOver_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function getColor(param1:Object) : uint
+        {
+            return param1.isShort ? (15073298) : (0);
+        }// end function
+
+        public function _ButtonMouseOver_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ButtonMouseOver_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "required";
+            _loc_1.width = 60;
+            _loc_1.itemRenderer = _ButtonMouseOver_ClassFactory1_c();
+            BindingManager.executeBindings(this, "_ButtonMouseOver_DataGridColumn2", _ButtonMouseOver_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _ButtonMouseOver_ClassFactory1_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = ButtonMouseOver_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas>
+		<mx:Label id="_ButtonMouseOver_Label1" styleName="BuildingButtonMouseOverTitle" text="constructionName"/>
+		<mx:Box x="20" y="35" width="175" horizontalAlign="right">
+			<mx:Text id="_ButtonMouseOver_Text1" styleName="BuildingPrice" color="#00000000" text="gold + " Gold""/>
+		</mx:Box>
+		<mx:DataGrid id="data_list" styleName="BuildingDetail" x="5" y="63" width="190" height="100" rowCount="3" sortableColumns="false" columns="{[_ButtonMouseOver_DataGridColumn1_i(), _ButtonMouseOver_DataGridColumn2_i()]}" dataProvider='{materials}'/>
+		<mx:HBox styleName="SkillAndTime" x="5" y="170" horizontalGap="1">
+			<mx:Text id="_ButtonMouseOver_Text2" text="{Utils.i18n("localize89") + ":"}"/>
+			<mx:Text id="_ButtonMouseOver_Text3" color="#00000000" text="_abilitiesText"/>
+		</mx:HBox>
+		<mx:HBox styleName="SkillAndTime" x="5" y="190" horizontalGap="1">
+			<mx:Text id="_ButtonMouseOver_Text4" text="{Utils.i18n("confirmBuildTime") + ":"}"/>
+			<mx:Text id="_ButtonMouseOver_Text5" text="_daysText"/>
+		</mx:HBox>
+	</mx:Canvas>
+
+</mx:Box>

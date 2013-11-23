@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" ="{name:""}" 45630_guildData="new ObjectProxy(_name)" creationComplete="{setup();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.utils.*;
+
+        private var  _appointmentPlayerName:String;
+        protected var  playerVO:PlayerVO;
+        private var  _name:Object;
+        private var  _appointmentPlayerId:int;
+        public static const  RESIGN_MASTER:String = "resignMaster";
+        private static const  WINDOW_X:int = 20;
+        private static const  WINDOW_Y:int = 20;
+        private static const  BUTTON_X:int = 325;
+        private static const  BUTTON_Y:int = 490;
+        public static const  APPOINTMENT_MASTER:String = "appointmentMaster";
+        private static const  WINDOW_HT:int = 520;
+        private static const  WINDOW_WD:int = 720;
+
+
+        public function masterImg(param1:Object) : Class
+        {
+            if (param1.guild_master)
+            {
+                return masterIconImg;
+            }
+            return null;
+        }// end function
+
+        public function closeWindow() : void
+        {
+            onClose();
+            MovieClip(Loader(_swf_close_window.getChildAt(0)).content).gotoAndPlay(1);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            return;
+        }// end function
+
+        public function init(param1:PlayerVO, param2:Object) : void
+        {
+            playerVO = param1;
+            _guildData.name = param2.name;
+            masterCount = 1;
+            dataArray = new Array();
+            dataArray = param2.players;
+            var _loc_3:* = dataArray.getOne("id", playerVO.playerId);
+            var _loc_4:* = dataArray.indexOf(_loc_3);
+            var _loc_5:* = dataArray.splice(_loc_4, 1);
+            var _loc_6:int = 0;
+            while (_loc_6 < dataArray.length)
+            {
+                
+                if (dataArray[_loc_6].guild_master)
+                {
+                    var _loc_8:* = masterCount + 1;
+                    masterCount = _loc_8;
+                }
+                _loc_6++;
+            }
+            dataArray.splice(0, 0, _loc_3);
+            viewDataPlayers = new ArrayCollection(dataArray);
+            return;
+        }// end function
+
+        public function playerName(param1:Object) : String
+        {
+            return param1.player_name;
+        }// end function
+
+        public function _GuildMasterWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildMasterWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "player_name";
+            BindingManager.executeBindings(this, "_GuildMasterWindow_DataGridColumn2", _GuildMasterWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _GuildMasterWindow_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildMasterWindow_DataGridColumn6 = _loc_1;
+            _loc_1.dataField = "max_unit_level";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_GuildMasterWindow_DataGridColumn6", _GuildMasterWindow_DataGridColumn6);
+            return _loc_1;
+        }// end function
+
+        public function _GuildMasterWindow_ClassFactory3_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            rank_renderer = _loc_1;
+            _loc_1.generator = GuildMasterWindow_inlineComponent3;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function onAppointment(param1:Object) : void
+        {
+            appointmentPlayerId = param1.id;
+            appointmentPlayerName = param1.player_name;
+            if (param1.id == playerVO.playerId)
+            {
+                if (masterCount == 1)
+                {
+                    alertPopUp(Utils.i18n("guildMasterCanNotResignationIfLeaderOne"));
+                }
+                else
+                {
+                    dispatchEvent(new Event(RESIGN_MASTER));
+                }
+            }
+            else if (!param1.guild_master)
+            {
+                if (masterCount == 3)
+                {
+                    alertPopUp(Utils.i18n("guildMasterCanNotAppointIfLeaderMoreThree"));
+                }
+                else
+                {
+                    dispatchEvent(new Event(APPOINTMENT_MASTER));
+                }
+            }
+            return;
+        }// end function
+
+        public function _GuildMasterWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildMasterWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "button";
+            _loc_1.width = 50;
+            _loc_1.itemRenderer = _GuildMasterWindow_ClassFactory4_c();
+            BindingManager.executeBindings(this, "_GuildMasterWindow_DataGridColumn1", _GuildMasterWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _GuildMasterWindow_DataGridColumn5_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildMasterWindow_DataGridColumn5 = _loc_1;
+            _loc_1.dataField = "units_count";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_GuildMasterWindow_DataGridColumn5", _GuildMasterWindow_DataGridColumn5);
+            return _loc_1;
+        }// end function
+
+        public function _GuildMasterWindow_ClassFactory2_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            AppointmentButtonRenderer = _loc_1;
+            _loc_1.generator = GuildMasterWindow_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function setup() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_720x520");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            return;
+        }// end function
+
+        public function onVisible(param1:Object) : Boolean
+        {
+            return param1.guild_master && param1.id != playerVO.playerId ? (false) : (true);
+        }// end function
+
+        public function _GuildMasterWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildMasterWindow_DataGridColumn4 = _loc_1;
+            _loc_1.dataField = "properties_count";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_GuildMasterWindow_DataGridColumn4", _GuildMasterWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function _GuildMasterWindow_DataGridColumn8_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildMasterWindow_DataGridColumn8 = _loc_1;
+            _loc_1.width = 35;
+            _loc_1.itemRenderer = _GuildMasterWindow_ClassFactory5_c();
+            BindingManager.executeBindings(this, "_GuildMasterWindow_DataGridColumn8", _GuildMasterWindow_DataGridColumn8);
+            return _loc_1;
+        }// end function
+
+        public function _GuildMasterWindow_ClassFactory5_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = GuildMasterWindowLoginLampRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _GuildMasterWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            master_renderer = _loc_1;
+            _loc_1.generator = GuildMasterWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function btnStyle(param1:Object) : String
+        {
+            if (param1.id == playerVO.playerId)
+            {
+                if (masterCount == 1)
+                {
+                    return "ResignationOff";
+                }
+                return "Resignation";
+            }
+            else
+            {
+                if (param1.guild_master)
+                {
+                    return "ResignationOff";
+                }
+                if (masterCount == 3)
+                {
+                    return "AppointmentOff";
+                }
+            }
+            return "Appointment";
+        }// end function
+
+        public function alertPopUp(param1:String) : void
+        {
+            var _loc_2:* = AlertWindow.show(param1);
+            popupWindow(_loc_2, false);
+            return;
+        }// end function
+
+        public function _GuildMasterWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildMasterWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "onmyou_rank_id";
+            _loc_1.width = 90;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_GuildMasterWindow_DataGridColumn3", _GuildMasterWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _GuildMasterWindow_DataGridColumn7_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _GuildMasterWindow_DataGridColumn7 = _loc_1;
+            _loc_1.dataField = "rarity";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_GuildMasterWindow_DataGridColumn7", _GuildMasterWindow_DataGridColumn7);
+            return _loc_1;
+        }// end function
+
+        public function _GuildMasterWindow_ClassFactory4_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = GuildMasterWindowButtonRenderer;
+            return _loc_1;
+        }// end function
+
+        public function getRankText(param1:Object) : String
+        {
+            return PlayerVO.ONMYOU_RANK_LABELS[param1.onmyou_rank_id];
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_GuildMasterWindow_Image1" source="{_swf_window}"/>
+	<mx:Text id="_GuildMasterWindow_Text1" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="title"/>
+	<mx:Image id="_GuildMasterWindow_Image2" click="{closeWindow();}" x="WINDOW_X + WINDOW_WD - 25" y="WINDOW_Y" source="{_swf_close_window}"/>
+	<mx:Text id="_GuildMasterWindow_Text2" text="Utils.i18n(\'guildMasterGuildName\')" styleName="GuildSearchText" x="WINDOW_X + 20" y="WINDOW_Y + 35"/>
+	<mx:Text id="_GuildMasterWindow_Text3" styleName="GuildSearchText" text="description" x="WINDOW_X + 20" y="WINDOW_Y + 65"/>
+	<mx:DataGrid id="data_list" styleName="DataGridBase" rowCount="10" sortableColumns="false" selectable="false" columns="{[_GuildMasterWindow_DataGridColumn1_i(), _GuildMasterWindow_DataGridColumn2_i(), _GuildMasterWindow_DataGridColumn3_i(), _GuildMasterWindow_DataGridColumn4_i(), _GuildMasterWindow_DataGridColumn5_i(), _GuildMasterWindow_DataGridColumn6_i(), _GuildMasterWindow_DataGridColumn7_i(), _GuildMasterWindow_DataGridColumn8_i()]}" x="WINDOW_X + 20" y="WINDOW_Y + 100" width="WINDOW_WD - 40" dataProvider='{viewDataPlayers}'/>
+	<mx:Image id="_GuildMasterWindow_Image3" click="{closeWindow();}" x="BUTTON_X" y="BUTTON_Y" source="{_swf_close}"/>
+
+</mx:PopupWindow>

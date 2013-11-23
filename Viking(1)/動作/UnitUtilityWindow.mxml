@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" rmRenameWindow="new ConfirmRenameWindow()" 125357_powers="new ArrayCollection([{name:Utils.i18n("localize248"), price:250, id:1, description:"{Utils.i18n(\'localize249\')}Lv1、Exp:0の式姫のみ可能です。"}, {name:Utils.i18n("localize252"), price:30, id:3, description:Utils.i18n("localize253")}])" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  confirmRejuvenateWindow:ConfirmRejuvenateWindow;
+        private var  _power:Object;
+        private var  confirmReunionWindow:ConfirmReunionWindow;
+        private var  confirmRenameWindow:ConfirmRenameWindow;
+        private var  confirmRecoveryWindow:ConfirmRecoveryWindow;
+        private var  confirmImageChangeWindow:ConfirmImageChangeWindow;
+        public static const  UTILITY_WINDOW_CLOSE:String = NAME + "utilityWindowClose";
+        public static const  RENAME:String = NAME + "rename";
+        public static const  NAME:String = "UnitUtilityWindow";
+        public static const  IMAGE_CHANGE:String = NAME + "changeImage";
+        public static const  RECOVERY:String = NAME + "recovery";
+        public static const  REUNION:String = NAME + "reunion";
+
+
+        public function init() : void
+        {
+            confirmReunionWindow.addEventListener(ConfirmReunionWindow.CONFIRMED, reunion);
+            confirmReunionWindow.addEventListener(ConfirmReunionWindow.BLOOD_REUNION_CONFIRMED, blood_reunion);
+            confirmRejuvenateWindow.addEventListener(ConfirmRejuvenateWindow.CONFIRMED, useGodPower);
+            confirmRenameWindow.addEventListener(ConfirmRenameWindow.CONFIRMED, rename);
+            confirmRecoveryWindow.addEventListener(ConfirmRenameWindow.CONFIRMED, recovery);
+            confirmImageChangeWindow.addEventListener(ConfirmImageChangeWindow.CONFIRMED, useGodPowerForImageChange);
+            MovieClip(Loader(_swf_power1.getChildAt(0)).content).gotoAndPlay("button_reunion_off");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            if (_unit.parentsCount < 2 || _unit.level > 1 || _unit.exp > 0)
+            {
+                MovieClip(Loader(_swf_power1.getChildAt(0)).content).gotoAndPlay("button_reunion_off");
+                MovieClip(Loader(_swf_blood_reunion.getChildAt(0)).content).gotoAndPlay("button_wu-xing_off");
+            }
+            else
+            {
+                MovieClip(Loader(_swf_power1.getChildAt(0)).content).gotoAndPlay("button_reunion");
+                MovieClip(Loader(_swf_blood_reunion.getChildAt(0)).content).gotoAndPlay("button_wu-xing");
+            }
+            MovieClip(Loader(_swf_power2.getChildAt(0)).content).gotoAndPlay("button_rename_off");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_power2.getChildAt(0)).content).gotoAndPlay("button_rename");
+            MovieClip(Loader(_swf_power3.getChildAt(0)).content).gotoAndPlay("button_recovery");
+            return;
+        }// end function
+
+        public function useGodPowerForImageChange(event:PopupEvent) : void
+        {
+            removeWindow();
+            return;
+        }// end function
+
+        public function canExecuteUtility() : Class
+        {
+            if (_unit.parentsCount < 2)
+            {
+                return decideOff;
+            }
+            return decide;
+        }// end function
+
+        public function blood_reunion(event:Event) : void
+        {
+            dispatchEvent(new PopupEvent(REUNION, {unitId:_unit.unitId, blood_reunion:true}));
+            removeWindow();
+            return;
+        }// end function
+
+        public function showRecoveryConfirmWindow() : void
+        {
+            confirmRecoveryWindow.init();
+            popupWindow(confirmRecoveryWindow, false);
+            return;
+        }// end function
+
+        public function _UnitUtilityWindow_ClassFactory2_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            descriptionRenderer = _loc_1;
+            _loc_1.generator = UnitUtilityWindow_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function rename(event:Event) : void
+        {
+            dispatchEvent(new PopupEvent(RENAME, {unit:_unit}));
+            removeWindow();
+            return;
+        }// end function
+
+        public function showReunionConfirmWindow(param1:Boolean = false) : void
+        {
+            if (_unit.parentsCount < 2 || _unit.level > 1 || _unit.exp > 0)
+            {
+                return;
+            }
+            popupWindow(confirmReunionWindow, false);
+            confirmReunionWindow.bloodReunion = param1;
+            return;
+        }// end function
+
+        public function reunion(event:Event) : void
+        {
+            dispatchEvent(new PopupEvent(REUNION, {unitId:_unit.unitId, blood_reunion:false}));
+            removeWindow();
+            return;
+        }// end function
+
+        public function removeWindow() : void
+        {
+            dispatchEvent(new Event(UTILITY_WINDOW_CLOSE));
+            this.onClose();
+            return;
+        }// end function
+
+        public function recovery(event:Event) : void
+        {
+            sendEvent(RECOVERY);
+            removeWindow();
+            return;
+        }// end function
+
+        public function _UnitUtilityWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            priceRenderer = _loc_1;
+            _loc_1.generator = UnitUtilityWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function useGodPower(event:Event) : void
+        {
+            removeWindow();
+            return;
+        }// end function
+
+        public function showRenameConfirmWindow() : void
+        {
+            popupWindow(confirmRenameWindow, false);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Canvas id="utilityCanvas" x="30">
+		<mx:Image id="_UnitUtilityWindow_Image1" x="685" y="20" click="{removeWindow();}" source="{_swf_close_window}"/>
+		<mx:Text id="_UnitUtilityWindow_Text1" x="315" y="22" styleName="PanelBaseTitle" color="#00eeeeee" text="{Utils.i18n("localize254")}"/>
+		<mx:Text id="_UnitUtilityWindow_Text2" x="10" y="50" fontSize="11" text="{Utils.i18n("localize255") + "：" + _unit.name}"/>
+		<mx:Image id="reunion_button" x="20" y="80" click="{showReunionConfirmWindow();}" source="{_swf_power1}"/>
+		<mx:Text id="_UnitUtilityWindow_Text3" x="150" y="75" fontSize="15" text="{Utils.i18n("localize249") + "" + "\n" + "" + Utils.i18n("localize250")}"/>
+		<mx:Image id="rename_button" x="20" y="120" click="{showRenameConfirmWindow();}" source="{_swf_power2}"/>
+		<mx:Text id="_UnitUtilityWindow_Text4" x="150" y="125" fontSize="15" text="{Utils.i18n("localize253")}"/>
+		<mx:Image id="recovery_button" x="20" y="160" click="{showRecoveryConfirmWindow();}" source="{_swf_power3}"/>
+		<mx:Text id="_UnitUtilityWindow_Text5" x="150" y="165" fontSize="15" text="{Utils.i18n("localize257") + "HP" + Utils.i18n("localize258")}"/>
+		<mx:Image id="blood_reunion_button" x="20" y="200" click="{showReunionConfirmWindow(true);}" source="{_swf_blood_reunion}"/>
+		<mx:Text id="_UnitUtilityWindow_Text6" x="150" y="195" fontSize="15" text="{Utils.i18n("bloodReunionDetail") + "" + "\n" + "" + Utils.i18n("localize250")}"/>
+		<mx:Image id="_UnitUtilityWindow_Image6" x="295" y="247" click="{removeWindow();}" source="{_swf_close}"/>
+	</mx:Canvas>
+
+</mx:PopupWindow>

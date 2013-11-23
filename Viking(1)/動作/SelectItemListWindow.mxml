@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:CanvasWithPopUp xmlns:mx="http://www.adobe.com/2006/mxml" height="560" width="760">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public var  itemData:Array;
+        private var  equipmentDetail:EquipmentDetail;
+        public var  armorData:Array;
+        public var  weaponDetail:WeaponDetail;
+        public var  accessoryData:Array;
+        public var  weaponData:Array;
+
+
+        public function onDetail(param1:Object) : void
+        {
+            if (param1.masterType == "WeaponMaster" || param1.masterType == "ArmorMaster" || param1.masterType == "AccessoryMaster")
+            {
+                weaponDetail.viewData = param1;
+                if (weaponDetail.viewData)
+                {
+                    popupWindow(weaponDetail);
+                }
+            }
+            else
+            {
+                equipmentDetail.viewData = param1;
+                if (equipmentDetail.viewData)
+                {
+                    popupWindow(equipmentDetail);
+                }
+            }
+            return;
+        }// end function
+
+        public function _SelectItemListWindow_DataGridColumn11_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SelectItemListWindow_DataGridColumn11 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 170;
+            BindingManager.executeBindings(this, "_SelectItemListWindow_DataGridColumn11", _SelectItemListWindow_DataGridColumn11);
+            return _loc_1;
+        }// end function
+
+        public function setWeapons(param1:Array) : void
+        {
+            var _loc_2:int = 0;
+            if (weaponData)
+            {
+                weaponData = new Array();
+            }
+            while (_loc_2 < param1.length)
+            {
+                
+                weaponData.push(param1[_loc_2]);
+                _loc_2++;
+            }
+            viewDataWeapon = new ArrayCollection(weaponData);
+            return;
+        }// end function
+
+        public function _SelectItemListWindow_DataGridColumn15_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SelectItemListWindow_DataGridColumn15 = _loc_1;
+            _loc_1.dataField = "effect";
+            _loc_1.width = 200;
+            _loc_1.editable = false;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SelectItemListWindow_DataGridColumn15", _SelectItemListWindow_DataGridColumn15);
+            return _loc_1;
+        }// end function
+
+        public function setArmors(param1:Array) : void
+        {
+            var _loc_2:int = 0;
+            if (armorData)
+            {
+                armorData = new Array();
+            }
+            while (_loc_2 < param1.length)
+            {
+                
+                armorData.push(param1[_loc_2]);
+                _loc_2++;
+            }
+            viewDataArmor = new ArrayCollection(armorData);
+            return;
+        }// end function
+
+        public function componentToolTip() : String
+        {
+            return Utils.i18n("generalShowDetail");
+        }// end function
+
+        public function _SelectItemListWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SelectItemListWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "hit";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SelectItemListWindow_DataGridColumn3", _SelectItemListWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _SelectItemListWindow_DataGridColumn7_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SelectItemListWindow_DataGridColumn7 = _loc_1;
+            _loc_1.dataField = "physicalDefense";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SelectItemListWindow_DataGridColumn7", _SelectItemListWindow_DataGridColumn7);
+            return _loc_1;
+        }// end function
+
+        public function _SelectItemListWindow_DataGridColumn10_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SelectItemListWindow_DataGridColumn10 = _loc_1;
+            _loc_1.dataField = "masterVO.description";
+            BindingManager.executeBindings(this, "_SelectItemListWindow_DataGridColumn10", _SelectItemListWindow_DataGridColumn10);
+            return _loc_1;
+        }// end function
+
+        public function _SelectItemListWindow_DataGridColumn14_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SelectItemListWindow_DataGridColumn14 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.editable = false;
+            _loc_1.width = 170;
+            BindingManager.executeBindings(this, "_SelectItemListWindow_DataGridColumn14", _SelectItemListWindow_DataGridColumn14);
+            return _loc_1;
+        }// end function
+
+        public function onClose() : void
+        {
+            this.visible = false;
+            return;
+        }// end function
+
+        public function _SelectItemListWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SelectItemListWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "damage";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SelectItemListWindow_DataGridColumn2", _SelectItemListWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function setAccessories(param1:Array) : void
+        {
+            var _loc_2:int = 0;
+            if (accessoryData)
+            {
+                accessoryData = new Array();
+            }
+            while (_loc_2 < param1.length)
+            {
+                
+                accessoryData.push(param1[_loc_2]);
+                _loc_2++;
+            }
+            viewDataAccessory = new ArrayCollection(accessoryData);
+            return;
+        }// end function
+
+        public function _SelectItemListWindow_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SelectItemListWindow_DataGridColumn6 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 170;
+            BindingManager.executeBindings(this, "_SelectItemListWindow_DataGridColumn6", _SelectItemListWindow_DataGridColumn6);
+            return _loc_1;
+        }// end function
+
+        public function setItems(param1:Array) : void
+        {
+            var _loc_2:int = 0;
+            if (itemData)
+            {
+                itemData = new Array();
+            }
+            while (_loc_2 < param1.length)
+            {
+                
+                itemData.push(param1[_loc_2]);
+                _loc_2++;
+            }
+            viewDataItem = new ArrayCollection(itemData);
+            return;
+        }// end function
+
+        public function _SelectItemListWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRenderer = _loc_1;
+            _loc_1.generator = SelectItemListWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _SelectItemListWindow_DataGridColumn13_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SelectItemListWindow_DataGridColumn13 = _loc_1;
+            _loc_1.dataField = "masterVO.description";
+            BindingManager.executeBindings(this, "_SelectItemListWindow_DataGridColumn13", _SelectItemListWindow_DataGridColumn13);
+            return _loc_1;
+        }// end function
+
+        public function _SelectItemListWindow_DataGridColumn17_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SelectItemListWindow_DataGridColumn17 = _loc_1;
+            _loc_1.dataField = "description";
+            _loc_1.editable = false;
+            BindingManager.executeBindings(this, "_SelectItemListWindow_DataGridColumn17", _SelectItemListWindow_DataGridColumn17);
+            return _loc_1;
+        }// end function
+
+        public function _SelectItemListWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SelectItemListWindow_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "nameLabel";
+            _loc_1.width = 170;
+            BindingManager.executeBindings(this, "_SelectItemListWindow_DataGridColumn1", _SelectItemListWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _SelectItemListWindow_DataGridColumn5_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SelectItemListWindow_DataGridColumn5 = _loc_1;
+            _loc_1.dataField = "description";
+            BindingManager.executeBindings(this, "_SelectItemListWindow_DataGridColumn5", _SelectItemListWindow_DataGridColumn5);
+            return _loc_1;
+        }// end function
+
+        public function _SelectItemListWindow_DataGridColumn9_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SelectItemListWindow_DataGridColumn9 = _loc_1;
+            _loc_1.dataField = "avoidance";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SelectItemListWindow_DataGridColumn9", _SelectItemListWindow_DataGridColumn9);
+            return _loc_1;
+        }// end function
+
+        public function _SelectItemListWindow_DataGridColumn12_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SelectItemListWindow_DataGridColumn12 = _loc_1;
+            _loc_1.dataField = "effectLabelAll";
+            _loc_1.width = 200;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SelectItemListWindow_DataGridColumn12", _SelectItemListWindow_DataGridColumn12);
+            return _loc_1;
+        }// end function
+
+        public function _SelectItemListWindow_DataGridColumn16_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SelectItemListWindow_DataGridColumn16 = _loc_1;
+            _loc_1.dataField = "enduranceLabel";
+            _loc_1.width = 60;
+            _loc_1.editable = false;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SelectItemListWindow_DataGridColumn16", _SelectItemListWindow_DataGridColumn16);
+            return _loc_1;
+        }// end function
+
+        public function _SelectItemListWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SelectItemListWindow_DataGridColumn4 = _loc_1;
+            _loc_1.dataField = "enduranceLabel";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SelectItemListWindow_DataGridColumn4", _SelectItemListWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function _SelectItemListWindow_DataGridColumn8_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _SelectItemListWindow_DataGridColumn8 = _loc_1;
+            _loc_1.dataField = "magicalDefense";
+            _loc_1.width = 60;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_SelectItemListWindow_DataGridColumn8", _SelectItemListWindow_DataGridColumn8);
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:VBox width="759" height="284" styleName="SortieEqpBox" x="5">
+		<mx:Canvas width="750" height="30">
+			<mx:TabBar id="tabbar" styleName="SortieEqpTab" dataProvider='{myViewStack}'/>
+			<mx:Button width="26" height="26" styleName="closeBtn" buttonMode="true" fontSize="30" top="0" right="0" click="{onClose();}"/>
+		</mx:Canvas>
+		<mx:ViewStack id="myViewStack" width="750" height="230" borderStyle="none" paddingLeft="12">
+			<mx:VBox id="_SelectItemListWindow_VBox2" width="100%" height="600" label="{Utils.i18n("generalWeapon")}">
+				<mx:DataGrid id="weapon_data_list" width="708" height="486" styleName="DataGridBase" sortableColumns="false" columns="{[_SelectItemListWindow_DataGridColumn1_i(), _SelectItemListWindow_DataGridColumn2_i(), _SelectItemListWindow_DataGridColumn3_i(), _SelectItemListWindow_DataGridColumn4_i(), _SelectItemListWindow_DataGridColumn5_i()]}" dataProvider='{viewDataWeapon}'/>
+			</mx:VBox>
+			<mx:VBox id="_SelectItemListWindow_VBox3" width="100%" height="600" label="{Utils.i18n("generalEquipArmor")}">
+				<mx:DataGrid id="armor_data_list" width="708" height="486" styleName="DataGridBase" sortableColumns="false" columns="{[_SelectItemListWindow_DataGridColumn6_i(), _SelectItemListWindow_DataGridColumn7_i(), _SelectItemListWindow_DataGridColumn8_i(), _SelectItemListWindow_DataGridColumn9_i(), _SelectItemListWindow_DataGridColumn10_i()]}" dataProvider='{viewDataArmor}'/>
+			</mx:VBox>
+			<mx:VBox id="_SelectItemListWindow_VBox4" width="100%" height="600" label="{Utils.i18n("localize269")}">
+				<mx:DataGrid id="accessory_data_list" width="708" height="486" styleName="DataGridBase" sortableColumns="false" columns="{[_SelectItemListWindow_DataGridColumn11_i(), _SelectItemListWindow_DataGridColumn12_i(), _SelectItemListWindow_DataGridColumn13_i()]}" dataProvider='{viewDataAccessory}'/>
+			</mx:VBox>
+			<mx:VBox id="_SelectItemListWindow_VBox5" width="100%" height="600" label="{Utils.i18n("generalMaterial")}">
+				<mx:DataGrid id="item_data_list" editable="true" width="708" height="486" styleName="DataGridBase" sortableColumns="false" columns="{[_SelectItemListWindow_DataGridColumn14_i(), _SelectItemListWindow_DataGridColumn15_i(), _SelectItemListWindow_DataGridColumn16_i(), _SelectItemListWindow_DataGridColumn17_i()]}" dataProvider='{viewDataItem}'/>
+			</mx:VBox>
+		</mx:ViewStack>
+	</mx:VBox>
+
+</mx:CanvasWithPopUp>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+
+        public function close() : void
+        {
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas>
+		<mx:Text id="_RecipeDescriptionWindow_Text1" x="200" y="60" text="_description"/>
+		<mx:HBox width="100" x="110" y="250"/>
+	</mx:Canvas>
+
+</mx:PopupWindow>

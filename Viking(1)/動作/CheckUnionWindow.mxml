@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        public static const  START_UNION:String = "CheckUnionWindow/StartUnion";
+        public static const  START_INDEX:String = "CheckUnionWindow/StartIndex";
+
+
+        public function init() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_300x200");
+            MovieClip(Loader(_swf_union.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_union.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_back.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_back.getChildAt(0)).content).gotoAndPlay("button_no");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            return;
+        }// end function
+
+        public function throwEvent(param1:String) : void
+        {
+            viewStack.selectedIndex = 0;
+            dispatchEvent(new Event(param1));
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_CheckUnionWindow_Image1" y="150" source="{_swf_window}"/>
+	<mx:ViewStack id="viewStack" x="247" y="380">
+		<mx:VBox>
+			<mx:HBox>
+				<mx:Label id="_CheckUnionWindow_Label1" width="260" height="30" fontSize="14" textAlign="center" text="{Utils.i18n("checkUnionConfirmation", _yangUnit.name, _yinUnit.name)}"/>
+			</mx:HBox>
+			<mx:HBox>
+				<mx:Label id="_CheckUnionWindow_Label2" width="260" height="30" fontSize="14" textAlign="center" text="{Utils.i18n("checkUnionConfirmation2")}"/>
+			</mx:HBox>
+			<mx:Spacer height="25"/>
+			<mx:HBox>
+				<mx:Spacer height="20"/>
+				<mx:Image id="_CheckUnionWindow_Image2" click="{throwEvent(START_UNION);}" source="{_swf_union}"/>
+				<mx:Spacer width="120"/>
+				<mx:Image id="_CheckUnionWindow_Image3" click="{throwEvent(START_INDEX);}" source="{_swf_back}"/>
+			</mx:HBox>
+		</mx:VBox>
+		<mx:VBox>
+			<mx:HBox>
+				<mx:Spacer width="80"/>
+				<mx:Text id="_CheckUnionWindow_Text1" text="{Utils.i18n("checkUnionLackSoulCrystal")}"/>
+			</mx:HBox>
+			<mx:Spacer height="65"/>
+			<mx:HBox>
+				<mx:Spacer width="70"/>
+				<mx:Image id="_CheckUnionWindow_Image4" click="{throwEvent(START_INDEX);}" source="{_swf_close}"/>
+			</mx:HBox>
+		</mx:VBox>
+	</mx:ViewStack>
+
+</mx:Canvas>

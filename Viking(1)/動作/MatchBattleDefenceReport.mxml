@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+
+        public function closeWindow() : void
+        {
+            onClose();
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            MovieClip(Loader(_swf_button.getChildAt(0)).content).gotoAndPlay("button_ok");
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_400x180");
+            return;
+        }// end function
+
+        public function setDefenceReport(param1:Object) : void
+        {
+            _winCount = param1.win_count;
+            _point = param1.point;
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_MatchBattleDefenceReport_Image1" source="{_swf_window}"/>
+	<mx:Text id="_MatchBattleDefenceReport_Text1" x="310" y="192" styleName="PanelBaseTitle" text="{Utils.i18n("matchBattleDefenceReportTitle")}"/>
+	<mx:Text id="_MatchBattleDefenceReport_Text2" x="230" y="230" width="300" height="30" textAlign="center" fontSize="18" text="{Utils.i18n("matchBattleDefenceReportWinCount", _winCount)}"/>
+	<mx:Text id="_MatchBattleDefenceReport_Text3" x="230" y="270" width="300" height="30" textAlign="center" fontSize="18" text="{Utils.i18n("matchBattleDefenceReportPoint", _point)}"/>
+	<mx:Image id="okButton" x="320" y="315" click="{closeWindow();}" source="{_swf_button}"/>
+
+</mx:PopupWindow>

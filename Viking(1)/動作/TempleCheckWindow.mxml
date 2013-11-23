@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  _eventName:String;
+        private var  ViewStackIndex:int;
+        private var  create:Boolean = false;
+        public static const  INDEX_GUILD_APPLICATION_CANCEL:int = 1;
+        private static const  WINDOW_X:int = 230;
+        private static const  WINDOW_Y:int = 180;
+        private static const  BUTTON_X:int = 325;
+        private static const  BUTTON_Y:int = 330;
+        private static const  WINDOW_HT:int = 200;
+        public static const  INDEX_GUILD_MEMBER_REMOVE:int = 7;
+        public static const  INDEX_GUILD_CHECK_ALLOW:int = 5;
+        public static const  INDEX_GUILD_MASTER_APPOINTMENT:int = 3;
+        public static const  INDEX_GUILD_COMPULSION_RETURN_CHARACTER:int = 4;
+        public static const  INDEX_GUILD_QUIT:int = 0;
+        public static const  CLOSE_CHECK_WINDOW:String = "closeCheckWIndow";
+        public static const  INDEX_GUILD_MASTER_RESIGN:int = 2;
+        public static const  GUILD_QUIT:String = "guildQuit";
+        private static const  WINDOW_WD:int = 300;
+        public static const  INDEX_GUILD_CHECK_REJECT:int = 6;
+
+
+        public function onOK() : void
+        {
+            dispatchEvent(new Event(_eventName));
+            close();
+            MovieClip(Loader(_swf_yes.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_yes.getChildAt(0)).content).gotoAndPlay("button_yes");
+            return;
+        }// end function
+
+        public function close() : void
+        {
+            dispatchEvent(new Event(CLOSE_CHECK_WINDOW));
+            PopUpManager.removePopUp(this);
+            MovieClip(Loader(_swf_no.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_no.getChildAt(0)).content).gotoAndPlay("button_no");
+            MovieClip(Loader(_swf_close_window.getChildAt(0)).content).gotoAndPlay(1);
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            messegeViewStack.selectedIndex = ViewStackIndex;
+            create = true;
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_300x200");
+            MovieClip(Loader(_swf_yes.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_no.getChildAt(0)).content).gotoAndPlay("button_no");
+            return;
+        }// end function
+
+        public function setGuildName(param1:String, param2:int) : void
+        {
+            _guildName = param1;
+            if (create)
+            {
+                messegeViewStack.selectedIndex = param2;
+            }
+            else
+            {
+                ViewStackIndex = param2;
+            }
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Image id="_TempleCheckWindow_Image1" source="{_swf_window}"/>
+	<mx:Text id="_TempleCheckWindow_Text1" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("generalConfirmation")}"/>
+	<mx:Image id="_TempleCheckWindow_Image2" click="{close();}" x="WINDOW_X + WINDOW_WD - 25" y="WINDOW_Y" source="{_swf_close_window}"/>
+	<mx:Canvas id="checkCanvas">
+		<mx:ViewStack id="messegeViewStack" selectedIndex="0" x="WINDOW_X + 20" y="WINDOW_Y + 35" width="WINDOW_WD - 40" height="WINDOW_HT - 35 - 50 - 10">
+			<mx:Box horizontalAlign="center">
+				<mx:Text id="_TempleCheckWindow_Text2" styleName="CenterText" leading="0" text="{Utils.i18n("templeCheckWithdrawalConf", _guildName)}"/>
+			</mx:Box>
+			<mx:Box horizontalAlign="center">
+				<mx:Text id="_TempleCheckWindow_Text3" styleName="CenterText" leading="0" text="{Utils.i18n("templeCheckAdmissionRemoveConf", _guildName)}"/>
+			</mx:Box>
+			<mx:Box horizontalAlign="center">
+				<mx:Text id="_TempleCheckWindow_Text4" styleName="CenterText" leading="0" text="{Utils.i18n("templeCheckResignationConf", _guildName)}"/>
+			</mx:Box>
+			<mx:Box horizontalAlign="center">
+				<mx:Text id="_TempleCheckWindow_Text5" styleName="CenterText" leading="0" text="{Utils.i18n("templeCheckAppointmentConf", _guildName)}"/>
+			</mx:Box>
+			<mx:Box horizontalAlign="center">
+				<mx:Text id="_TempleCheckWindow_Text6" styleName="CenterText" leading="0" text="{Utils.i18n("templeCheckForcingPeriodConf", _guildName)}"/>
+			</mx:Box>
+			<mx:Box horizontalAlign="center">
+				<mx:Text id="_TempleCheckWindow_Text7" styleName="CenterText" leading="0" text="{Utils.i18n("templeCheckAdmissionPermitConf", _guildName)}"/>
+			</mx:Box>
+			<mx:Box horizontalAlign="center">
+				<mx:Text id="_TempleCheckWindow_Text8" styleName="CenterText" leading="0" text="{Utils.i18n("templeCheckAdmissionRejectionConf", _guildName)}"/>
+			</mx:Box>
+			<mx:Box horizontalAlign="center">
+				<mx:Text id="_TempleCheckWindow_Text9" styleName="CenterText" leading="0" text="{Utils.i18n("templeCheckExpulsionConf", _guildName)}"/>
+			</mx:Box>
+		</mx:ViewStack>
+		<mx:Image id="_TempleCheckWindow_Image3" click="{onOK();}" x="BUTTON_X - 65" y="BUTTON_Y" source="{_swf_yes}"/>
+		<mx:Image id="_TempleCheckWindow_Image4" click="{close();}" x="BUTTON_X + 65" y="BUTTON_Y" source="{_swf_no}"/>
+	</mx:Canvas>
+
+</mx:Canvas>

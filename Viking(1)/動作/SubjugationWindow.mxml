@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  tutSelectLevelVisible:Boolean = false;
+        private var  selectLevelWindow:SubjugationSelectLevelWindow;
+        public static const  INIT_SUBJUGATION_WINDOW_TMARK:String = NAME + "initSubjugationWindowTmark";
+        public static const  NAME:String = "SubjugationWindow";
+        public static var  EmbedSwfSubjugation:Class;
+        public static const  SELECT_LEVEL_COMPLETE:String = "selectLevelComplete";
+        public static const  CLOSE_SUBJUGATION_WINDOW:String = NAME + "closeSubjugationWindow";
+
+
+        public function initSubTmarks(param1:Boolean) : void
+        {
+            trace("init sub tmark" + param1);
+            tutShibitoVisible = param1;
+            tutSelectLevelVisible = param1;
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            var _loc_2:String = null;
+            var _loc_1:Array = ["BUTTON_BACK", "BUTTON_GL", "BUTTON_RK", "BUTTON_WS", "BUTTON_LG", "BUTTON_MN", "BUTTON_FR"];
+            for each (_loc_2 in _loc_1)
+            {
+                
+                Loader(_swf_subj.getChildAt(0)).content.addEventListener(_loc_2, buttonsClicked);
+            }
+            return;
+        }// end function
+
+        public function buttonsClicked(event:Event) : void
+        {
+            var e:* = event;
+            if (e.type == "BUTTON_BACK")
+            {
+                dispatchEvent(new Event(CLOSE_SUBJUGATION_WINDOW));
+                return;
+            }
+            selectLevelWindow.init(e.type);
+            selectLevelWindow.setTutMarkVisible(tutSelectLevelVisible);
+            this.popupWindow(selectLevelWindow, false);
+            if (!selectLevelWindow.hasEventListener(SubjugationSelectLevelWindow.SELECT_LEVEL_COMPLETE))
+            {
+                selectLevelWindow.addEventListener(SubjugationSelectLevelWindow.SELECT_LEVEL_COMPLETE, function (event:PopupEvent) : void
+            {
+                dispatchEvent(new PopupEvent(SELECT_LEVEL_COMPLETE, {topographyId:event.param.topographyId, level:event.param.level}));
+                return;
+            }// end function
+            );
+            }
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_SubjugationWindow_Image1" source="{_swf_subj}"/>
+	<mx:Image id="products" source="_embed_mxml__swf_window_info_products_swf_1304559433" x="363" y="0"/>
+	<mx:Image id="info" source="_embed_mxml__swf_window_info_home_swf_1388347787" x="0" y="0"/>
+	<mx:Canvas id="factionLayer" x="37" y="17"/>
+	<mx:Canvas id="rankLayer" x="58" y="17"/>
+	<mx:Image id="tutMarkShibito" source="_embed_mxml__swf_common_arrow_top_swf_788233961" width="75" height="75" y="230" x="65" visible="tutShibitoVisible"/>
+	<mx:PlayerStatus id="playerStatus" x="10"/>
+	<mx:ProductionInfoWindow id="productionInfoWindow" x="380" y="14"/>
+
+</mx:PopupWindow>

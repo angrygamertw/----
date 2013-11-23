@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" height="567" width="750" creationComplete="{addSwf();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  unitDismissWindow:UnitDismissWindow;
+        private var  _gold:int;
+        private var  _selectUnit:Object;
+        private var  trainingFlag:Boolean;
+        private var  _unionUnit:UnitVO;
+        private var  unitStatus:UnitStatus;
+        private var  _defArray:Array;
+        private var  selectedIndex:int = 99;
+        public static var  imageDismissOff:Class;
+        public static const  DISMISS_FROM_CEREMONY:String = "dismissFromCeremony";
+        public static const  SELECTED:String = "CollectUnitWindow/Selected";
+        public static var  imageDismiss:Class;
+
+
+        public function init() : void
+        {
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            return;
+        }// end function
+
+        public function addSwf() : void
+        {
+            Loader(_swf_close.getChildAt(0)).content.addEventListener("BUTTON_CLOSE", function (event:Event) : void
+            {
+                onCloseWindow();
+                return;
+            }// end function
+            );
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            return;
+        }// end function
+
+        public function _CheckUnitFromCeremony_DataGridColumn3_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "level";
+            _loc_1.headerText = "Lv";
+            _loc_1.width = 55;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function setUnits() : void
+        {
+            selectedIndex = 99;
+            if (_defArray)
+            {
+                _defArray = new Array();
+            }
+            var _loc_1:int = 0;
+            while (_loc_1 < _units.length)
+            {
+                
+                _defArray.push(_units[_loc_1]);
+                _loc_1++;
+            }
+            _unitArray = new ArrayCollection(_defArray);
+            return;
+        }// end function
+
+        public function calcuCount() : void
+        {
+            if (unitList.selectedItem)
+            {
+                if (unitList.selectedItem.level <= 10)
+                {
+                    actionCount = 60;
+                }
+                else if (unitList.selectedItem.level > 10 && unitList.selectedItem.level <= 20)
+                {
+                    actionCount = 120;
+                }
+                else
+                {
+                    actionCount = 180;
+                }
+            }
+            return;
+        }// end function
+
+        public function _CheckUnitFromCeremony_DataGridColumn7_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _CheckUnitFromCeremony_DataGridColumn7 = _loc_1;
+            _loc_1.dataField = "tech";
+            _loc_1.width = 35;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_CheckUnitFromCeremony_DataGridColumn7", _CheckUnitFromCeremony_DataGridColumn7);
+            return _loc_1;
+        }// end function
+
+        public function _CheckUnitFromCeremony_ClassFactory3_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = UnitDetailLabelRenderer;
+            return _loc_1;
+        }// end function
+
+        public function getDismissImage(param1:Object) : Class
+        {
+            if (_unionUnit.unitId == param1.unitId)
+            {
+                return imageDismissOff;
+            }
+            return imageDismiss;
+        }// end function
+
+        public function unitDismiss(event:Event) : void
+        {
+            PopUpManager.removePopUp(this);
+            this.dispatchEvent(new Event(DISMISS_FROM_CEREMONY));
+            return;
+        }// end function
+
+        public function _CheckUnitFromCeremony_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _CheckUnitFromCeremony_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "jobMasterVO.nameLabel";
+            _loc_1.width = 115;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_CheckUnitFromCeremony_DataGridColumn2", _CheckUnitFromCeremony_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _CheckUnitFromCeremony_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _CheckUnitFromCeremony_DataGridColumn6 = _loc_1;
+            _loc_1.dataField = "strength";
+            _loc_1.width = 35;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_CheckUnitFromCeremony_DataGridColumn6", _CheckUnitFromCeremony_DataGridColumn6);
+            return _loc_1;
+        }// end function
+
+        public function _CheckUnitFromCeremony_DataGridColumn12_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _CheckUnitFromCeremony_DataGridColumn12 = _loc_1;
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_CheckUnitFromCeremony_DataGridColumn12", _CheckUnitFromCeremony_DataGridColumn12);
+            return _loc_1;
+        }// end function
+
+        public function _CheckUnitFromCeremony_ClassFactory2_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            dismissLabel = _loc_1;
+            _loc_1.generator = CheckUnitFromCeremony_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function onCloseWindow() : void
+        {
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function _CheckUnitFromCeremony_DataGridColumn5_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "maxHp";
+            _loc_1.headerText = "MAX HP";
+            _loc_1.width = 65;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _CheckUnitFromCeremony_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _CheckUnitFromCeremony_DataGridColumn1 = _loc_1;
+            _loc_1.dataField = "name";
+            _loc_1.itemRenderer = _CheckUnitFromCeremony_ClassFactory3_c();
+            BindingManager.executeBindings(this, "_CheckUnitFromCeremony_DataGridColumn1", _CheckUnitFromCeremony_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _CheckUnitFromCeremony_DataGridColumn11_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _CheckUnitFromCeremony_DataGridColumn11 = _loc_1;
+            _loc_1.dataField = "luck";
+            _loc_1.width = 35;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_CheckUnitFromCeremony_DataGridColumn11", _CheckUnitFromCeremony_DataGridColumn11);
+            return _loc_1;
+        }// end function
+
+        public function _CheckUnitFromCeremony_DataGridColumn9_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _CheckUnitFromCeremony_DataGridColumn9 = _loc_1;
+            _loc_1.dataField = "defense";
+            _loc_1.width = 35;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_CheckUnitFromCeremony_DataGridColumn9", _CheckUnitFromCeremony_DataGridColumn9);
+            return _loc_1;
+        }// end function
+
+        public function _CheckUnitFromCeremony_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            expLabel = _loc_1;
+            _loc_1.generator = CheckUnitFromCeremony_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function dismissionUnit(param1:Object) : void
+        {
+            if (_unionUnit.unitId == param1.unitId)
+            {
+                return;
+            }
+            _selectUnit = new Object();
+            _selectUnit = param1;
+            popupWindow(unitDismissWindow, false);
+            unitDismissWindow.init();
+            unitDismissWindow.setdata(UnitVO(param1), _gold);
+            unitDismissWindow.addEventListener(UnitDismissWindow.UNIT_DISMISS, unitDismiss);
+            return;
+        }// end function
+
+        public function _CheckUnitFromCeremony_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _CheckUnitFromCeremony_DataGridColumn4 = _loc_1;
+            _loc_1.dataField = "exp";
+            _loc_1.width = 80;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_CheckUnitFromCeremony_DataGridColumn4", _CheckUnitFromCeremony_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function _CheckUnitFromCeremony_DataGridColumn10_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _CheckUnitFromCeremony_DataGridColumn10 = _loc_1;
+            _loc_1.dataField = "intelligence";
+            _loc_1.width = 35;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_CheckUnitFromCeremony_DataGridColumn10", _CheckUnitFromCeremony_DataGridColumn10);
+            return _loc_1;
+        }// end function
+
+        public function _CheckUnitFromCeremony_DataGridColumn8_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _CheckUnitFromCeremony_DataGridColumn8 = _loc_1;
+            _loc_1.dataField = "agility";
+            _loc_1.width = 35;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_CheckUnitFromCeremony_DataGridColumn8", _CheckUnitFromCeremony_DataGridColumn8);
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Canvas id="unitCanvas">
+		<mx:DataGrid id="unitList" width="690" x="35" rowCount="12" styleName="UnitListGrid" sortableColumns="false" columns="{[_CheckUnitFromCeremony_DataGridColumn1_i(), _CheckUnitFromCeremony_DataGridColumn2_i(), _CheckUnitFromCeremony_DataGridColumn3_c(), _CheckUnitFromCeremony_DataGridColumn4_i(), _CheckUnitFromCeremony_DataGridColumn5_c(), _CheckUnitFromCeremony_DataGridColumn6_i(), _CheckUnitFromCeremony_DataGridColumn7_i(), _CheckUnitFromCeremony_DataGridColumn8_i(), _CheckUnitFromCeremony_DataGridColumn9_i(), _CheckUnitFromCeremony_DataGridColumn10_i(), _CheckUnitFromCeremony_DataGridColumn11_i(), _CheckUnitFromCeremony_DataGridColumn12_i()]}" top="120" click="{calcuCount();}" dataProvider='{_unitArray}'/>
+	</mx:Canvas>
+	<mx:Image id="_CheckUnitFromCeremony_Image1" x="325" y="485" click="{onCloseWindow();}" source="{_swf_close}"/>
+	<mx:Image id="_CheckUnitFromCeremony_Image2" x="715" y="80" click="{onCloseWindow();}" source="{_swf_close_window}"/>
+
+</mx:PopupWindow>

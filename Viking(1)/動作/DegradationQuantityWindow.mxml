@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="330" height="280" 99030nameLabels="new ArrayCollection()" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.vo.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  _reproduction:ReproductionVO;
+        private var  _maxProductQuantity:int;
+        private var  _production:ProductionVO;
+        private var  create:Boolean = false;
+        public static const  DEGRADAT:String = "DegradationQuantityWindow/Produce";
+
+
+        public function init() : void
+        {
+            quantity.value = 1;
+            create = true;
+            return;
+        }// end function
+
+        public function _DegradationQuantityWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            quantityLenderer = _loc_1;
+            _loc_1.generator = DegradationQuantityWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function judgeQuantityMax(param1:ProductionVO) : Boolean
+        {
+            maxQuantity = param1.resourceQuantity;
+            maxCreateQuantity = _maxProductQuantity - param1.resourceQuantity;
+            if (maxCreateQuantity <= 0)
+            {
+                return false;
+            }
+            return true;
+        }// end function
+
+        public function quantityLendererFunction(param1:Object) : int
+        {
+            return param1.required;
+        }// end function
+
+        public function onClose() : void
+        {
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function adjustLayout(param1:Boolean) : void
+        {
+            if (param1)
+            {
+                bigbox.styleName = "CrystalQtyBg";
+                currentQuantityLabel.x = 25;
+                currentQuantityLabel.y = 30;
+                _showStepper = false;
+                quantity.value = 1;
+                buttons.y = 240;
+                dataList.height = 144;
+            }
+            else
+            {
+                bigbox.styleName = "ProcuctionQtyBg";
+                currentQuantityLabel.x = 45;
+                currentQuantityLabel.y = 180;
+                _showStepper = true;
+                buttons.y = 220;
+                dataList.height = 116;
+            }
+            return;
+        }// end function
+
+        public function _DegradationQuantityWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _DegradationQuantityWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "quantity";
+            _loc_1.headerText = "分解で手に入る個数";
+            _loc_1.width = 150;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_DegradationQuantityWindow_DataGridColumn2", _DegradationQuantityWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _DegradationQuantityWindow_DataGridColumn1_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "vo.nameLabel";
+            _loc_1.headerText = "材料";
+            _loc_1.width = 125;
+            return _loc_1;
+        }// end function
+
+        public function produce() : void
+        {
+            var _loc_3:Object = null;
+            var _loc_1:Object = {production:production, quantity:quantity.value};
+            if (production.reproduction)
+            {
+                _loc_1.instance_id = _reproduction.belongingVO.belongingId;
+            }
+            var _loc_2:* = new Array();
+            for each (_loc_3 in requirements)
+            {
+                
+                _loc_2.push(_loc_3.vo.nameLabel);
+            }
+            this.dispatchEvent(new PopupEvent(DEGRADAT, {params:_loc_1, nameArray:_loc_2}));
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Box id="bigbox" width="330" height="270" styleName="ProcuctionQtyBg">
+		<mx:Canvas id="smallerCanvas">
+			<mx:Label id="_DegradationQuantityWindow_Label1" styleName="ItemName" x="30" y="13" text="{production.masterVO.product.nameLabel}"/>
+			<mx:DataGrid id="dataList" styleName="ProductionGrid" x="30" y="53" height="116" headerHeight="29" rowHeight="28" sortableColumns="false" columns="{[_DegradationQuantityWindow_DataGridColumn1_c(), _DegradationQuantityWindow_DataGridColumn2_i()]}" verticalAlign="middle" dataProvider='{requirements}'/>
+			<mx:Label id="currentQuantityLabel" styleName="ProductionQtyText" x="45" y="180" text="resourceQuantityLabel"/>
+			<mx:Label id="_DegradationQuantityWindow_Label3" styleName="ProductionQtyText" x="45" y="200" text="{合成成功確率 " + production.successRate + "%}" visible="{production.isCrystal}"/>
+			<mx:Label id="_DegradationQuantityWindow_Label4" text="個数" styleName="ProductionQtyText" x="205" y="180" visible="_showStepper"/>
+			<mx:NumericStepper id="quantity" x="238" y="180" minimum="1" value="1" cornerRadius="0" borderColor="10058583" iconColor="5318420" color="#000b333c" themeColor="16737843" maximum="maxQuantity" visible="_showStepper"/>
+			<mx:HBox id="buttons" y="220" x="70" horizontalGap="15">
+				<mx:Button label="" styleName="CancelCanaButton" buttonMode="true" click="{onClose();}"/>
+				<mx:Button id="OkBtn" label="" styleName="OkButton" buttonMode="true" click="{produce();}"/>
+			</mx:HBox>
+		</mx:Canvas>
+	</mx:Box>
+
+</mx:Canvas>

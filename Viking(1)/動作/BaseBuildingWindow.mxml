@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{createComp();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import com.kbmj.viking.vo.home.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  _ownMaterials:Array;
+        private var  _windowLabel:String;
+        private var  _ownMoney:int;
+        public var  units:Array;
+        private var  crashWindow:Crash;
+        public var  areaId:int;
+        private var  _materialMaster:Object;
+        public var  buttonEnabled:Boolean = false;
+        private var  enoughObject:Array;
+        public var  buildingId:int;
+        private static const  ABILITY_LABELS:Object = {strength:Utils.i18n("generalStrength"), intelligence:Utils.i18n("generalIntelligence"), tech:Utils.i18n("generalTech"), agility:Utils.i18n("generalAgility"), defense:Utils.i18n("generalDefense"), luck:Utils.i18n("generalLuck")};
+        public static const  OPEN_UNIT_LIST:String = "BaseBuildingWindow/openUnitList";
+
+
+        public function popupComplete() : void
+        {
+            return;
+        }// end function
+
+        public function init(param1:BuildingVO, param2:int, param3:Array, param4:ConstructionVO) : void
+        {
+            var _loc_6:int = 0;
+            var _loc_7:Object = null;
+            var _loc_8:int = 0;
+            var _loc_9:Object = null;
+            var _loc_10:Object = null;
+            this.buildingVO = param1;
+            this.areaId = param2;
+            this.construction = param4;
+            this.units = param3;
+            buildingId = param1.buildingMasterId;
+            var _loc_5:* = param1.buildingMasterVO.masterId;
+            cancelVisible = !param1.underConstruction;
+            _buidingLevel = "Lv." + param1.level;
+            if (_loc_5 == 2)
+            {
+                updateBuilding = false;
+                _strImgPosX = 70;
+            }
+            else if (_loc_5 == 3)
+            {
+                updateBuilding = false;
+                _strImgPosX = 70;
+            }
+            else
+            {
+                minutes = this.construction.minutes;
+                updateBuilding = true;
+                _strImgPosX = 65;
+                maxNum = 10 - param1.repeatCount;
+                enoughObject = new Array(10, 10, 10, 10);
+                _loc_6 = 0;
+                if (_ownMaterials.length > 0)
+                {
+                    for each (_loc_9 in _ownMaterials)
+                    {
+                        
+                        for each (_loc_10 in param4.materials)
+                        {
+                            
+                            if (_loc_9.nameLabel == _loc_10.nameLabel && maxNum > _loc_9.quantity / _loc_10.quantity)
+                            {
+                                maxNum = int(_loc_9.quantity / _loc_10.quantity);
+                                enoughObject[_loc_6] = maxNum;
+                                _loc_6++;
+                                continue;
+                            }
+                            if (_loc_9.nameLabel == _loc_10.nameLabel)
+                            {
+                                _loc_6++;
+                            }
+                        }
+                    }
+                }
+                if (maxNum > _ownMoney / param4.gold)
+                {
+                    maxNum = int(_ownMoney / param4.gold);
+                    enoughObject[3] = maxNum;
+                }
+                for each (_loc_7 in enoughObject)
+                {
+                    
+                    trace("限界:" + _loc_7);
+                }
+                goldColor = param4.requirement.textGoldColor;
+                _loc_8 = 0;
+                while (_loc_8 < 3)
+                {
+                    
+                    materialsColor.setItemAt(getColor(param4, _loc_8), _loc_8);
+                    _loc_8++;
+                }
+            }
+            if (param4)
+            {
+                neccesaryRank = PlayerVO.ONMYOU_RANK_LABELS[param4.playerRank];
+            }
+            return;
+        }// end function
+
+        public function onDestroy() : void
+        {
+            var _loc_1:* = new Crash();
+            _loc_1.addEventListener(Crash.CONFIRMED, confirmedHandler);
+            _loc_1.descriptionText = buildingVO.nameLabel + Utils.i18n("basebuilding_break_check");
+            this.popupWindow(_loc_1);
+            return;
+        }// end function
+
+        public function createComp() : void
+        {
+            if (!buildingVO.buildingMasterVO.repeatable || buildingVO.level >= buildingVO.buildingMasterVO.maxLevel)
+            {
+            }
+            enlarge.visible = buttonEnabled;
+            enlargeOff.visible = !buttonEnabled;
+            Loader(_swf_close_update.getChildAt(0)).contentLoaderInfo.addEventListener(Event.COMPLETE, function () : void
+            {
+                Loader(_swf_close_update.getChildAt(0)).contentLoaderInfo.removeEventListener(Event.COMPLETE, arguments.callee);
+                MovieClip(Loader(_swf_close_update.getChildAt(0)).content).gotoAndPlay("button_close");
+                return;
+            }// end function
+            );
+            Loader(_swf_enlarge.getChildAt(0)).contentLoaderInfo.addEventListener(Event.COMPLETE, function () : void
+            {
+                Loader(_swf_enlarge.getChildAt(0)).contentLoaderInfo.removeEventListener(Event.COMPLETE, arguments.callee);
+                MovieClip(Loader(_swf_enlarge.getChildAt(0)).content).gotoAndPlay("button_decide");
+                return;
+            }// end function
+            );
+            Loader(_swf_enlarge_off.getChildAt(0)).contentLoaderInfo.addEventListener(Event.COMPLETE, function () : void
+            {
+                Loader(_swf_enlarge_off.getChildAt(0)).contentLoaderInfo.removeEventListener(Event.COMPLETE, arguments.callee);
+                MovieClip(Loader(_swf_enlarge_off.getChildAt(0)).content).gotoAndPlay("button_decide_off");
+                return;
+            }// end function
+            );
+            Loader(_swf_close_ceremony.getChildAt(0)).contentLoaderInfo.addEventListener(Event.COMPLETE, function () : void
+            {
+                Loader(_swf_close_ceremony.getChildAt(0)).contentLoaderInfo.removeEventListener(Event.COMPLETE, arguments.callee);
+                MovieClip(Loader(_swf_close_ceremony.getChildAt(0)).content).gotoAndPlay("button_close");
+                return;
+            }// end function
+            );
+            Loader(_swf_ceremony.getChildAt(0)).contentLoaderInfo.addEventListener(Event.COMPLETE, function () : void
+            {
+                Loader(_swf_ceremony.getChildAt(0)).contentLoaderInfo.removeEventListener(Event.COMPLETE, arguments.callee);
+                MovieClip(Loader(_swf_ceremony.getChildAt(0)).content).gotoAndPlay("button_ceremony");
+                return;
+            }// end function
+            );
+            Loader(_swf_power.getChildAt(0)).contentLoaderInfo.addEventListener(Event.COMPLETE, function () : void
+            {
+                Loader(_swf_power.getChildAt(0)).contentLoaderInfo.removeEventListener(Event.COMPLETE, arguments.callee);
+                MovieClip(Loader(_swf_power.getChildAt(0)).content).gotoAndPlay("button_power");
+                return;
+            }// end function
+            );
+            Loader(_swf_window.getChildAt(0)).contentLoaderInfo.addEventListener(Event.COMPLETE, function () : void
+            {
+                Loader(_swf_window.getChildAt(0)).contentLoaderInfo.removeEventListener(Event.COMPLETE, arguments.callee);
+                MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay(_windowLabel);
+                return;
+            }// end function
+            );
+            Loader(_swf_delete.getChildAt(0)).contentLoaderInfo.addEventListener(Event.COMPLETE, function () : void
+            {
+                Loader(_swf_delete.getChildAt(0)).contentLoaderInfo.removeEventListener(Event.COMPLETE, arguments.callee);
+                MovieClip(Loader(_swf_delete.getChildAt(0)).content).gotoAndPlay("button_delete_data");
+                return;
+            }// end function
+            );
+            return;
+        }// end function
+
+        public function onUpgrade() : void
+        {
+            return;
+        }// end function
+
+        public function initMoreQuantity(param1:BuildingVO, param2:int, param3:Array, param4:ConstructionVO, param5:Array) : void
+        {
+            var constructions:Array;
+            var materialArray:Array;
+            var buildingVO:* = param1;
+            var areaId:* = param2;
+            var units:* = param3;
+            var construction:* = param4;
+            var constructionArray:* = param5;
+            this.buildingVO = buildingVO;
+            this.areaId = areaId;
+            this.construction = construction;
+            constructions = constructionArray;
+            materialArray = constructions.filter(function (param1:ConstructionVO, param2:int, param3:Array) : Boolean
+            {
+                return param1.level == (buildingVO.level + 1);
+            }// end function
+            );
+            buildMaterial = materialArray[0];
+            this.units = units;
+            buildingId = buildingVO.buildingMasterId;
+            var buildId:* = buildingVO.buildingMasterVO.masterId;
+            cancelVisible = !buildingVO.underConstruction;
+            _buidingLevel = "Lv." + buildingVO.level;
+            if (buildId != 2 && buildId != 3)
+            {
+                minutes = this.construction.minutes;
+                updateBuilding = true;
+            }
+            else
+            {
+                updateBuilding = false;
+            }
+            maxNum = 10 - buildingVO.repeatCount;
+            return;
+        }// end function
+
+        public function quantityLendererFunction(param1:Object) : int
+        {
+            return param1.quantity;
+        }// end function
+
+        public function getMaterials(param1:Object, param2:int) : String
+        {
+            if (!param1.materials[param2])
+            {
+                return " ";
+            }
+            return param1.materials[param2].masterVO.nameLabel;
+        }// end function
+
+        public function getColor(param1:Object, param2:int) : uint
+        {
+            return param1.requirement.materials[param2] && param1.requirement.materials[param2].isShort ? (15073298) : (0);
+        }// end function
+
+        public function getMaterialsSize(param1:Object, param2:int)
+        {
+            return param1.materials[param2].quantity;
+        }// end function
+
+        public function upgradeButtonClick() : void
+        {
+            if (!buttonEnabled)
+            {
+                return;
+            }
+            onUpgrade();
+            return;
+        }// end function
+
+        public function onRitual() : void
+        {
+            return;
+        }// end function
+
+        public function confirmedHandler(event:Event) : void
+        {
+            sendPopupEvent(Viking.HOME_DESTROY_BUILDING, buildingVO);
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function getAbility(param1:Object) : String
+        {
+            return ABILITY_LABELS[param1.abilities];
+        }// end function
+
+        public function close() : void
+        {
+            onClose();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Image id="_BaseBuildingWindow_Image1" x="0" y="0" source="{_swf_window}"/>
+	<mx:Label id="_BaseBuildingWindow_Label1" styleName="ProductionTitle" x="340" y="145" text="{buildingVO.buildingMasterVO.nameLabel}"/>
+	<mx:Label id="_BaseBuildingWindow_Label2" styleName="ClickStructureName" x="70" y="180" text="{Utils.i18n("buildingVO.buildingMasterVO.nameLabel")}"/>
+	<mx:Canvas id="buildingCanvas" x="120" y="120">
+		<mx:HBox y="40"/>
+		<mx:Image x="435" y="25" source="_embed_mxml__swf_common_button_close_window_swf_1370265653" click="{close();}"/>
+		<mx:Image id="_BaseBuildingWindow_Image3" x="260" y="230" click="{close();}" source="{_swf_close_update}"/>
+		<mx:Image id="enlarge" x="130" y="230" click="{upgradeButtonClick();}" source="{_swf_enlarge}"/>
+		<mx:Image id="enlargeOff" x="130" y="230" source="{_swf_enlarge_off}"/>
+	</mx:Canvas>
+	<mx:Canvas id="_BaseBuildingWindow_Canvas3" x="230" y="230" visible="updateBuilding">
+		<mx:Grid width="350" horizontalGap="30" verticalGap="0">
+			<mx:GridRow>
+				<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00204631">
+					<mx:Label id="_BaseBuildingWindow_Label3" width="80" fontSize="14" textAlign="center" color="#00eeeeee" text="{Utils.i18n("baseBuildingNecessaryTime")}"/>
+				</mx:GridItem>
+			</mx:GridRow>
+			<mx:GridRow>
+				<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00204631">
+					<mx:Label id="_BaseBuildingWindow_Label4" width="80" fontSize="14" textAlign="center" color="#00eeeeee" text="{Utils.i18n("baseBuildingNecessaryMoney")}"/>
+				</mx:GridItem>
+			</mx:GridRow>
+			<mx:GridRow>
+				<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00204631">
+					<mx:Label id="_BaseBuildingWindow_Label5" width="80" fontSize="14" textAlign="center" color="#00eeeeee" text="{Utils.i18n("baseBuildingNecessaryRank")}"/>
+				</mx:GridItem>
+			</mx:GridRow>
+			<mx:GridRow>
+				<mx:GridItem borderStyle="outset" borderColor="2829099" borderSides="bottom right" backgroundColor="#00204631">
+					<mx:Label id="_BaseBuildingWindow_Label6" width="80" fontSize="14" textAlign="center" color="#00eeeeee" text="{Utils.i18n("generalMaterial")}"/>
+				</mx:GridItem>
+			</mx:GridRow>
+		</mx:Grid>
+		<mx:Grid x="84" width="310" horizontalGap="30" verticalGap="0">
+			<mx:GridRow>
+				<mx:GridItem borderStyle="outset" borderColor="2829099" backgroundColor="#00e1e2c2">
+					<mx:Text id="_BaseBuildingWindow_Text1" width="212" fontSize="14" textAlign="center" text="{construction.minutes + " " + Utils.i18n("generalMinuts")}"/>
+				</mx:GridItem>
+			</mx:GridRow>
+			<mx:GridRow>
+				<mx:GridItem borderStyle="outset" borderColor="2829099" backgroundColor="#00f5f4dd">
+					<mx:Text id="moneyText" width="212" fontSize="14" textAlign="center" text="{construction.gold + " " + Utils.i18n("generalMoneyUnit")}" color="#00000000"/>
+				</mx:GridItem>
+			</mx:GridRow>
+			<mx:GridRow>
+				<mx:GridItem borderStyle="outset" borderColor="2829099" backgroundColor="#00e1e2c2">
+					<mx:Text id="_BaseBuildingWindow_Text3" width="212" fontSize="14" textAlign="center" text="neccesaryRank"/>
+				</mx:GridItem>
+			</mx:GridRow>
+			<mx:GridRow>
+				<mx:GridItem borderStyle="outset" borderColor="2829099" backgroundColor="#00f5f4dd">
+					<mx:Text id="_BaseBuildingWindow_Text4" width="212" fontSize="14" textAlign="center" text="getMaterials(construction, 0) + "×" + getMaterialsSize(construction, 0)" color="#00000000"/>
+				</mx:GridItem>
+			</mx:GridRow>
+		</mx:Grid>
+	</mx:Canvas>
+
+</mx:PopupWindow>

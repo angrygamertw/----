@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{addSwf();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.*;
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private const  TYPE_TOWER:int = 2;
+        private const  TYPE_FORT:int = 1;
+        public static const  SELECT_STRUCTURE:String = NAME + "selectStructure";
+        public static const  NAME:String = "foundSelectWindow";
+
+
+        public function addSwf() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_300x270");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_back");
+            MovieClip(Loader(_swf_fort.getChildAt(0)).content).gotoAndPlay("button_build_fort");
+            MovieClip(Loader(_swf_tower.getChildAt(0)).content).gotoAndPlay("button_build_turrent");
+            return;
+        }// end function
+
+        public function selectType(param1:int) : void
+        {
+            sendPopupEvent(SELECT_STRUCTURE, param1);
+            close();
+            return;
+        }// end function
+
+        public function close() : void
+        {
+            onClose();
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas>
+		<mx:Image id="_FoundSelectWindow_Image1" source="{_swf_window}"/>
+		<mx:Text text="建築" x="365" y="147" styleName="PanelBaseTitle"/>
+		<mx:VBox x="190" y="192" height="300" verticalGap="10">
+			<mx:Canvas height="55" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+				<mx:Image id="_FoundSelectWindow_Image2" x="60" y="15" click="{selectType(TYPE_FORT);}" source="{_swf_fort}"/>
+				<mx:TextArea id="_FoundSelectWindow_TextArea1" x="165" y="10" width="200" height="70" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text="{Utils.i18n("allMapFortDescription")}"/>
+			</mx:Canvas>
+			<mx:Canvas height="55" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+				<mx:Image id="_FoundSelectWindow_Image3" x="60" y="15" click="{selectType(TYPE_TOWER);}" source="{_swf_tower}"/>
+				<mx:TextArea id="_FoundSelectWindow_TextArea2" x="165" y="10" width="200" height="70" editable="false" fontSize="12" backgroundAlpha="0" borderStyle="none" text="{Utils.i18n("allMapTowerDescription")}"/>
+			</mx:Canvas>
+		</mx:VBox>
+		<mx:Image id="_FoundSelectWindow_Image4" x="325" y="350" click="{close();}" source="{_swf_close}"/>
+	</mx:Canvas>
+
+</mx:PopupWindow>

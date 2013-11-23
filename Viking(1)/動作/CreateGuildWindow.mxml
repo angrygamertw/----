@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{setup();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.utils.*;
+
+        private var  _createGuildName:String;
+        private var  _createGuildComment:String;
+        private var  guildBtn_selected:Boolean;
+        private var  closeChange:int = 0;
+        private var  checkCount:int = 0;
+        private var  _createGuildFeatures:Array;
+        public static const  CHANGE_GUILD_INFO:String = "changeGuildInfo";
+        private static const  WINDOW_X:int = 20;
+        private static const  WINDOW_Y:int = 80;
+        private static const  BUTTON_X:int = 245;
+        private static const  BUTTON_Y:int = 490;
+        public static const  CREATE_GUILD:String = NAME + "/createGuild";
+        public static const  CLOSE_CREATE_GUILD:String = "closeCreateGuild";
+        public static const  NAME:String = "CreateGuildWindow";
+        private static const  WINDOW_HT:int = 460;
+        private static const  WINDOW_WD:int = 560;
+
+
+        public function close() : void
+        {
+            dispatchEvent(new Event(CLOSE_CREATE_GUILD));
+            onClose();
+            guildName.text = "";
+            guildComment.text = "";
+            errorMessage = "";
+            MovieClip(Loader(_swf_create.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_create.getChildAt(0)).content).gotoAndPlay("button_make");
+            MovieClip(Loader(_swf_decide.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_decide.getChildAt(0)).content).gotoAndPlay("button_decide");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_close_window.getChildAt(0)).content).gotoAndPlay(1);
+            return;
+        }// end function
+
+        public function initWindow() : void
+        {
+            var _loc_1:int = 0;
+            var _loc_2:int = 0;
+            if (!_myGuildData)
+            {
+                guildName.text = "";
+                guildComment.text = "";
+                guildNameText.text = Utils.i18n("createGuildInputName");
+                createCanvas.visible = true;
+                changeGuildInfo.visible = false;
+                windowTitle.text = Utils.i18n("createGuildCreateGuild");
+                DecideButton.source = _swf_create;
+                guildBtn_selected = false;
+            }
+            else
+            {
+                guildName.text = _myGuildData.name;
+                guildBtn_selected = true;
+                guildNameText.text = Utils.i18n("createGuildUpdateInfo");
+                createCanvas.visible = false;
+                changeGuildInfo.visible = true;
+                windowTitle.text = Utils.i18n("createGuildChangeInfo");
+                DecideButton.source = _swf_decide;
+                _loc_1 = 0;
+                while (_loc_1 < _myGuildData.guild_features.length)
+                {
+                    
+                    _loc_2 = 0;
+                    while (_loc_2 < viewDataCheckBox.length)
+                    {
+                        
+                        if (viewDataCheckBox[_loc_2].id == _myGuildData.guild_features[_loc_1].guild_feature_master_id)
+                        {
+                            onCheck(viewDataCheckBox[_loc_2]);
+                        }
+                        _loc_2++;
+                    }
+                    _loc_1++;
+                }
+                guildComment.text = _myGuildData.comment;
+            }
+            return;
+        }// end function
+
+        public function setData(param1:Array) : void
+        {
+            viewDataCheckBox = new ArrayCollection();
+            dataArray = new Array();
+            var _loc_2:int = 0;
+            while (_loc_2 < param1.length)
+            {
+                
+                dataArray.push(new ObjectProxy({label:param1[_loc_2].name, enabled:true, clicked:false, id:param1[_loc_2].masterId}));
+                _loc_2++;
+            }
+            viewDataCheckBox = new ArrayCollection(dataArray);
+            checkCount = 0;
+            closeChange = 0;
+            return;
+        }// end function
+
+        public function _CreateGuildWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            listRenderer = _loc_1;
+            _loc_1.generator = CreateGuildWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function onCheck(param1:Object) : void
+        {
+            var _loc_2:int = 0;
+            var _loc_3:int = 0;
+            if (param1.clicked)
+            {
+                var _loc_5:* = checkCount - 1;
+                checkCount = _loc_5;
+                param1.clicked = false;
+                if (closeChange == 1)
+                {
+                    closeChange = -1;
+                }
+            }
+            else
+            {
+                var _loc_5:* = checkCount + 1;
+                checkCount = _loc_5;
+                param1.clicked = true;
+                if (checkCount >= 3)
+                {
+                    closeChange = 1;
+                }
+                else
+                {
+                    closeChange = 0;
+                }
+            }
+            viewDataCheckBox.itemUpdated(viewDataCheckBox);
+            if (closeChange == 1)
+            {
+                _loc_2 = 0;
+                while (_loc_2 < viewDataCheckBox.length)
+                {
+                    
+                    if (checkCount > 2)
+                    {
+                        if (!viewDataCheckBox[_loc_2].clicked)
+                        {
+                            viewDataCheckBox[_loc_2].enabled = false;
+                        }
+                    }
+                    _loc_2++;
+                }
+            }
+            if (closeChange == -1)
+            {
+                _loc_3 = 0;
+                while (_loc_3 < viewDataCheckBox.length)
+                {
+                    
+                    viewDataCheckBox[_loc_3].enabled = true;
+                    _loc_3++;
+                }
+            }
+            return;
+        }// end function
+
+        public function setup() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("left_560x460");
+            MovieClip(Loader(_swf_create.getChildAt(0)).content).gotoAndPlay("button_make");
+            MovieClip(Loader(_swf_decide.getChildAt(0)).content).gotoAndPlay("button_decide");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            return;
+        }// end function
+
+        public function isValidName() : Boolean
+        {
+            if (guildName.text == "")
+            {
+                _errorMessage = Utils.i18n("createGuildWarningNameNon");
+                return false;
+            }
+            var _loc_1:int = 0;
+            while (_loc_1 < guildName.text.length)
+            {
+                
+                if (guildName.text.charAt(_loc_1) == " " || guildName.text.charAt(_loc_1) == "　")
+                {
+                    _errorMessage = Utils.i18n("createGuildWarningSpase");
+                    return false;
+                }
+                if (guildName.text.charAt(_loc_1) == "\n" || guildName.text.charAt(_loc_1) == "\r")
+                {
+                    _errorMessage = Utils.i18n("createGuildWarningBreak");
+                    return false;
+                }
+                if (guildName.text.charAt(_loc_1) == "\t")
+                {
+                    _errorMessage = Utils.i18n("createGuildWarningTab");
+                    return false;
+                }
+                _loc_1++;
+            }
+            return true;
+        }// end function
+
+        public function onCreate() : void
+        {
+            var _loc_1:int = 0;
+            if (isValidName())
+            {
+                _createGuildName = guildName.text;
+                _createGuildComment = guildComment.text;
+                _createGuildFeatures = new Array();
+                _loc_1 = 0;
+                while (_loc_1 < viewDataCheckBox.length)
+                {
+                    
+                    if (viewDataCheckBox[_loc_1].clicked)
+                    {
+                        _createGuildFeatures.push(viewDataCheckBox[_loc_1].id);
+                    }
+                    _loc_1++;
+                }
+                if (guildBtn_selected == false)
+                {
+                    dispatchEvent(new Event(CREATE_GUILD));
+                }
+                else
+                {
+                    dispatchEvent(new Event(CHANGE_GUILD_INFO));
+                }
+            }
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="windowLayer"/>
+	<mx:Canvas id="createGuildCanvas">
+		<mx:Image id="_CreateGuildWindow_Image1" source="{_swf_window}"/>
+		<mx:Text id="windowTitle" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD"/>
+		<mx:Text id="guildNameText" styleName="GulidEstablishmentText" x="40" y="115"/>
+		<mx:Canvas id="createCanvas" visible="true">
+			<mx:TextInput id="guildName" styleName="NameTextArea" width="200" height="34" x="60" y="145" fontSize="16"/>
+			<mx:Text id="_CreateGuildWindow_Text3" styleName="GulidEstablishmentText" x="270" y="145" text="{Utils.i18n("createGuildCharacterLimit")}"/>
+			<mx:Text id="_CreateGuildWindow_Text4" styleName="GulidEstablishmentText" x="270" y="160" text="{Utils.i18n("createGuildCanNotUseSpase")}"/>
+			<mx:TextArea id="errorLabel" editable="false" x="60" y="185" width="400" height="18" color="#00ff0000" backgroundAlpha="0" borderStyle="none" text="_errorMessage"/>
+		</mx:Canvas>
+		<mx:Text id="changeGuildInfo" styleName="GulidEstablishmentText" width="200" x="40" y="145" visible="false" text="{Utils.i18n("createGuildName") + ": " + guildName.text}"/>
+		<mx:Text id="_CreateGuildWindow_Text6" styleName="GulidEstablishmentText" x="40" y="215" text="{Utils.i18n("createGuildSelectConditions")}"/>
+		<mx:TileList id="_CreateGuildWindow_TileList1" styleName="PossibleClass" x="60" y="245" width="450" direction="horizontal" columnWidth="140" rowHeight="25" columnCount="2" selectable="false" backgroundAlpha="0" useRollOver="false" textAlign="left" borderStyle="none" dataProvider='{viewDataCheckBox}' itemRenderer="listRenderer"/>
+		<mx:Text id="_CreateGuildWindow_Text7" styleName="GulidEstablishmentText" x="40" y="340" text="{Utils.i18n("createGuildComment")}"/>
+		<mx:TextArea id="guildComment" width="480" height="90" x="60" y="370" maxChars="100"/>
+		<mx:Image id="DecideButton" click="{onCreate();}" x="BUTTON_X - 65" y="BUTTON_Y"/>
+		<mx:Image id="_CreateGuildWindow_Image3" click="{close();}" x="BUTTON_X + 65" y="BUTTON_Y" source="{_swf_close}"/>
+		<mx:Image id="_CreateGuildWindow_Image4" click="{close();}" x="WINDOW_X + WINDOW_WD - 25" y="WINDOW_Y" source="{_swf_close_window}"/>
+	</mx:Canvas>
+
+</mx:PopupWindow>

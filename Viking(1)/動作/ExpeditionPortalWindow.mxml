@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public static const  HOME_ACTION_GOTO_EVENT_MAP:String = NAME + "gotoEventMap";
+        public static const  HOME_ACTION_GOTO_EXPEDITION2:String = NAME + "gotoExpedition2";
+        public static const  HOME_ACTION_GOTO_EXPEDITION3NORMAL:String = NAME + "gotoExpedition3Normal";
+        public static const  HOME_ACTION_GOTO_EXPEDITION3HARD:String = NAME + "gotoExpedition3Hard";
+        public static const  NAME:String = "ExpeditionPortalWindow";
+        public static const  CLOSE_EXPEDITION_PORTAL_WINDOW:String = NAME + "closeExpeditionPortalWindow";
+        public static const  SELECT_EXPEDITION3:String = NAME + "selectExpedition3";
+        public static const  HOME_ACTION_GOTO_CONTINUATION:String = NAME + "gotoContinuation";
+        public static const  HOME_ACTION_GOTO_EXPEDITION:String = NAME + "gotoExpedition";
+        public static var  EmbedSwfExpeditionPortal:Class;
+
+
+        public function expeditionButtonsClicked(event:Event) : void
+        {
+            dispatchEvent(new Event(HOME_ACTION_GOTO_EXPEDITION));
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            MovieClip(Loader(_swf_expedition_portal.getChildAt(0)).content).gotoAndPlay(0);
+            return;
+        }// end function
+
+        public function expedition3HardClicked(event:Event) : void
+        {
+            dispatchEvent(new Event(HOME_ACTION_GOTO_EXPEDITION3HARD));
+            return;
+        }// end function
+
+        public function expedition3NormalClicked(event:Event) : void
+        {
+            dispatchEvent(new Event(HOME_ACTION_GOTO_EXPEDITION3NORMAL));
+            return;
+        }// end function
+
+        public function expedition2ButtonsClicked(event:Event) : void
+        {
+            dispatchEvent(new Event(HOME_ACTION_GOTO_EXPEDITION2));
+            return;
+        }// end function
+
+        public function eventMapButtonsClicked(event:Event) : void
+        {
+            dispatchEvent(new Event(HOME_ACTION_GOTO_EVENT_MAP));
+            return;
+        }// end function
+
+        public function backButtonsClicked(event:Event) : void
+        {
+            removeEvent();
+            dispatchEvent(new Event(CLOSE_EXPEDITION_PORTAL_WINDOW));
+            return;
+        }// end function
+
+        public function removeEvent() : void
+        {
+            Loader(_swf_expedition_portal.getChildAt(0)).content.removeEventListener("BUTTON_BACK", backButtonsClicked);
+            Loader(_swf_expedition_portal.getChildAt(0)).content.removeEventListener("BUTTON_EX_01", expeditionButtonsClicked);
+            Loader(_swf_expedition_portal.getChildAt(0)).content.removeEventListener("BUTTON_EX_02", expedition2ButtonsClicked);
+            Loader(_swf_expedition_portal.getChildAt(0)).content.removeEventListener("BUTTON_EX_03_NORMAL", expedition3NormalClicked);
+            Loader(_swf_expedition_portal.getChildAt(0)).content.removeEventListener("BUTTON_EX_03_DIFFICULT", expedition3HardClicked);
+            Loader(_swf_expedition_portal.getChildAt(0)).content.removeEventListener("BUTTON_EX_04", eventMapButtonsClicked);
+            Loader(_swf_expedition_portal.getChildAt(0)).content.removeEventListener("BUTTON_BATTLEMAP", continuationButtonsClicked);
+            return;
+        }// end function
+
+        public function addEvent() : void
+        {
+            Loader(_swf_expedition_portal.getChildAt(0)).content.addEventListener("BUTTON_BACK", backButtonsClicked);
+            Loader(_swf_expedition_portal.getChildAt(0)).content.addEventListener("BUTTON_EX_01", expeditionButtonsClicked);
+            Loader(_swf_expedition_portal.getChildAt(0)).content.addEventListener("BUTTON_EX_02", expedition2ButtonsClicked);
+            Loader(_swf_expedition_portal.getChildAt(0)).content.addEventListener("BUTTON_EX_03_NORMAL", expedition3NormalClicked);
+            Loader(_swf_expedition_portal.getChildAt(0)).content.addEventListener("BUTTON_EX_03_DIFFICULT", expedition3HardClicked);
+            Loader(_swf_expedition_portal.getChildAt(0)).content.addEventListener("BUTTON_EX_04", eventMapButtonsClicked);
+            Loader(_swf_expedition_portal.getChildAt(0)).content.addEventListener("BUTTON_BATTLEMAP", continuationButtonsClicked);
+            init();
+            return;
+        }// end function
+
+        public function continuationButtonsClicked(event:Event) : void
+        {
+            dispatchEvent(new Event(HOME_ACTION_GOTO_CONTINUATION));
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_ExpeditionPortalWindow_Image1" source="{_swf_expedition_portal}"/>
+
+</mx:PopupWindow>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  _iconUnit:UnitVO;
+        public static var  EmbedSwfCommandIcon:Class;
+
+
+        public function init() : void
+        {
+            levelUpIcon.x = _iconUnit.loader.x;
+            levelUpIcon.y = _iconUnit.loader.y;
+            levelUpIcon.visible = true;
+            return;
+        }// end function
+
+        public function unitStatusIcon(param1:UnitVO) : Boolean
+        {
+            var unit:* = param1;
+            _iconUnit = unit;
+            var bool:Boolean;
+            if (unit.levelUpped)
+            {
+                bool;
+            }
+            _swf_icon = new EmbedSwfCommandIcon();
+            Loader(_swf_icon.getChildAt(0)).contentLoaderInfo.addEventListener(Event.COMPLETE, function () : void
+            {
+                Loader(_swf_icon.getChildAt(0)).contentLoaderInfo.removeEventListener(Event.COMPLETE, arguments.callee);
+                MovieClip(Loader(_swf_icon.getChildAt(0)).content).gotoAndPlay(0);
+                return;
+            }// end function
+            );
+            return bool;
+        }// end function
+
+        public function positionChange() : void
+        {
+            levelUpIcon.x = _iconUnit.loader.x;
+            levelUpIcon.y = _iconUnit.loader.y;
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="levelUpIcon" visible="false" source="{_swf_icon}"/>
+
+</mx:Canvas>

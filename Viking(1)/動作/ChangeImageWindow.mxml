@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.home.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  confirmImageChangeWindow:ConfirmImageChangeWindow;
+        private var  _unit:UnitVO;
+        public static const  NAME:String = "ChangeImageWindow";
+        public static const  IMAGE_SELECTED:String = NAME + "/Confirmed";
+
+
+        public function _ChangeImageWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            unitImageRenderer = _loc_1;
+            _loc_1.generator = ChangeImageWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function init() : void
+        {
+            confirmImageChangeWindow.addEventListener(ConfirmImageChangeWindow.CONFIRMED, onConfirm);
+            return;
+        }// end function
+
+        public function onConfirm(event:PopupEvent) : void
+        {
+            sendPopupEvent(IMAGE_SELECTED, event.param);
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function onClick(param1:Object) : void
+        {
+            confirmImageChangeWindow.init(_unit, UnitImageVO(param1));
+            popupWindow(confirmImageChangeWindow);
+            return;
+        }// end function
+
+        public function setImages(param1:Array) : void
+        {
+            _images = new ArrayCollection(param1);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:VBox>
+		<mx:TileList id="buildingdatalist" x="15" y="50" height="430" width="738" selectable="false" horizontalScrollPolicy="off" maxColumns="5" columnWidth="144" rowHeight="210" backgroundColor="#00c0a785" borderStyle="none" dataProvider='{_images}' itemRenderer="unitImageRenderer"/>
+		<mx:HBox y="500" width="100%">
+			<mx:Spacer width="100%"/>
+			<mx:Button id="cancel_button" styleName="CancelCanaButton" buttonMode="true" click="{onClose();}"/>
+			<mx:Spacer width="100%"/>
+		</mx:HBox>
+		<mx:Spacer height="100%"/>
+	</mx:VBox>
+
+</mx:PopupWindow>

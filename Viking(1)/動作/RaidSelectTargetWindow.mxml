@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:CanvasWithPopUp xmlns:mx="http://www.adobe.com/2006/mxml" height="567" width="750">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  _selectTargetName:String;
+        private var  _selectTargetId:int = 0;
+        private var  _loadCount:int = 0;
+        public static const  TARGET_SELECT:String = "targetSerect";
+
+
+        public function _RaidSelectTargetWindow_DataGridColumn4_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "civilization";
+            _loc_1.headerText = "文明度";
+            _loc_1.width = 80;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _RaidSelectTargetWindow_DataGridColumn6_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "notoriety";
+            _loc_1.headerText = "悪名";
+            _loc_1.width = 80;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _RaidSelectTargetWindow_DataGridColumn8_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "civilization";
+            _loc_1.headerText = "文明度";
+            _loc_1.width = 80;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _RaidSelectTargetWindow_DataGridColumn2_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "notoriety";
+            _loc_1.headerText = "悪名";
+            _loc_1.width = 80;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function init() : void
+        {
+            _targetNotoriety = new Array();
+            _targetRival = new Array();
+            _targetRevenge = new Array();
+            _selectTargetId = 0;
+            _loadCount = 0;
+            return;
+        }// end function
+
+        public function _RaidSelectTargetWindow_DataGridColumn11_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "rarity";
+            _loc_1.headerText = "お宝度";
+            _loc_1.width = 80;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function onClose() : void
+        {
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function _RaidSelectTargetWindow_DataGridColumn5_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "name";
+            _loc_1.headerText = "名前";
+            _loc_1.width = 200;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _RaidSelectTargetWindow_DataGridColumn7_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "rarity";
+            _loc_1.headerText = "お宝度";
+            _loc_1.width = 80;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _RaidSelectTargetWindow_DataGridColumn1_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "name";
+            _loc_1.headerText = "名前";
+            _loc_1.width = 200;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _RaidSelectTargetWindow_DataGridColumn3_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "rarity";
+            _loc_1.headerText = "お宝度";
+            _loc_1.width = 80;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _RaidSelectTargetWindow_DataGridColumn12_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "civilization";
+            _loc_1.headerText = "文明度";
+            _loc_1.width = 80;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _RaidSelectTargetWindow_DataGridColumn9_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "name";
+            _loc_1.headerText = "名前";
+            _loc_1.width = 200;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function onClick(param1:Object) : void
+        {
+            _selectTargetId = param1.id;
+            _selectTargetName = param1.name;
+            sendEvent(TARGET_SELECT);
+            onClose();
+            return;
+        }// end function
+
+        public function _RaidSelectTargetWindow_DataGridColumn10_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "notoriety";
+            _loc_1.headerText = "悪名";
+            _loc_1.width = 80;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:ViewStack id="itemList" width="100%" height="100%">
+		<mx:Canvas label="悪名" width="100%" height="100%">
+			<mx:Box x="27" y="89" height="317" width="515">
+				<mx:DataGrid id="notoriety_list" width="515" height="317" rowCount="20" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_RaidSelectTargetWindow_DataGridColumn1_c(), _RaidSelectTargetWindow_DataGridColumn2_c(), _RaidSelectTargetWindow_DataGridColumn3_c(), _RaidSelectTargetWindow_DataGridColumn4_c()]}" verticalAlign="middle" dataProvider='{_targetNotoriety}'/>
+			</mx:Box>
+		</mx:Canvas>
+		<mx:Canvas label="襲撃可能対象" width="100%" height="100%">
+			<mx:Box x="27" y="89" height="317" width="515">
+				<mx:DataGrid id="development_list" width="515" height="317" rowCount="20" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_RaidSelectTargetWindow_DataGridColumn5_c(), _RaidSelectTargetWindow_DataGridColumn6_c(), _RaidSelectTargetWindow_DataGridColumn7_c(), _RaidSelectTargetWindow_DataGridColumn8_c()]}" verticalAlign="middle" dataProvider='{_targetRival}'/>
+			</mx:Box>
+		</mx:Canvas>
+		<mx:Canvas label="復讐" width="100%" height="100%">
+			<mx:Box x="27" y="89" height="317" width="515">
+				<mx:DataGrid id="revenge_list" width="515" height="317" rowCount="20" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_RaidSelectTargetWindow_DataGridColumn9_c(), _RaidSelectTargetWindow_DataGridColumn10_c(), _RaidSelectTargetWindow_DataGridColumn11_c(), _RaidSelectTargetWindow_DataGridColumn12_c()]}" verticalAlign="middle" dataProvider='{_targetRevenge}'/>
+			</mx:Box>
+		</mx:Canvas>
+	</mx:ViewStack>
+	<mx:Canvas x="25" y="59">
+		<mx:TabBar id="itemListTabBar" styleName="SortieEqpTab" dataProvider='{itemList}'/>
+	</mx:Canvas>
+	<mx:Button width="26" height="26" x="535" y="10" styleName="closeBtn" buttonMode="true" click="{onClose();}"/>
+	<mx:Button id="cancel_button" x="245" y="415" styleName="CancelCanaButton" buttonMode="true" click="{onClose();}"/>
+
+</mx:CanvasWithPopUp>

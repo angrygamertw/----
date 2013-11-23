@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml" width="110">
+	<mx:Script><![CDATA[
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public var  _SellExhibitWindow_inlineComponent4_Label1:Label;
+
+    ]]></mx:Script>
+
+	<mx:Label id="_SellExhibitWindow_inlineComponent4_Label1" width="110" textAlign="center" text="{outerDocument.getPriceLabel(data)}"/>
+
+</mx:Box>

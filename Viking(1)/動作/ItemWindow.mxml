@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{setup();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private static const  WINDOW_X:int = 180;
+        private static const  WINDOW_Y:int = 145;
+        private static const  BUTTON_X:int = 325;
+        private static const  BUTTON_Y:int = 365;
+        private static const  WINDOW_HT:int = 270;
+        private static const  WINDOW_WD:int = 400;
+
+
+        public function onNo() : void
+        {
+            onClose();
+            MovieClip(Loader(_swf_no.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_no.getChildAt(0)).content).gotoAndPlay("button_no");
+            return;
+        }// end function
+
+        public function setup() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_400x270");
+            MovieClip(Loader(_swf_yes.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_no.getChildAt(0)).content).gotoAndPlay("button_no");
+            return;
+        }// end function
+
+        public function closeWindow() : void
+        {
+            onClose();
+            MovieClip(Loader(_swf_close_window.getChildAt(0)).content).gotoAndPlay(1);
+            return;
+        }// end function
+
+        public function onYes() : void
+        {
+            sendPopupEvent(Viking.ACTION_ITEM_SELECT, [_unit, _unit.item]);
+            onClose();
+            MovieClip(Loader(_swf_yes.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_yes.getChildAt(0)).content).gotoAndPlay("button_yes");
+            return;
+        }// end function
+
+        public function useItem(param1:UnitVO) : void
+        {
+            _unit = param1;
+            if (_unit.item)
+            {
+                _item_mes = Utils.i18n("itemUseItemConf", _unit.item.nameLabel, param1.item.effect, param1.item.endurance);
+            }
+            else
+            {
+                _item_mes = Utils.i18n("itemHaveNoItem");
+            }
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_ItemWindow_Image1" source="{_swf_window}"/>
+	<mx:Text id="_ItemWindow_Text1" styleName="DealTitle" x="WINDOW_X" y="WINDOW_Y" width="WINDOW_WD" text="{Utils.i18n("generalMaterial")}"/>
+	<mx:Image id="_ItemWindow_Image2" click="{closeWindow();}" x="WINDOW_X + WINDOW_WD - 25" y="WINDOW_Y" source="{_swf_close_window}"/>
+	<mx:Text id="_ItemWindow_Text2" fontSize="14" x="WINDOW_X + 20" y="WINDOW_Y + 35" text="_item_mes"/>
+	<mx:Image id="_ItemWindow_Image3" click="{onYes();}" x="BUTTON_X - 65" y="BUTTON_Y" source="{_swf_yes}"/>
+	<mx:Image id="_ItemWindow_Image4" click="{onNo();}" x="BUTTON_X + 65" y="BUTTON_Y" source="{_swf_no}"/>
+
+</mx:PopupWindow>

@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:CanvasWithPopUp xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.home.*;
+        import com.kbmj.viking.vo.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        public var  skillSelectWindow:SkillSelectWindow;
+        private var  _unitStatus:UnitStatus;
+        public var  skillLearnWindow:SkillLearnWindow;
+        public var  changeEquipmentWindow:ChangeEquipmentWindow;
+        public var  unitUtilityWindow:UnitUtilityWindow;
+        private var  _unit:UnitVO;
+        private var  _mode:String;
+        public var  unitUseItemWindow:UnitUseItemWindow;
+        public var  unitDismissWindow:UnitDismissWindow;
+        private var  _homeResource:ResourceVO;
+        public static const  CHANGE_EQUIPMENT_WINDOW_TMARK_FINISH:String = NAME + "/changeEquipmentWindowTmarkFinish";
+        public static const  CHANGE_EQUIPMENT_WINDOW_TMARK_EQUIP:String = NAME + "/changeEquipmentWindowTmarkEquip";
+        public static const  SKILL_CHANGE:String = NAME + "/skillChange";
+        public static const  NAME:String = "Sakura";
+        public static const  RENAME:String = NAME + "/rename";
+        public static const  CHANGE_EQUIPMENT_WINDOW_TMARK_CLOSE:String = NAME + "/changeEquipmentWindowTmarkClose";
+        public static const  RECOVERY:String = NAME + "/recovery";
+        public static const  CHANGE_EQUIPMENT_CANCEL:String = NAME + "/changeEquipmentCancel";
+        public static const  SKILL_LEARN_WINDOW_TMARK:String = NAME + "/skillLearnWindowTmark";
+        public static const  UTILITY_WINDOW_CLOSE:String = NAME + "/utilityWindowClose";
+        public static const  USE_ITEM_WINDOW_CLOSE:String = NAME + "/useItemWindowClose";
+        public static const  CHANGE_EQUIPMENT:String = NAME + "/changeEquipment";
+        public static const  SKILL_LEARN_WINDOW_CLOSE:String = NAME + "/skillLearnWindowClose";
+        public static var  EmbedSwfCommandSakuraIcon:Class;
+        public static const  REUNION:String = NAME + "/reunion";
+        public static const  USE_ITEM_WINDOW_TMARK:String = NAME + "/useItemWindowTmark";
+        public static const  CHANGE_EQUIPMENT_WINDOW_CLOSE:String = NAME + "/changeEquipmentWindowClose";
+        public static const  USE_ITEM:String = NAME + "/useItem";
+        public static const  CHANGE_EQUIPMENT_WINDOW_TMARK:String = NAME + "/changeEquipmentWindowTmark";
+        public static const  SKILL_LEARN:String = NAME + "/skillLearn";
+        public static const  IMAGE_CHANGE:String = NAME + "/imageChange";
+
+
+        public function skillLernHandler(event:PopupEvent) : void
+        {
+            dispatchEvent(new PopupEvent(SKILL_LEARN, {unitId:_unit.unitId, skill:event.param.skill}));
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            changeEquipmentWindow.addEventListener(ChangeEquipmentWindow.CHANGE_EQUIPMENT_FINISH, handleEvent);
+            changeEquipmentWindow.addEventListener(ChangeEquipmentWindow.CHANGE_EQUIPMENT_CANCEL, handleEvent);
+            changeEquipmentWindow.addEventListener(ChangeEquipmentWindow.CHANGE_EQUIPMENT_WINDOW_CLOSE, handleEvent);
+            changeEquipmentWindow.addEventListener(ChangeEquipmentWindow.CHANGE_EQUIPMENT_WINDOW_TMARK, handleEvent);
+            changeEquipmentWindow.addEventListener(ChangeEquipmentWindow.CHANGE_EQUIPMENT_WINDOW_TMARK_EQUIP, handleEvent);
+            changeEquipmentWindow.addEventListener(ChangeEquipmentWindow.CHANGE_EQUIPMENT_WINDOW_TMARK_FINISH_EQUIP, handleEvent);
+            changeEquipmentWindow.addEventListener(ChangeEquipmentWindow.CHANGE_EQUIPMENT_WINDOW_TMARK_CLOSE, handleEvent);
+            unitUseItemWindow.addEventListener(UnitUseItemWindow.USE_ITEM, useItemHandler);
+            unitUseItemWindow.addEventListener(UnitUseItemWindow.USE_ITEM_WINDOW_CLOSE, handleEvent);
+            unitUseItemWindow.addEventListener(UnitUseItemWindow.USE_ITEM_WINDOW_TMARK, handleEvent);
+            skillLearnWindow.addEventListener(SkillLearnWindow.SKILL_LEARN, skillLernHandler);
+            skillLearnWindow.addEventListener(SkillLearnWindow.SKILL_SELECT_WINDOW, skillSelectEvent);
+            skillLearnWindow.addEventListener(SkillLearnWindow.SKILL_LEARN_WINDOW_CLOSE, handleEvent);
+            skillLearnWindow.addEventListener(SkillLearnWindow.SKILL_LEARN_WINDOW_TMARK, handleEvent);
+            skillSelectWindow.addEventListener(SkillSelectWindow.SKILL_SELECT, skillChangeEvent);
+            unitUtilityWindow.addEventListener(Viking.REINCARNATE, usePowerHandler);
+            unitUtilityWindow.addEventListener(Viking.REJUVENATE, usePowerHandler);
+            unitUtilityWindow.addEventListener(Viking.RENAME, usePowerHandler);
+            unitUtilityWindow.addEventListener(Viking.IMAGE_CHANGE, imageChageHandler);
+            unitUtilityWindow.addEventListener(UnitUtilityWindow.UTILITY_WINDOW_CLOSE, handleEvent);
+            unitUtilityWindow.addEventListener(UnitUtilityWindow.REUNION, reunionHandler);
+            unitUtilityWindow.addEventListener(UnitUtilityWindow.RENAME, renameHandler);
+            unitUtilityWindow.addEventListener(UnitUtilityWindow.RECOVERY, recoveryHandler);
+            return;
+        }// end function
+
+        public function iconEquipment() : void
+        {
+            if (unitStatus)
+            {
+                unitStatus.unit = _unit;
+                unitStatus.changeHiLigth(changeEquipmentWindow.changeType);
+            }
+            dispatchEvent(new PopupEvent(Viking.HOME_GET_EQUIPABLE_RESOURCE, {unit:_unit, sakura:this}));
+            return;
+        }// end function
+
+        public function reunionHandler(event:PopupEvent) : void
+        {
+            dispatchEvent(new PopupEvent(REUNION, event.param));
+            return;
+        }// end function
+
+        public function renameHandler(event:PopupEvent) : void
+        {
+            dispatchEvent(new PopupEvent(RENAME, {unitId:_unit.unitId}));
+            return;
+        }// end function
+
+        public function removeSakuraTmarks() : void
+        {
+            tutMarkSakuraItem.visible = false;
+            tutMarkSakuraSkill.visible = false;
+            tutMarkSakuraLv.visible = false;
+            tutMarkSakuraEquip.visible = false;
+            return;
+        }// end function
+
+        public function clear() : void
+        {
+            if (unitStatus)
+            {
+                close();
+                _unit = new UnitVO();
+                unitStatus.init();
+                unitStatus.unit = _unit;
+            }
+            return;
+        }// end function
+
+        public function open(param1:UnitVO) : void
+        {
+            _unit = param1;
+            if (unitStatus)
+            {
+                unitStatus.unit = _unit;
+            }
+            MovieClip(Loader(_swf_sakura.getChildAt(0)).content).gotoAndPlay("animation_start");
+            unitcommandLayer.y = _unit.loader.y;
+            unitcommandLayer.x = _unit.loader.x;
+            unitcommandLayer.visible = true;
+            return;
+        }// end function
+
+        public function handleEvent(event:Event) : void
+        {
+            trace(event, changeEquipmentWindow.changeBool);
+            switch(event.type)
+            {
+                case ChangeEquipmentWindow.CHANGE_EQUIPMENT_FINISH:
+                {
+                    sendEvent(CHANGE_EQUIPMENT);
+                    break;
+                }
+                case ChangeEquipmentWindow.CHANGE_EQUIPMENT_CANCEL:
+                {
+                    sendEvent(CHANGE_EQUIPMENT_CANCEL);
+                    break;
+                }
+                case ChangeEquipmentWindow.CHANGE_EQUIPMENT_WINDOW_CLOSE:
+                {
+                    sendEvent(CHANGE_EQUIPMENT_WINDOW_CLOSE);
+                    break;
+                }
+                case ChangeEquipmentWindow.CHANGE_EQUIPMENT_WINDOW_TMARK:
+                {
+                    sendEvent(CHANGE_EQUIPMENT_WINDOW_TMARK);
+                    break;
+                }
+                case ChangeEquipmentWindow.CHANGE_EQUIPMENT_WINDOW_TMARK_EQUIP:
+                {
+                    sendEvent(CHANGE_EQUIPMENT_WINDOW_TMARK_EQUIP);
+                    break;
+                }
+                case ChangeEquipmentWindow.CHANGE_EQUIPMENT_WINDOW_TMARK_FINISH_EQUIP:
+                {
+                    sendEvent(CHANGE_EQUIPMENT_WINDOW_TMARK_FINISH);
+                    break;
+                }
+                case ChangeEquipmentWindow.CHANGE_EQUIPMENT_WINDOW_TMARK_CLOSE:
+                {
+                    sendEvent(CHANGE_EQUIPMENT_WINDOW_TMARK_CLOSE);
+                    break;
+                }
+                case UnitUseItemWindow.USE_ITEM_WINDOW_CLOSE:
+                {
+                    sendEvent(USE_ITEM_WINDOW_CLOSE);
+                    break;
+                }
+                case UnitUseItemWindow.USE_ITEM_WINDOW_TMARK:
+                {
+                    sendEvent(USE_ITEM_WINDOW_TMARK);
+                    break;
+                }
+                case SkillLearnWindow.SKILL_LEARN_WINDOW_CLOSE:
+                {
+                    sendEvent(SKILL_LEARN_WINDOW_CLOSE);
+                    break;
+                }
+                case SkillLearnWindow.SKILL_LEARN_WINDOW_TMARK:
+                {
+                    sendEvent(SKILL_LEARN_WINDOW_TMARK);
+                    break;
+                }
+                case UnitUtilityWindow.UTILITY_WINDOW_CLOSE:
+                {
+                    sendEvent(UTILITY_WINDOW_CLOSE);
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function showChangeEquipmentWindow(param1:UnitVO, param2:ResourceVO) : void
+        {
+            changeEquipmentWindow.setEquipment(param2);
+            changeEquipmentWindow.unit = _unit;
+            if (unitStatus)
+            {
+                unitStatus.unit = _unit;
+            }
+            return;
+        }// end function
+
+        public function imageChageHandler(event:PopupEvent) : void
+        {
+            dispatchEvent(new PopupEvent(IMAGE_CHANGE, event.param));
+            return;
+        }// end function
+
+        public function selectedSkill(param1:Array) : void
+        {
+            skillLearnWindow.init(param1, _unit);
+            return;
+        }// end function
+
+        public function showUtilityWindow() : void
+        {
+            var _loc_1:* = _unit;
+            unitUtilityWindow.unit = _loc_1;
+            this.popupWindow(unitUtilityWindow, false);
+            return;
+        }// end function
+
+        public function resetChangeEquipmentUnit(param1:Array) : void
+        {
+            var _loc_2:* = param1.getOne("unitId", changeEquipmentWindow.unitId);
+            _unit.exp = _loc_2.exp;
+            _unit.hp = _loc_2.hp;
+            if (unitStatus)
+            {
+                unitStatus.unit = _unit;
+            }
+            return;
+        }// end function
+
+        public function usePowerHandler(event:PopupEvent) : void
+        {
+            dispatchEvent(new PopupEvent(event.type, event.param));
+            return;
+        }// end function
+
+        public function useItemHandler(event:PopupEvent) : void
+        {
+            dispatchEvent(new PopupEvent(USE_ITEM, {unit:event.param.unit, item:event.param.item}));
+            return;
+        }// end function
+
+        public function skillChangeEvent(event:PopupEvent) : void
+        {
+            sendEvent(SKILL_LEARN_WINDOW_CLOSE);
+            skillLearnWindow.removeWindow();
+            dispatchEvent(new PopupEvent(SKILL_CHANGE, {unitId:event.param.unit.unitId, newSkill:event.param.newSkill, oldSkill:event.param.oldSkill}));
+            return;
+        }// end function
+
+        public function showItemWindow() : void
+        {
+            this.popupWindow(unitUseItemWindow, false, null, true);
+            unitUseItemWindow.unit = _unit;
+            return;
+        }// end function
+
+        public function skillSelectEvent(event:PopupEvent) : void
+        {
+            this.popupWindow(skillSelectWindow, false);
+            skillSelectWindow.init(event.param.skill, event.param.unit);
+            return;
+        }// end function
+
+        public function recoveryHandler(event:Event) : void
+        {
+            dispatchEvent(new PopupEvent(RECOVERY, {unitId:_unit.unitId}));
+            return;
+        }// end function
+
+        public function close() : void
+        {
+            tutMarkSakura.visible = false;
+            unitcommandLayer.x = 0;
+            unitcommandLayer.y = 0;
+            unitcommandLayer.visible = false;
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="lvUpAnimeCanvas"/>
+	<mx:Image id="unitcommandLayer" source="{_swf_sakura}"/>
+	<mx:Canvas id="tutMarkSakura" visible="false">
+		<mx:Image id="tutMarkSakuraItem" source="_embed_mxml__swf_common_arrow_left_swf_534170583" visible="false" width="50" height="50" y="85" x="207"/>
+		<mx:Image id="tutMarkSakuraSkill" source="_embed_mxml__swf_common_arrow_right_swf_759350985" visible="false" width="50" height="50" y="85" x="90"/>
+		<mx:Image id="tutMarkSakuraLv" source="_embed_mxml__swf_common_arrow_right_swf_759350985" visible="false" width="50" height="50" y="12" x="110"/>
+		<mx:Image id="tutMarkSakuraEquip" source="_embed_mxml__swf_common_arrow_left_swf_534170583" visible="false" width="50" height="50" y="40" x="220"/>
+	</mx:Canvas>
+
+</mx:CanvasWithPopUp>

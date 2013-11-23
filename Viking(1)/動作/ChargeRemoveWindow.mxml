@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.proxy.allMap.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.geom.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        public var  frame:UIComponent;
+        private var  defaultArea:int = 1;
+        public static const  CHARGE_REMOVE_CANCEL:String = NAME + "/cancel";
+        public static const  NAME:String = "ChargeRemoveWindow";
+        public static const  CHARGE_REMOVE_OK:String = NAME + "/oK";
+        public static var  EmbedSwfWindowChargeRemove:Class;
+        public static const  MINI_MAP_HEIGHT:int = 303;
+        private static var  br:Array;
+        public static const  MINI_MAP_WIDTH:int = 303;
+        private static var  tl:Array;
+
+
+        public function closeWindow() : void
+        {
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_close_window.getChildAt(0)).content).gotoAndPlay(1);
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function init() : void
+        {
+            Loader(swf.getChildAt(0)).content.addEventListener("BUTTON_1", function () : void
+            {
+                onOK(1);
+                return;
+            }// end function
+            );
+            Loader(swf.getChildAt(0)).content.addEventListener("BUTTON_2", function () : void
+            {
+                onOK(2);
+                return;
+            }// end function
+            );
+            Loader(swf.getChildAt(0)).content.addEventListener("BUTTON_3", function () : void
+            {
+                onOK(3);
+                return;
+            }// end function
+            );
+            Loader(swf.getChildAt(0)).content.addEventListener("BUTTON_4", function () : void
+            {
+                onOK(4);
+                return;
+            }// end function
+            );
+            Loader(swf.getChildAt(0)).content.addEventListener("BUTTON_5", function () : void
+            {
+                onOK(5);
+                return;
+            }// end function
+            );
+            Loader(swf.getChildAt(0)).content.addEventListener("BUTTON_6", function () : void
+            {
+                onOK(6);
+                return;
+            }// end function
+            );
+            Loader(swf.getChildAt(0)).content.addEventListener("BUTTON_7", function () : void
+            {
+                onOK(7);
+                return;
+            }// end function
+            );
+            Loader(swf.getChildAt(0)).content.addEventListener("BUTTON_8", function () : void
+            {
+                onOK(8);
+                return;
+            }// end function
+            );
+            Loader(swf.getChildAt(0)).content.addEventListener("BUTTON_9", function () : void
+            {
+                onOK(9);
+                return;
+            }// end function
+            );
+            Loader(swf.getChildAt(0)).content.addEventListener("BUTTON_10", function () : void
+            {
+                onOK(10);
+                return;
+            }// end function
+            );
+            Loader(swf.getChildAt(0)).content.addEventListener("BUTTON_11", function () : void
+            {
+                onOK(11);
+                return;
+            }// end function
+            );
+            Loader(swf.getChildAt(0)).content.addEventListener("BUTTON_12", function () : void
+            {
+                onOK(12);
+                return;
+            }// end function
+            );
+            Loader(swf.getChildAt(0)).content.addEventListener("BUTTON_13", function () : void
+            {
+                onOK(13);
+                return;
+            }// end function
+            );
+            Loader(swf.getChildAt(0)).content.addEventListener("BUTTON_14", function () : void
+            {
+                onOK(14);
+                return;
+            }// end function
+            );
+            Loader(swf.getChildAt(0)).content.addEventListener("BUTTON_15", function () : void
+            {
+                onOK(15);
+                return;
+            }// end function
+            );
+            Loader(swf.getChildAt(0)).content.addEventListener("BUTTON_16", function () : void
+            {
+                onOK(16);
+                return;
+            }// end function
+            );
+            Loader(swf.getChildAt(0)).content.addEventListener("BUTTON_BACK", function () : void
+            {
+                onCancel();
+                return;
+            }// end function
+            );
+            frame.width = this.int(MINI_MAP_WIDTH / (AllMapProxy.BG_WIDTH / AllMapProxy.SCR_WIDTH));
+            frame.height = this.int(MINI_MAP_HEIGHT / (AllMapProxy.BG_HEIGHT / AllMapProxy.SCR_HEIGHT));
+            frame.graphics.lineStyle(1, 16729088);
+            frame.graphics.drawRect(0, 0, frame.width, frame.height);
+            addChild(frame);
+            return;
+        }// end function
+
+        public function setDefaultArea(param1:Point) : void
+        {
+            var _loc_2:* = param1.x - 200;
+            var _loc_3:* = param1.y - 200;
+            defaultArea = 0;
+            while (defaultArea < tl.length)
+            {
+                
+                if (_loc_2 >= tl[defaultArea].x && _loc_3 >= tl[defaultArea].y && _loc_2 <= br[defaultArea].x && _loc_3 <= br[defaultArea].y)
+                {
+                    (defaultArea + 1);
+                    break;
+                }
+                var _loc_5:* = defaultArea + 1;
+                defaultArea = _loc_5;
+            }
+            MovieClip(Loader(swf.getChildAt(0)).content).gotoAndPlay("w_" + defaultArea.toString());
+            return;
+        }// end function
+
+        public function onCancel() : void
+        {
+            dispatchEvent(new Event(CHARGE_REMOVE_CANCEL));
+            return;
+        }// end function
+
+        public function updateMiniMapFrame(param1:Point) : void
+        {
+            frame.x = param1.x / (AllMapProxy.BG_WIDTH / MINI_MAP_WIDTH);
+            frame.y = param1.y / (AllMapProxy.BG_HEIGHT / MINI_MAP_HEIGHT);
+            frame.x = frame.x + 231;
+            frame.y = frame.y + 174;
+            frame.x = frame.x - frame.width / 2;
+            frame.y = frame.y - frame.height / 2;
+            return;
+        }// end function
+
+        public function onOK(param1:int) : void
+        {
+            var area:* = param1;
+            var msg:* = Utils.i18n("localize21") + "[ " + tl[(area - 1)].x.toString() + ", " + tl[(area - 1)].y.toString() + " ] - [ " + br[(area - 1)].x.toString() + ", " + br[(area - 1)].y.toString() + " ]" + Utils.i18n("localize22");
+            AlertWindow.show(msg, "", AlertWindow.YES | AlertWindow.NO | AlertWindow.POINT, this, function (event:CloseEvent) : void
+            {
+                if (event.detail == AlertWindow.YES)
+                {
+                    dispatchEvent(new PopupEvent(CHARGE_REMOVE_OK, {area:area}));
+                }
+                return;
+            }// end function
+            );
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_ChargeRemoveWindow_Image1" source="{swf}"/>
+	<mx:Image id="_ChargeRemoveWindow_Image2" x="555" y="82" click="{closeWindow();}" source="{_swf_close_window}"/>
+	<mx:Text id="_ChargeRemoveWindow_Text1" x="205" y="82" width="350" fontSize="16" textAlign="center" color="#00ffffff" text="{Utils.i18n("localize23")}"/>
+	<mx:Text id="_ChargeRemoveWindow_Text2" x="224" y="114" width="340" fontSize="14" textAlign="left" text="{Utils.i18n("localize24")}"/>
+	<mx:Text id="_ChargeRemoveWindow_Text3" x="205" y="135" width="360" fontSize="14" textAlign="left" text="{Utils.i18n("localize25")}"/>
+	<mx:Image x="208" y="116" width="16" height="16" source="_embed_mxml__images_icon_power_png_227571469"/>
+
+</mx:Canvas>

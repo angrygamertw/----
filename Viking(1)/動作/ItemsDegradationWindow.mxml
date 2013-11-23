@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:CanvasWithPopUp xmlns:mx="http://www.adobe.com/2006/mxml" height="567" width="750" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.collections.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  degradationQuantityWindow:DegradationQuantityWindow;
+        private var  degradationConditionWindow:DegradationConditionWindow;
+        private var  _productionsByType:ArrayCollection;
+        private var  productionTypes:Array;
+        private var  equipmentDetail:EquipmentDetail;
+        private var  weaponDetail:WeaponDetail;
+        private var  _reproductions:ArrayCollection;
+        public static const  PRODUCE_MAX_QUANTITY:String = "produceMaxQuantity";
+        public static const  DEGRADATION_ITEM:String = "itemsDegradationWindow/degradationItem";
+
+
+        public function init() : void
+        {
+            itemList.selectedIndex = 0;
+            degradationQuantityWindow.addEventListener(DegradationQuantityWindow.DEGRADAT, produceHandler);
+            return;
+        }// end function
+
+        public function onDetail(param1:Object) : void
+        {
+            if (param1.masterVO.product.masterType == "WeaponMaster" || param1.masterVO.product.masterType == "ArmorMaster" || param1.masterVO.product.masterType == "AccessoryMaster")
+            {
+                weaponDetail.viewData = param1.masterVO.product;
+                if (weaponDetail.viewData)
+                {
+                    popupWindow(weaponDetail);
+                }
+            }
+            else
+            {
+                equipmentDetail.viewData = param1.masterVO.product;
+                if (equipmentDetail.viewData)
+                {
+                    popupWindow(equipmentDetail);
+                }
+            }
+            return;
+        }// end function
+
+        public function _ItemsDegradationWindow_ClassFactory4_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = DegradationButtonRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _ItemsDegradationWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ItemsDegradationWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "masterVO.product.description";
+            BindingManager.executeBindings(this, "_ItemsDegradationWindow_DataGridColumn3", _ItemsDegradationWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function _ItemsDegradationWindow_DataGridColumn7_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ItemsDegradationWindow_DataGridColumn7 = _loc_1;
+            _loc_1.dataField = "button";
+            _loc_1.width = 90;
+            _loc_1.itemRenderer = _ItemsDegradationWindow_ClassFactory5_c();
+            BindingManager.executeBindings(this, "_ItemsDegradationWindow_DataGridColumn7", _ItemsDegradationWindow_DataGridColumn7);
+            return _loc_1;
+        }// end function
+
+        public function conditionButtonClicked(param1:ProductionVO) : void
+        {
+            var production:* = param1;
+            degradationConditionWindow.callLater(function () : void
+            {
+                degradationConditionWindow.production = production;
+                return;
+            }// end function
+            );
+            popupWindow(degradationConditionWindow);
+            return;
+        }// end function
+
+        public function _ItemsDegradationWindow_DataGridColumn15_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ItemsDegradationWindow_DataGridColumn15 = _loc_1;
+            _loc_1.dataField = "masterVO.product.description";
+            BindingManager.executeBindings(this, "_ItemsDegradationWindow_DataGridColumn15", _ItemsDegradationWindow_DataGridColumn15);
+            return _loc_1;
+        }// end function
+
+        public function _ItemsDegradationWindow_ClassFactory7_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = DegradationButtonRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _ItemsDegradationWindow_DataGridColumn11_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ItemsDegradationWindow_DataGridColumn11 = _loc_1;
+            _loc_1.dataField = "masterVO.product.nameLabel";
+            _loc_1.width = 140;
+            BindingManager.executeBindings(this, "_ItemsDegradationWindow_DataGridColumn11", _ItemsDegradationWindow_DataGridColumn11);
+            return _loc_1;
+        }// end function
+
+        public function _ItemsDegradationWindow_ClassFactory3_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = DegradationButtonRenderer;
+            return _loc_1;
+        }// end function
+
+        public function reproduceButtonClicked(param1:ReproductionVO) : void
+        {
+            degradationQuantityWindow.quantityMax = 1;
+            degradationQuantityWindow.reproduction = param1;
+            popupWindow(degradationQuantityWindow);
+            return;
+        }// end function
+
+        public function produceHandler(event:PopupEvent) : void
+        {
+            PopUpManager.removePopUp(degradationQuantityWindow);
+            this.dispatchEvent(new PopupEvent(DEGRADATION_ITEM, event.param));
+            onClose();
+            return;
+        }// end function
+
+        public function onClose() : void
+        {
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function onDetailReproduction(param1:Object) : void
+        {
+            if (param1.productionVO.masterVO.product.masterType == "WeaponMaster" || param1.productionVO.masterVO.product.masterType == "ArmorMaster" || param1.productionVO.masterVO.product.masterType == "AccessoryMaster")
+            {
+                weaponDetail.viewData = param1.productionVO.masterVO.product;
+                if (weaponDetail.viewData)
+                {
+                    popupWindow(weaponDetail);
+                }
+            }
+            else
+            {
+                equipmentDetail.viewData = param1.productionVO.masterVO.product;
+                if (equipmentDetail.viewData)
+                {
+                    popupWindow(equipmentDetail);
+                }
+            }
+            return;
+        }// end function
+
+        public function _ItemsDegradationWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ItemsDegradationWindow_DataGridColumn2 = _loc_1;
+            _loc_1.width = 140;
+            BindingManager.executeBindings(this, "_ItemsDegradationWindow_DataGridColumn2", _ItemsDegradationWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _ItemsDegradationWindow_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ItemsDegradationWindow_DataGridColumn6 = _loc_1;
+            _loc_1.dataField = "masterVO.product.description";
+            BindingManager.executeBindings(this, "_ItemsDegradationWindow_DataGridColumn6", _ItemsDegradationWindow_DataGridColumn6);
+            return _loc_1;
+        }// end function
+
+        public function _ItemsDegradationWindow_DataGridColumn10_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ItemsDegradationWindow_DataGridColumn10 = _loc_1;
+            _loc_1.dataField = "button";
+            _loc_1.width = 90;
+            _loc_1.itemRenderer = _ItemsDegradationWindow_ClassFactory6_c();
+            BindingManager.executeBindings(this, "_ItemsDegradationWindow_DataGridColumn10", _ItemsDegradationWindow_DataGridColumn10);
+            return _loc_1;
+        }// end function
+
+        public function _ItemsDegradationWindow_DataGridColumn14_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ItemsDegradationWindow_DataGridColumn14 = _loc_1;
+            _loc_1.dataField = "masterVO.product.nameLabel";
+            _loc_1.width = 140;
+            BindingManager.executeBindings(this, "_ItemsDegradationWindow_DataGridColumn14", _ItemsDegradationWindow_DataGridColumn14);
+            return _loc_1;
+        }// end function
+
+        public function _ItemsDegradationWindow_ClassFactory6_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = DegradationButtonRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _ItemsDegradationWindow_ClassFactory2_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRendererReproduction = _loc_1;
+            _loc_1.generator = ItemsDegradationWindow_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function produceButtonClicked(param1:ProductionVO) : void
+        {
+            var production:* = param1;
+            var createBool:* = degradationQuantityWindow.judgeQuantityMax(production);
+            if (createBool)
+            {
+                degradationQuantityWindow.callLater(function () : void
+            {
+                degradationQuantityWindow.production = production;
+                return;
+            }// end function
+            );
+                popupWindow(degradationQuantityWindow);
+            }
+            else
+            {
+                this.dispatchEvent(new PopupEvent(PRODUCE_MAX_QUANTITY, production.masterVO.product.nameLabel));
+            }
+            return;
+        }// end function
+
+        public function _ItemsDegradationWindow_DataGridColumn5_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ItemsDegradationWindow_DataGridColumn5 = _loc_1;
+            _loc_1.dataField = "masterVO.product.nameLabel";
+            _loc_1.width = 140;
+            BindingManager.executeBindings(this, "_ItemsDegradationWindow_DataGridColumn5", _ItemsDegradationWindow_DataGridColumn5);
+            return _loc_1;
+        }// end function
+
+        public function _ItemsDegradationWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            produceButton = _loc_1;
+            _loc_1.dataField = "button";
+            _loc_1.width = 90;
+            _loc_1.itemRenderer = _ItemsDegradationWindow_ClassFactory3_c();
+            BindingManager.executeBindings(this, "produceButton", produceButton);
+            return _loc_1;
+        }// end function
+
+        public function _ItemsDegradationWindow_DataGridColumn9_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ItemsDegradationWindow_DataGridColumn9 = _loc_1;
+            _loc_1.dataField = "masterVO.product.description";
+            BindingManager.executeBindings(this, "_ItemsDegradationWindow_DataGridColumn9", _ItemsDegradationWindow_DataGridColumn9);
+            return _loc_1;
+        }// end function
+
+        public function componrntToolTip() : String
+        {
+            return Utils.i18n("generalShowDetail");
+        }// end function
+
+        public function _ItemsDegradationWindow_DataGridColumn13_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ItemsDegradationWindow_DataGridColumn13 = _loc_1;
+            _loc_1.dataField = "button";
+            _loc_1.width = 90;
+            _loc_1.itemRenderer = _ItemsDegradationWindow_ClassFactory7_c();
+            BindingManager.executeBindings(this, "_ItemsDegradationWindow_DataGridColumn13", _ItemsDegradationWindow_DataGridColumn13);
+            return _loc_1;
+        }// end function
+
+        public function _ItemsDegradationWindow_ClassFactory5_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = DegradationButtonRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _ItemsDegradationWindow_ClassFactory1_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRenderer = _loc_1;
+            _loc_1.generator = ItemsDegradationWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function onClick(param1:Object) : void
+        {
+            dispatchEvent(new PopupEvent(DEGRADATION_ITEM, param1));
+            return;
+        }// end function
+
+        public function _ItemsDegradationWindow_DataGridColumn4_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ItemsDegradationWindow_DataGridColumn4 = _loc_1;
+            _loc_1.dataField = "button";
+            _loc_1.width = 90;
+            _loc_1.itemRenderer = _ItemsDegradationWindow_ClassFactory4_c();
+            BindingManager.executeBindings(this, "_ItemsDegradationWindow_DataGridColumn4", _ItemsDegradationWindow_DataGridColumn4);
+            return _loc_1;
+        }// end function
+
+        public function _ItemsDegradationWindow_DataGridColumn8_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ItemsDegradationWindow_DataGridColumn8 = _loc_1;
+            _loc_1.dataField = "masterVO.product.nameLabel";
+            _loc_1.width = 100;
+            BindingManager.executeBindings(this, "_ItemsDegradationWindow_DataGridColumn8", _ItemsDegradationWindow_DataGridColumn8);
+            return _loc_1;
+        }// end function
+
+        public function _ItemsDegradationWindow_DataGridColumn12_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _ItemsDegradationWindow_DataGridColumn12 = _loc_1;
+            _loc_1.dataField = "masterVO.product.description";
+            BindingManager.executeBindings(this, "_ItemsDegradationWindow_DataGridColumn12", _ItemsDegradationWindow_DataGridColumn12);
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:ViewStack id="itemList" width="100%" height="100%">
+		<mx:Canvas id="_ItemsDegradationWindow_Canvas1" width="100%" height="100%" label="{Utils.i18n("generalBlacksmith")}">
+			<mx:Box x="35" y="90" height="440" width="630">
+				<mx:DataGrid id="blacksmith_data_list" width="630" rowCount="20" styleName="DataGridBase" height="440" selectable="false" sortableColumns="false" columns="{[_ItemsDegradationWindow_DataGridColumn1_i(), _ItemsDegradationWindow_DataGridColumn2_i(), _ItemsDegradationWindow_DataGridColumn3_i()]}" verticalAlign="middle" dataProvider='{{productionsByType.getItemAt(0)}}'/>
+			</mx:Box>
+		</mx:Canvas>
+		<mx:Canvas id="_ItemsDegradationWindow_Canvas2" width="100%" height="100%" label="{Utils.i18n("localize178")}">
+			<mx:Box x="35" y="90" height="440" width="630">
+				<mx:DataGrid id="leather_data_list" width="630" rowCount="20" styleName="DataGridBase" height="440" selectable="false" sortableColumns="false" columns="{[_ItemsDegradationWindow_DataGridColumn4_i(), _ItemsDegradationWindow_DataGridColumn5_i(), _ItemsDegradationWindow_DataGridColumn6_i()]}" verticalAlign="middle" dataProvider='{{productionsByType.getItemAt(1)}}'/>
+			</mx:Box>
+		</mx:Canvas>
+		<mx:Canvas id="_ItemsDegradationWindow_Canvas3" width="100%" height="100%" label="{Utils.i18n("generalCloth")}">
+			<mx:Box x="35" y="90" height="440" width="630">
+				<mx:DataGrid id="cloth_data_list" width="630" rowCount="20" styleName="DataGridBase" height="440" selectable="false" sortableColumns="false" columns="{[_ItemsDegradationWindow_DataGridColumn7_i(), _ItemsDegradationWindow_DataGridColumn8_i(), _ItemsDegradationWindow_DataGridColumn9_i()]}" verticalAlign="middle" dataProvider='{{productionsByType.getItemAt(2)}}'/>
+			</mx:Box>
+		</mx:Canvas>
+		<mx:Canvas id="_ItemsDegradationWindow_Canvas4" width="100%" height="100%" label="{Utils.i18n("generalMagic")}">
+			<mx:Box x="35" y="90" height="440" width="630">
+				<mx:DataGrid id="catalyst_data_list" width="630" rowCount="20" styleName="DataGridBase" height="440" selectable="false" sortableColumns="false" columns="{[_ItemsDegradationWindow_DataGridColumn10_i(), _ItemsDegradationWindow_DataGridColumn11_i(), _ItemsDegradationWindow_DataGridColumn12_i()]}" verticalAlign="middle" dataProvider='{{productionsByType.getItemAt(3)}}'/>
+			</mx:Box>
+		</mx:Canvas>
+		<mx:Canvas id="_ItemsDegradationWindow_Canvas5" width="100%" height="100%" label="{Utils.i18n("generalAccessory")}">
+			<mx:Box x="35" y="90" height="440" width="630">
+				<mx:DataGrid id="crafts_data_list" width="630" rowCount="20" styleName="DataGridBase" height="440" selectable="false" sortableColumns="false" columns="{[_ItemsDegradationWindow_DataGridColumn13_i(), _ItemsDegradationWindow_DataGridColumn14_i(), _ItemsDegradationWindow_DataGridColumn15_i()]}" verticalAlign="middle" dataProvider='{{productionsByType.getItemAt(4)}}'/>
+			</mx:Box>
+		</mx:Canvas>
+		<mx:Canvas id="_ItemsDegradationWindow_Canvas6" width="100%" height="100%" label="{Utils.i18n("generalAlthing")}">
+			<mx:Box x="35" y="90" height="440" width="630">
+				<mx:DataGrid id="clystals_data_list" width="630" rowCount="20" styleName="DataGridBase" height="440" selectable="false" sortableColumns="false" verticalAlign="middle" dataProvider='{{productionsByType.getItemAt(5)}}'/>
+			</mx:Box>
+		</mx:Canvas>
+	</mx:ViewStack>
+	<mx:Canvas x="25" y="58">
+		<mx:TabBar id="itemListTabBar" styleName="ProductionTab" buttonMode="true" dataProvider='{itemList}'/>
+	</mx:Canvas>
+	<mx:Button width="26" height="26" styleName="closeBtn" buttonMode="true" fontSize="30" top="10" right="60" click="{onClose();}"/>
+
+</mx:CanvasWithPopUp>

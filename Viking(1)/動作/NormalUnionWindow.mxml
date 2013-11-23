@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{createComp();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.tactics.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.controls.dataGridClasses.*;
+        import mx.core.*;
+        import mx.events.*;
+
+        private var  leyLine:Boolean = false;
+        private var  unitStatusPopUpWindow:UnitStatusPopUpWindow;
+        private var  checkUnionWindow:CheckUnionWindow;
+        public static const  NORMAL_UNION_RUN:String = NAME + "normalUnion";
+        public static const  ADD_UNIT_SWF:String = NAME + "addUnitSwf";
+        public static const  REMOVE_UNIT_SWF:String = NAME + "subUnitSwf";
+        public static const  NAME:String = "normalUnionWindow";
+        public static const  NORMAL_UNION_END:String = NAME + "normalUnionEnd";
+
+
+        public function getSoulSize(param1:int) : int
+        {
+            if (leyLine)
+            {
+                return addLeyLineEffect(param1);
+            }
+            return param1;
+        }// end function
+
+        public function _NormalUnionWindow_DataGridColumn6_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalUnionWindow_DataGridColumn6 = _loc_1;
+            _loc_1.dataField = "strength";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalUnionWindow_DataGridColumn6", _NormalUnionWindow_DataGridColumn6);
+            return _loc_1;
+        }// end function
+
+        public function _NormalUnionWindow_DataGridColumn15_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "level";
+            _loc_1.headerText = "Lv";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function createComp() : void
+        {
+            checkUnionWindow.addEventListener(CheckUnionWindow.START_UNION, function (event:Event) : void
+            {
+                unionCeremony();
+                return;
+            }// end function
+            );
+            checkUnionWindow.addEventListener(CheckUnionWindow.START_INDEX, function (event:Event) : void
+            {
+                startIndex();
+                return;
+            }// end function
+            );
+            MovieClip(Loader(_swf_back.getChildAt(0)).content).gotoAndPlay("button_back");
+            MovieClip(Loader(_swf_cancel.getChildAt(0)).content).gotoAndPlay("button_back");
+            return;
+        }// end function
+
+        public function _NormalUnionWindow_DataGridColumn5_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "hp";
+            _loc_1.headerText = "HP";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _NormalUnionWindow_DataGridColumn14_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalUnionWindow_DataGridColumn14 = _loc_1;
+            _loc_1.dataField = "jobMasterVO.nameLabel";
+            _loc_1.width = 80;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalUnionWindow_DataGridColumn14", _NormalUnionWindow_DataGridColumn14);
+            return _loc_1;
+        }// end function
+
+        public function unionCeremony() : void
+        {
+            sendPopupEvent(REMOVE_UNIT_SWF, {unit:yangUnit});
+            sendPopupEvent(REMOVE_UNIT_SWF, {unit:yinUnit});
+            viewStack.selectedIndex = 0;
+            sendPopupEvent(NORMAL_UNION_RUN, {yangUnit:yangUnit, yinUnit:yinUnit});
+            return;
+        }// end function
+
+        public function _NormalUnionWindow_DataGridColumn4_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "level";
+            _loc_1.headerText = "Lv";
+            _loc_1.width = 50;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+
+        public function _NormalUnionWindow_DataGridColumn13_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalUnionWindow_DataGridColumn13 = _loc_1;
+            _loc_1.dataField = "name";
+            _loc_1.itemRenderer = _NormalUnionWindow_ClassFactory2_c();
+            _loc_1.width = 80;
+            BindingManager.executeBindings(this, "_NormalUnionWindow_DataGridColumn13", _NormalUnionWindow_DataGridColumn13);
+            return _loc_1;
+        }// end function
+
+        public function _NormalUnionWindow_ClassFactory4_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            expLabel = _loc_1;
+            _loc_1.generator = NormalUnionWindow_inlineComponent2;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function _NormalUnionWindow_DataGridColumn3_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalUnionWindow_DataGridColumn3 = _loc_1;
+            _loc_1.dataField = "jobMasterVO.nameLabel";
+            _loc_1.width = 80;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalUnionWindow_DataGridColumn3", _NormalUnionWindow_DataGridColumn3);
+            return _loc_1;
+        }// end function
+
+        public function necessaryUnionSoul(param1:UnitVO) : int
+        {
+            return getSoulSize(Math.ceil(param1.jobMasterVO.consumptionAnima * param1.level * 0.5));
+        }// end function
+
+        public function subSelectIndex() : void
+        {
+            var _loc_1:* = viewStack;
+            var _loc_2:* = viewStack.selectedIndex - 1;
+            _loc_1.selectedIndex = _loc_2;
+            sendPopupEvent(REMOVE_UNIT_SWF, {unit:yangUnit});
+            yinUnit = new UnitVO();
+            yangUnit = new UnitVO();
+            description = Utils.i18n("normalUnionSelectYangUnit");
+            yangNecessarySoul = 0;
+            yinNecessarySoul = 0;
+            yangUnitCanvas.visible = false;
+            yinUnitCanvas.visible = false;
+            return;
+        }// end function
+
+        public function _NormalUnionWindow_DataGridColumn12_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalUnionWindow_DataGridColumn12 = _loc_1;
+            _loc_1.width = 50;
+            BindingManager.executeBindings(this, "_NormalUnionWindow_DataGridColumn12", _NormalUnionWindow_DataGridColumn12);
+            return _loc_1;
+        }// end function
+
+        public function _NormalUnionWindow_ClassFactory3_i() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            detailRenderer = _loc_1;
+            _loc_1.generator = NormalUnionWindow_inlineComponent1;
+            _loc_1.properties = {outerDocument:this};
+            return _loc_1;
+        }// end function
+
+        public function onClick(param1:UnitVO) : void
+        {
+            if (param1.unitId == 0)
+            {
+                return;
+            }
+            unitStatusPopUpWindow = new UnitStatusPopUpWindow();
+            unitStatusPopUpWindow.unit = param1;
+            this.popupWindow(unitStatusPopUpWindow, false);
+            return;
+        }// end function
+
+        public function init(param1:Boolean) : void
+        {
+            yinUnit = new UnitVO();
+            yangUnit = new UnitVO();
+            description = Utils.i18n("normalUnionSelectYangUnit");
+            leyLine = param1;
+            return;
+        }// end function
+
+        public function closeNormalUnion() : void
+        {
+            yinUnit = new UnitVO();
+            yangUnit = new UnitVO();
+            sendEvent(NORMAL_UNION_END);
+            return;
+        }// end function
+
+        public function _NormalUnionWindow_ClassFactory2_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = UnitDetailLabelRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _NormalUnionWindow_DataGridColumn2_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalUnionWindow_DataGridColumn2 = _loc_1;
+            _loc_1.dataField = "name";
+            _loc_1.itemRenderer = _NormalUnionWindow_ClassFactory1_c();
+            _loc_1.width = 80;
+            BindingManager.executeBindings(this, "_NormalUnionWindow_DataGridColumn2", _NormalUnionWindow_DataGridColumn2);
+            return _loc_1;
+        }// end function
+
+        public function _NormalUnionWindow_DataGridColumn11_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalUnionWindow_DataGridColumn11 = _loc_1;
+            _loc_1.dataField = "luck";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalUnionWindow_DataGridColumn11", _NormalUnionWindow_DataGridColumn11);
+            return _loc_1;
+        }// end function
+
+        public function _NormalUnionWindow_DataGridColumn19_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalUnionWindow_DataGridColumn19 = _loc_1;
+            _loc_1.dataField = "agility";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalUnionWindow_DataGridColumn19", _NormalUnionWindow_DataGridColumn19);
+            return _loc_1;
+        }// end function
+
+        public function _NormalUnionWindow_DataGridColumn22_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalUnionWindow_DataGridColumn22 = _loc_1;
+            _loc_1.dataField = "luck";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalUnionWindow_DataGridColumn22", _NormalUnionWindow_DataGridColumn22);
+            return _loc_1;
+        }// end function
+
+        public function _NormalUnionWindow_DataGridColumn1_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalUnionWindow_DataGridColumn1 = _loc_1;
+            _loc_1.width = 50;
+            BindingManager.executeBindings(this, "_NormalUnionWindow_DataGridColumn1", _NormalUnionWindow_DataGridColumn1);
+            return _loc_1;
+        }// end function
+
+        public function _NormalUnionWindow_DataGridColumn10_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalUnionWindow_DataGridColumn10 = _loc_1;
+            _loc_1.dataField = "intelligence";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalUnionWindow_DataGridColumn10", _NormalUnionWindow_DataGridColumn10);
+            return _loc_1;
+        }// end function
+
+        public function _NormalUnionWindow_DataGridColumn9_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalUnionWindow_DataGridColumn9 = _loc_1;
+            _loc_1.dataField = "defense";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalUnionWindow_DataGridColumn9", _NormalUnionWindow_DataGridColumn9);
+            return _loc_1;
+        }// end function
+
+        public function _NormalUnionWindow_ClassFactory1_c() : ClassFactory
+        {
+            var _loc_1:* = new ClassFactory();
+            _loc_1.generator = UnitDetailLabelRenderer;
+            return _loc_1;
+        }// end function
+
+        public function _NormalUnionWindow_DataGridColumn18_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalUnionWindow_DataGridColumn18 = _loc_1;
+            _loc_1.dataField = "tech";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalUnionWindow_DataGridColumn18", _NormalUnionWindow_DataGridColumn18);
+            return _loc_1;
+        }// end function
+
+        public function _NormalUnionWindow_DataGridColumn21_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalUnionWindow_DataGridColumn21 = _loc_1;
+            _loc_1.dataField = "intelligence";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalUnionWindow_DataGridColumn21", _NormalUnionWindow_DataGridColumn21);
+            return _loc_1;
+        }// end function
+
+        public function _NormalUnionWindow_DataGridColumn8_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalUnionWindow_DataGridColumn8 = _loc_1;
+            _loc_1.dataField = "agility";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalUnionWindow_DataGridColumn8", _NormalUnionWindow_DataGridColumn8);
+            return _loc_1;
+        }// end function
+
+        public function _NormalUnionWindow_DataGridColumn17_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalUnionWindow_DataGridColumn17 = _loc_1;
+            _loc_1.dataField = "strength";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalUnionWindow_DataGridColumn17", _NormalUnionWindow_DataGridColumn17);
+            return _loc_1;
+        }// end function
+
+        public function startIndex() : void
+        {
+            viewStack.selectedIndex = 0;
+            sendPopupEvent(REMOVE_UNIT_SWF, {unit:yangUnit});
+            sendPopupEvent(REMOVE_UNIT_SWF, {unit:yinUnit});
+            yinUnit = new UnitVO();
+            yangUnit = new UnitVO();
+            description = Utils.i18n("normalUnionSelectYangUnit");
+            yangNecessarySoul = 0;
+            yinNecessarySoul = 0;
+            yangUnitCanvas.visible = false;
+            yinUnitCanvas.visible = false;
+            return;
+        }// end function
+
+        public function getColor(param1:int, param2:int) : uint
+        {
+            if (param1 == 0)
+            {
+                return 0;
+            }
+            return param1 + param2 > _soulCrystal ? (15073298) : (0);
+        }// end function
+
+        public function _NormalUnionWindow_DataGridColumn20_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalUnionWindow_DataGridColumn20 = _loc_1;
+            _loc_1.dataField = "defense";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalUnionWindow_DataGridColumn20", _NormalUnionWindow_DataGridColumn20);
+            return _loc_1;
+        }// end function
+
+        public function addLeyLineEffect(param1:int) : int
+        {
+            return param1 - Math.ceil(param1 * 0.1);
+        }// end function
+
+        public function addSelectIndex(param1:Object) : void
+        {
+            var data:* = param1;
+            if (viewStack.selectedIndex == 0)
+            {
+                yangUnit = new UnitVO();
+                yangUnit = UnitVO(data);
+                yinCandidateUnit = new Array();
+                yinCandidateUnit = _homeAllUnits.filter(function (param1:UnitVO, param2:int, param3:Array) : Boolean
+            {
+                return param1.unitId != yangUnit.unitId;
+            }// end function
+            );
+                description = Utils.i18n("normalUnionSelectYinUnit");
+                yangNecessarySoul = necessaryUnionSoul(yangUnit);
+                yangUnitCanvas.visible = true;
+                sendPopupEvent(ADD_UNIT_SWF, {unit:yangUnit, type:"yang"});
+                var _loc_3:* = viewStack;
+                var _loc_4:* = viewStack.selectedIndex + 1;
+                _loc_3.selectedIndex = _loc_4;
+            }
+            else if (viewStack.selectedIndex == 1)
+            {
+                yinUnit = new UnitVO();
+                yinUnit = UnitVO(data);
+                description = "";
+                yinNecessarySoul = necessaryUnionSoul(yinUnit);
+                yinUnitCanvas.visible = true;
+                checkUnionWindow.yangUnit = yangUnit;
+                checkUnionWindow.yinUnit = yinUnit;
+                checkUnionWindow.init();
+                this.popupWindow(checkUnionWindow, false);
+                sendPopupEvent(ADD_UNIT_SWF, {unit:yinUnit, type:"yin"});
+                if (yangNecessarySoul + yinNecessarySoul > _soulCrystal)
+                {
+                    checkUnionWindow.viewStack.selectedIndex = 1;
+                }
+            }
+            return;
+        }// end function
+
+        public function _NormalUnionWindow_DataGridColumn7_i() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _NormalUnionWindow_DataGridColumn7 = _loc_1;
+            _loc_1.dataField = "tech";
+            _loc_1.width = 30;
+            _loc_1.setStyle("textAlign", "center");
+            BindingManager.executeBindings(this, "_NormalUnionWindow_DataGridColumn7", _NormalUnionWindow_DataGridColumn7);
+            return _loc_1;
+        }// end function
+
+        public function _NormalUnionWindow_DataGridColumn16_c() : DataGridColumn
+        {
+            var _loc_1:* = new DataGridColumn();
+            _loc_1.dataField = "hp";
+            _loc_1.headerText = "HP";
+            _loc_1.width = 40;
+            _loc_1.setStyle("textAlign", "center");
+            return _loc_1;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas id="unitLayer"/>
+	<mx:Text id="_NormalUnionWindow_Text1" x="350" y="302" styleName="PanelBaseTitle" text="{Utils.i18n("normalUnionTitle")}"/>
+	<mx:Text id="descriptionText" x="85" y="330" fontSize="11" text="description"/>
+	<mx:ViewStack id="viewStack" width="600" x="85" y="355">
+		<mx:VBox>
+			<mx:DataGrid id="yangUnitList" rowCount="4" width="590" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_NormalUnionWindow_DataGridColumn1_i(), _NormalUnionWindow_DataGridColumn2_i(), _NormalUnionWindow_DataGridColumn3_i(), _NormalUnionWindow_DataGridColumn4_c(), _NormalUnionWindow_DataGridColumn5_c(), _NormalUnionWindow_DataGridColumn6_i(), _NormalUnionWindow_DataGridColumn7_i(), _NormalUnionWindow_DataGridColumn8_i(), _NormalUnionWindow_DataGridColumn9_i(), _NormalUnionWindow_DataGridColumn10_i(), _NormalUnionWindow_DataGridColumn11_i()]}" dataProvider='{_homeAllUnits}'/>
+			<mx:HBox>
+				<mx:Spacer width="230"/>
+				<mx:Image id="_NormalUnionWindow_Image1" click="{closeNormalUnion();}" source="{_swf_back}"/>
+			</mx:HBox>
+		</mx:VBox>
+		<mx:VBox>
+			<mx:DataGrid id="yinUnitList" rowCount="4" width="590" styleName="DataGridBase" selectable="false" sortableColumns="false" columns="{[_NormalUnionWindow_DataGridColumn12_i(), _NormalUnionWindow_DataGridColumn13_i(), _NormalUnionWindow_DataGridColumn14_i(), _NormalUnionWindow_DataGridColumn15_c(), _NormalUnionWindow_DataGridColumn16_c(), _NormalUnionWindow_DataGridColumn17_i(), _NormalUnionWindow_DataGridColumn18_i(), _NormalUnionWindow_DataGridColumn19_i(), _NormalUnionWindow_DataGridColumn20_i(), _NormalUnionWindow_DataGridColumn21_i(), _NormalUnionWindow_DataGridColumn22_i()]}" dataProvider='{yinCandidateUnit}'/>
+			<mx:HBox>
+				<mx:Spacer width="230"/>
+				<mx:Image id="_NormalUnionWindow_Image2" click="{subSelectIndex();}" source="{_swf_cancel}"/>
+			</mx:HBox>
+		</mx:VBox>
+	</mx:ViewStack>
+	<mx:Canvas>
+		<mx:Canvas id="yangUnitCanvas" visible="false">
+			<mx:Label id="_NormalUnionWindow_Label1" x="90" y="190" buttonMode="true" mouseChildren="false" textDecoration="underline" click="{onClick(yangUnit);}" text="{Utils.i18n("generalName") + ":" + yangUnit.name}"/>
+			<mx:Label id="_NormalUnionWindow_Label2" x="90" y="210" text="{Utils.i18n("generalJob") + ":" + yangUnit.jobMasterVO.nameLabel}"/>
+			<mx:Label id="_NormalUnionWindow_Label3" x="90" y="230" text="{"Lv:" + yangUnit.level}"/>
+			<mx:Label id="_NormalUnionWindow_Label4" x="90" y="250" text="{Utils.i18n("normalUnionNecessorySoulCrystalCount") + ":" + yangNecessarySoul}"/>
+		</mx:Canvas>
+		<mx:Canvas id="yinUnitCanvas" visible="false">
+			<mx:Label id="_NormalUnionWindow_Label5" x="520" y="190" buttonMode="true" mouseChildren="false" textDecoration="underline" click="{onClick(yinUnit);}" text="{Utils.i18n("generalName") + ":" + yinUnit.name}"/>
+			<mx:Label id="_NormalUnionWindow_Label6" x="520" y="210" text="{Utils.i18n("generalJob") + ":" + yinUnit.jobMasterVO.nameLabel}"/>
+			<mx:Label id="_NormalUnionWindow_Label7" x="520" y="230" text="{"Lv:" + yinUnit.level}"/>
+			<mx:Label id="_NormalUnionWindow_Label8" x="520" y="250" text="{Utils.i18n("normalUnionNecessorySoulCrystalCount") + ":" + yinNecessarySoul}"/>
+		</mx:Canvas>
+		<mx:Text id="totalSoulSize" x="285" y="103" fontSize="14" text="yangNecessarySoul + yinNecessarySoul" color="#00000000"/>
+		<mx:Text text="0" x="345" y="103" fontSize="14"/>
+		<mx:Text text="0" x="405" y="103" fontSize="14"/>
+		<mx:Text text="0" x="465" y="103" fontSize="14"/>
+	</mx:Canvas>
+
+</mx:PopupWindow>

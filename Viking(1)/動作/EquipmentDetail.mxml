@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="760" height="560" creationComplete="{setup();}">
+	<mx:Script><![CDATA[
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  _skill:String;
+
+
+        public function closeWindow() : void
+        {
+            onClose();
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay(0);
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            MovieClip(Loader(_swf_close_window.getChildAt(0)).content).gotoAndPlay(1);
+            return;
+        }// end function
+
+        public function setInitialization(param1:Object) : void
+        {
+            effectString = new String();
+            switch(param1.masterType)
+            {
+                case "ItemMaster":
+                {
+                    effectString = param1.effect;
+                    break;
+                }
+                case "MaterialMaster":
+                {
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
+        public function getDescription() : String
+        {
+            return _viewData.description;
+        }// end function
+
+        public function onClose() : void
+        {
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+
+        public function setup() : void
+        {
+            MovieClip(Loader(_swf_window.getChildAt(0)).content).gotoAndPlay("center_300x200");
+            MovieClip(Loader(_swf_close.getChildAt(0)).content).gotoAndPlay("button_close");
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_EquipmentDetail_Image1" source="{_swf_window}"/>
+	<mx:Canvas>
+		<mx:Label id="_EquipmentDetail_Label1" x="230" y="180" width="300" textAlign="center" fontSize="17" color="#00ffffff" text="{_viewData.nameLabel}"/>
+		<mx:Text id="_EquipmentDetail_Text1" x="250" y="215" fontSize="15" color="#00000000" text="effectString"/>
+		<mx:Text id="_EquipmentDetail_Text2" x="260" y="235" width="250" height="50" fontSize="12" color="#00000000" text="getDescription()"/>
+	</mx:Canvas>
+	<mx:Image id="_EquipmentDetail_Image2" x="325" y="330" click="{closeWindow();}" source="{_swf_close}"/>
+	<mx:Image id="_EquipmentDetail_Image3" x="505" y="180" click="{closeWindow();}" source="{_swf_close_window}"/>
+
+</mx:Canvas>

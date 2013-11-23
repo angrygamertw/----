@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{init();}">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.lib.*;
+        import com.kbmj.viking.view.*;
+        import flash.display.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        public static const  SELECT_MATCH_BATTLE:String = "ConfirmStartMatchWindow/SelectMatchBattlw";
+        public static const  SELECT_SPECIAL_MATCH_BATTLE:String = "ConfirmStartMatchWindow/SelectSpecialMatchBattlw";
+        public static const  CONFIRMED:String = "ConfirmStartContinuationWindow/Confirmed";
+
+
+        public function init() : void
+        {
+            MovieClip(Loader(_swf_bg.getChildAt(0)).content).gotoAndPlay("center_300x200");
+            MovieClip(Loader(_swf_ok_button.getChildAt(0)).content).gotoAndPlay("button_yes");
+            MovieClip(Loader(_swf_cancel_button.getChildAt(0)).content).gotoAndPlay("button_no");
+            MovieClip(Loader(_swf_cancel_button2.getChildAt(0)).content).gotoAndPlay("button_ok");
+            return;
+        }// end function
+
+        public function getStartBattleTypeLabel() : String
+        {
+            return _specialMatch ? (Utils.i18n("specialMatchBattle")) : (Utils.i18n("matchBattle"));
+        }// end function
+
+        public function setSpecialMatchTicket(param1:int) : void
+        {
+            _specialMatch = true;
+            _matchTicket = param1;
+            _canStart = _matchTicket > 0;
+            return;
+        }// end function
+
+        public function onConfirm() : void
+        {
+            var _loc_1:* = _specialMatch ? (SELECT_SPECIAL_MATCH_BATTLE) : (SELECT_MATCH_BATTLE);
+            sendPopupEvent(_loc_1, new Object());
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="_ConfirmStartMatchWindow_Image1" source="{_swf_bg}"/>
+	<mx:VBox x="240" y="225">
+		<mx:VBox horizontalCenter="20" top="100">
+			<mx:Label id="_ConfirmStartMatchWindow_Label1" fontSize="14" text=""/>
+			<mx:VBox x="300" y="245">
+				<mx:Label id="_ConfirmStartMatchWindow_Label2" fontSize="14" text="{Utils.i18n("matchBattleTicketLeft") + ":" + _matchTicket}"/>
+				<mx:Text id="_ConfirmStartMatchWindow_Text1" fontSize="14" text="{Utils.i18n("generalConfirm")}" visible="_canStart" includeInLayout="_canStart"/>
+			</mx:VBox>
+		</mx:VBox>
+		<mx:Spacer height="100%"/>
+	</mx:VBox>
+	<mx:HBox id="_ConfirmStartMatchWindow_HBox1" y="337" x="265" horizontalGap="130" visible="_canStart" includeInLayout="_canStart">
+		<mx:Image id="_ConfirmStartMatchWindow_Image2" click="{onConfirm();}" source="{_swf_ok_button}"/>
+		<mx:Image id="_ConfirmStartMatchWindow_Image3" click="{onClose();}" source="{_swf_cancel_button}"/>
+	</mx:HBox>
+	<mx:HBox id="_ConfirmStartMatchWindow_HBox2" y="337" x="330" horizontalGap="130" visible="!_canStart" includeInLayout="!_canStart">
+		<mx:Image id="_ConfirmStartMatchWindow_Image4" click="{onClose();}" source="{_swf_cancel_button2}"/>
+	</mx:HBox>
+
+</mx:PopupWindow>

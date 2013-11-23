@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.vo.*;
+        import flash.events.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.styles.*;
+
+        private var  canNotProduct:Class;
+        private var  canProduct:Class;
+
+
+        public function onClick() : void
+        {
+            if (data.requirement.canProduce)
+            {
+                parentDocument.produceButtonClicked(ProductionVO(data));
+            }
+            else
+            {
+                parentDocument.conditionButtonClicked(ProductionVO(data));
+            }
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Image id="produceButton" click="{onClick();}"/>
+
+</mx:Box>

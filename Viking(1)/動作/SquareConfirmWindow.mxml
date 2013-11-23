@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:PopupWindow xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script><![CDATA[
+        import com.kbmj.viking.view.*;
+        import com.kbmj.viking.vo.home.*;
+        import flash.events.*;
+        import flash.utils.*;
+        import mx.binding.*;
+        import mx.containers.*;
+        import mx.controls.*;
+        import mx.core.*;
+        import mx.events.*;
+        import mx.managers.*;
+
+        private var  _mercenary:MercenaryVO;
+        public static const  CONFIRMED:String = "Confirmed";
+
+
+        public function onConfirm() : void
+        {
+            sendPopupEvent(CONFIRMED, mercenary);
+            PopUpManager.removePopUp(this);
+            return;
+        }// end function
+    ]]></mx:Script>
+
+	<mx:Canvas>
+		<mx:VBox id="mercenaryDetail" width="290" x="110" y="55" verticalGap="10">
+			<mx:Label id="_SquareConfirmWindow_Label1" fontSize="14" text="{mercenary.unit.name}"/>
+			<mx:Label id="_SquareConfirmWindow_Label2" fontSize="14" text="{mercenary.unit.jobName}"/>
+			<mx:Label id="_SquareConfirmWindow_Label3" fontSize="14" text="{mercenary.price}"/>
+			<mx:Label id="_SquareConfirmWindow_Label4" fontSize="14" text="_requirementText"/>
+		</mx:VBox>
+		<mx:HBox y="220" horizontalCenter="20" horizontalGap="10">
+			<mx:Button label="" styleName="CancelCanaButton" buttonMode="true" click="{onClose();}"/>
+			<mx:Button label="" styleName="OkButton" buttonMode="true" click="{onConfirm();}"/>
+		</mx:HBox>
+	</mx:Canvas>
+
+</mx:PopupWindow>
